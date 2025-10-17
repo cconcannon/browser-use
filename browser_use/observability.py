@@ -66,10 +66,12 @@ def _create_no_op_decorator(
 	import asyncio
 
 	def decorator(func: F) -> F:
+		"""Decorator function that wraps async or sync functions as no-ops."""
 		if asyncio.iscoroutinefunction(func):
 
 			@wraps(func)
 			async def async_wrapper(*args, **kwargs):
+				"""Async wrapper that passes through to original function."""
 				return await func(*args, **kwargs)
 
 			return cast(F, async_wrapper)
@@ -77,6 +79,7 @@ def _create_no_op_decorator(
 
 			@wraps(func)
 			def sync_wrapper(*args, **kwargs):
+				"""Sync wrapper that passes through to original function."""
 				return func(*args, **kwargs)
 
 			return cast(F, sync_wrapper)

@@ -1,3 +1,5 @@
+"""Example demonstrating automated grocery shopping with complex multi-step workflow."""
+
 import asyncio
 import os
 import sys
@@ -112,6 +114,7 @@ agent = Agent(task=task, llm=ChatOpenAI(model='gpt-4.1-mini'))
 
 
 async def main():
+	"""Run grocery shopping automation example."""
 	await agent.run()
 	input('Press Enter to close the browser...')
 

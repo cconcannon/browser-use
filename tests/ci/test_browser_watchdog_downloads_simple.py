@@ -7,7 +7,7 @@ from pytest_httpserver import HTTPServer
 
 
 async def test_simple_playwright_download():
-	"""Test basic Playwright download functionality without browser-use - this just validates the browser setup"""
+	"""Test basic Playwright download functionality without browser-use - this just validates the browser setup."""
 	# Skip Playwright usage - removed dependency
 	pytest.skip('Playwright dependency removed')
 
@@ -28,6 +28,6 @@ def http_server():
 
 
 async def test_browser_use_download_with_http_server(http_server):
-	"""Test browser-use download with HTTP server and event coordination"""
+	"""Test browser-use download with HTTP server and event coordination."""
 	# Skip complex element selection for now - would need to implement selector-to-index conversion
 	pytest.skip('Complex element selection needs refactoring for CDP events')

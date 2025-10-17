@@ -38,6 +38,7 @@ agent = Agent(
 
 
 async def main():
+	"""Run Azure OpenAI example."""
 	await agent.run(max_steps=10)
 
 

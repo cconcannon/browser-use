@@ -13,6 +13,7 @@ from browser_use.mcp.client import MCPClient
 
 
 async def main():
+	"""Run simple MCP client example."""
 	# Initialize tools
 	tools = Tools()
 

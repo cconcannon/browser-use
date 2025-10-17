@@ -1,3 +1,5 @@
+"""Example demonstrating parallel agents running in the same browser session."""
+
 import asyncio
 import os
 import sys
@@ -26,6 +28,7 @@ llm = ChatOpenAI(model='gpt-4.1-mini')
 
 # NOTE: This is experimental - you will have multiple agents running in the same browser session
 async def main():
+	"""Run multiple agents in parallel within the same browser session."""
 	await browser_session.start()
 	agents = [
 		Agent(task=task, llm=llm, browser_session=browser_session)

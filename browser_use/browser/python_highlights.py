@@ -125,6 +125,7 @@ def draw_enhanced_bounding_box_with_text(
 
 	# Helper function to draw dashed line
 	def draw_dashed_line(start_x, start_y, end_x, end_y):
+		"""Draw a dashed line on the image."""
 		if start_x == end_x:  # Vertical line
 			y = start_y
 			while y < end_y:

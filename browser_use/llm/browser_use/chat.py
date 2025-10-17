@@ -66,17 +66,23 @@ class ChatBrowserUse(BaseChatModel):
 
 	@property
 	def provider(self) -> str:
+		"""Return the provider name."""
 		return 'browser-use'
 
 	@property
 	def name(self) -> str:
+		"""Return the model name."""
 		return f'browser-use/{self.model}'
 
 	@overload
-	async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]: ...
+	async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]:
+		"""Invoke LLM with messages and return unstructured text completion."""
+		...
 
 	@overload
-	async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]: ...
+	async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]:
+		"""Invoke LLM with messages and return structured output of type T."""
+		...
 
 	@observe(name='chat_browser_use_ainvoke')
 	async def ainvoke(

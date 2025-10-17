@@ -1,3 +1,5 @@
+"""Serializer for converting between custom message types and Ollama message types."""
+
 import base64
 import json
 from typing import Any, overload
@@ -81,15 +83,21 @@ class OllamaMessageSerializer:
 	# region - Serialize overloads
 	@overload
 	@staticmethod
-	def serialize(message: UserMessage) -> Message: ...
+	def serialize(message: UserMessage) -> Message:
+		"""Serialize a user message."""
+		...
 
 	@overload
 	@staticmethod
-	def serialize(message: SystemMessage) -> Message: ...
+	def serialize(message: SystemMessage) -> Message:
+		"""Serialize a system message."""
+		...
 
 	@overload
 	@staticmethod
-	def serialize(message: AssistantMessage) -> Message: ...
+	def serialize(message: AssistantMessage) -> Message:
+		"""Serialize an assistant message."""
+		...
 
 	@staticmethod
 	def serialize(message: BaseMessage) -> Message:

@@ -59,6 +59,7 @@ class DownloadsWatchdog(BaseWatchdog):
 	_session_pdf_urls: dict[str, str] = PrivateAttr(default_factory=dict)  # URL -> path for PDFs downloaded this session
 
 	async def on_BrowserLaunchEvent(self, event: BrowserLaunchEvent) -> None:
+		"""Set up download monitoring when browser launches."""
 		self.logger.debug(f'[DownloadsWatchdog] Received BrowserLaunchEvent, EventBus ID: {id(self.event_bus)}')
 		# Ensure downloads directory exists
 		downloads_path = self.browser_session.browser_profile.downloads_path
@@ -160,6 +161,7 @@ class DownloadsWatchdog(BaseWatchdog):
 
 		# Define CDP event handlers outside of try to avoid indentation/scope issues
 		async def download_will_begin_handler(event: DownloadWillBeginEvent, session_id: SessionID | None):
+			"""Handle download will begin CDP events."""
 			self.logger.debug(f'[DownloadsWatchdog] Download will begin: {event}')
 			# Cache info for later completion event handling (esp. remote browsers)
 			guid = event.get('guid', '')
@@ -180,6 +182,7 @@ class DownloadsWatchdog(BaseWatchdog):
 			task.add_done_callback(lambda t: self._cdp_event_tasks.discard(t))
 
 		async def download_progress_handler(event: DownloadProgressEvent, session_id: SessionID | None):
+			"""Handle download progress CDP events."""
 			# Check if download is complete
 			if event.get('state') == 'completed':
 				file_path = event.get('filePath')

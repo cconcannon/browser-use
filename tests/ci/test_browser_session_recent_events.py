@@ -14,10 +14,10 @@ from browser_use.browser.events import NavigateToUrlEvent, ScreenshotEvent
 
 
 class TestBrowserRecentEvents:
-	"""Test recent events tracking functionality"""
+	"""Test recent events tracking functionality."""
 
 	async def test_recent_events_on_successful_load(self, httpserver: HTTPServer):
-		"""Test that recent events shows successful navigation when page loads successfully"""
+		"""Test that recent events shows successful navigation when page loads successfully."""
 		# Set up a simple page that loads quickly
 		httpserver.expect_request('/fast').respond_with_data(
 			'<html><head><title>Fast Page</title></head><body><h1>Quick loading page</h1></body></html>',
@@ -130,7 +130,7 @@ class TestBrowserRecentEvents:
 	# 		await browser_session.kill()
 
 	async def test_recent_events_preserved_in_minimal_state(self, httpserver: HTTPServer):
-		"""Test that recent events is preserved even when falling back to minimal state"""
+		"""Test that recent events is preserved even when falling back to minimal state."""
 		# Create a page that causes DOM processing to fail
 		malformed_html = """
 		<html>
@@ -151,6 +151,7 @@ class TestBrowserRecentEvents:
 		httpserver.expect_request('/malformed').respond_with_data(malformed_html, content_type='text/html')
 
 		def slow_handler(req):
+			"""Handler that sleeps for 5 seconds."""
 			time.sleep(5)
 			return Response('slow')
 
@@ -191,7 +192,7 @@ class TestBrowserRecentEvents:
 
 	@pytest.mark.parametrize('timeout_seconds', [0.5, 1.0, 2.0])
 	async def test_recent_events_with_different_timeouts(self, httpserver: HTTPServer, timeout_seconds: float):
-		"""Test that recent events captures navigation with different timeout configurations"""
+		"""Test that recent events captures navigation with different timeout configurations."""
 		# Set up a slow page
 		httpserver.expect_request(f'/timeout_{timeout_seconds}').respond_with_data(
 			f'<html><head><title>Timeout Test {timeout_seconds}s</title>'
@@ -201,6 +202,7 @@ class TestBrowserRecentEvents:
 		)
 
 		def very_slow_handler(req):
+			"""Handler that sleeps for 10 seconds."""
 			time.sleep(10)
 			return Response('slow')
 

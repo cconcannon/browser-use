@@ -1,3 +1,5 @@
+"""Example demonstrating DeepSeek chat model integration."""
+
 import asyncio
 import os
 
@@ -18,6 +20,7 @@ if deepseek_api_key is None:
 
 
 async def main():
+	"""Run DeepSeek chat example."""
 	llm = ChatDeepSeek(
 		base_url='https://api.deepseek.com/v1',
 		model='deepseek-chat',

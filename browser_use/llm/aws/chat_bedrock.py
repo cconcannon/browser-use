@@ -1,3 +1,5 @@
+"""AWS Bedrock chat model implementation supporting multiple providers."""
+
 import json
 from dataclasses import dataclass
 from os import getenv
@@ -58,6 +60,7 @@ class ChatAWSBedrock(BaseChatModel):
 	# Static
 	@property
 	def provider(self) -> str:
+		"""Return the provider name."""
 		return 'aws_bedrock'
 
 	def _get_client(self) -> 'AwsClient':  # type: ignore
@@ -97,6 +100,7 @@ class ChatAWSBedrock(BaseChatModel):
 
 	@property
 	def name(self) -> str:
+		"""Return the model name."""
 		return str(self.model)
 
 	def _get_inference_config(self) -> dict[str, Any]:
@@ -157,10 +161,14 @@ class ChatAWSBedrock(BaseChatModel):
 		)
 
 	@overload
-	async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]: ...
+	async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]:
+		"""Invoke LLM with messages and return unstructured text completion."""
+		...
 
 	@overload
-	async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]: ...
+	async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]:
+		"""Invoke LLM with messages and return structured output of type T."""
+		...
 
 	async def ainvoke(
 		self, messages: list[BaseMessage], output_format: type[T] | None = None

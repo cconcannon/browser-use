@@ -1,3 +1,5 @@
+"""Serializer for converting between custom message types and OpenAI message param types."""
+
 from typing import overload
 
 from openai.types.chat import (
@@ -104,15 +106,21 @@ class OpenAIMessageSerializer:
 	# region - Serialize overloads
 	@overload
 	@staticmethod
-	def serialize(message: UserMessage) -> ChatCompletionUserMessageParam: ...
+	def serialize(message: UserMessage) -> ChatCompletionUserMessageParam:
+		"""Serialize a user message."""
+		...
 
 	@overload
 	@staticmethod
-	def serialize(message: SystemMessage) -> ChatCompletionSystemMessageParam: ...
+	def serialize(message: SystemMessage) -> ChatCompletionSystemMessageParam:
+		"""Serialize a system message."""
+		...
 
 	@overload
 	@staticmethod
-	def serialize(message: AssistantMessage) -> ChatCompletionAssistantMessageParam: ...
+	def serialize(message: AssistantMessage) -> ChatCompletionAssistantMessageParam:
+		"""Serialize an assistant message."""
+		...
 
 	@staticmethod
 	def serialize(message: BaseMessage) -> ChatCompletionMessageParam:
@@ -162,4 +170,5 @@ class OpenAIMessageSerializer:
 
 	@staticmethod
 	def serialize_messages(messages: list[BaseMessage]) -> list[ChatCompletionMessageParam]:
+		"""Serialize list of BaseMessage to OpenAI message format."""
 		return [OpenAIMessageSerializer.serialize(m) for m in messages]

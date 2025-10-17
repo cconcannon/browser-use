@@ -1,3 +1,5 @@
+"""Serializer for converting messages to Google Gemini format."""
+
 import base64
 
 from google.genai.types import Content, ContentListUnion, Part

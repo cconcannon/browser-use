@@ -140,10 +140,10 @@ class TestBrowserSessionStart:
 
 
 class TestBrowserSessionReusePatterns:
-	"""Tests for all browser re-use patterns documented in docs/customize/real-browser.mdx"""
+	"""Tests for all browser re-use patterns documented in docs/customize/real-browser.mdx."""
 
 	async def test_sequential_agents_same_profile_different_browser(self, mock_llm):
-		"""Test Sequential Agents, Same Profile, Different Browser pattern"""
+		"""Test Sequential Agents, Same Profile, Different Browser pattern."""
 		from browser_use import Agent
 		from browser_use.browser.profile import BrowserProfile
 
@@ -180,7 +180,7 @@ class TestBrowserSessionReusePatterns:
 		assert not agent2.browser_session._cdp_client_root is not None
 
 	async def test_sequential_agents_same_profile_same_browser(self, mock_llm):
-		"""Test Sequential Agents, Same Profile, Same Browser pattern"""
+		"""Test Sequential Agents, Same Profile, Same Browser pattern."""
 		from browser_use import Agent, BrowserSession
 
 		# Create a reusable session with keep_alive

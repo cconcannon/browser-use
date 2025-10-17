@@ -1,4 +1,4 @@
-"""Test full circle: download a file and then upload it back, verifying hash matches"""
+"""Test full circle: download a file and then upload it back, verifying hash matches."""
 
 import asyncio
 import hashlib
@@ -91,6 +91,7 @@ def download_upload_server():
 
 	# Handle upload POST request (for server-side verification)
 	def handle_upload(request):
+		"""Handle file upload and store info for verification."""
 		# Store uploaded file info for verification
 		if request.files and 'file' in request.files:
 			file_data = request.files['file'][0]
@@ -132,10 +133,10 @@ def download_upload_server():
 
 
 class TestDownloadUploadFullCircle:
-	"""Test full circle: download a file and then upload it back"""
+	"""Test full circle: download a file and then upload it back."""
 
 	async def test_download_then_upload_with_hash_verification(self, download_upload_server):
-		"""Download a file, then upload it to another page, verify hash matches"""
+		"""Download a file, then upload it to another page, verify hash matches."""
 
 		# Create temporary directory for downloads
 		with tempfile.TemporaryDirectory() as tmpdir:
@@ -162,6 +163,8 @@ class TestDownloadUploadFullCircle:
 
 				# Step 1: Navigate to download page
 				class NavigateActionModel(ActionModel):
+					"""Test action model for navigation."""
+
 					navigate: GoToUrlAction | None = None
 
 				result = await tools.act(
@@ -189,6 +192,8 @@ class TestDownloadUploadFullCircle:
 
 				# Step 2: Click download link and wait for download
 				class ClickActionModel(ActionModel):
+					"""Test action model for clicking."""
+
 					click: ClickElementAction | None = None
 
 				# Click the download link
@@ -270,6 +275,8 @@ class TestDownloadUploadFullCircle:
 
 				# Step 4: Upload the downloaded file
 				class UploadActionModel(ActionModel):
+					"""Test action model for file upload."""
+
 					upload_file: UploadFileAction | None = None
 
 				# The downloaded file should be automatically available for upload

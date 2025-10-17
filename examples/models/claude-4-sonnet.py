@@ -25,6 +25,7 @@ agent = Agent(
 
 
 async def main():
+	"""Run Claude 4 Sonnet example."""
 	await agent.run(max_steps=10)
 
 

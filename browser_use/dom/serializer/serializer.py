@@ -1,3 +1,5 @@
+"""Serializes enhanced DOM trees to string format for LLM consumption."""
+
 # @file purpose: Serializes enhanced DOM trees to string format for LLM consumption
 
 from typing import Any
@@ -44,6 +46,7 @@ class DOMTreeSerializer:
 		containment_threshold: float | None = None,
 		paint_order_filtering: bool = True,
 	):
+		"""Initialize the DOM tree serializer with configuration options."""
 		self.root_node = root_node
 		self._interactive_counter = 1
 		self._selector_map: DOMSelectorMap = {}
@@ -75,6 +78,7 @@ class DOMTreeSerializer:
 			return None
 
 	def serialize_accessible_elements(self) -> tuple[SerializedDOMState, dict[str, float]]:
+		"""Serialize the enhanced DOM tree to a simplified accessible format for LLM consumption."""
 		import time
 
 		start_total = time.time()
@@ -342,6 +346,7 @@ class DOMTreeSerializer:
 
 				# Get text content from direct child text nodes only to avoid duplication
 				def get_direct_text_content(n: EnhancedDOMTreeNode) -> str:
+					"""Extract text content from direct child text nodes only."""
 					text = ''
 					for child in n.children:
 						if child.node_type == NodeType.TEXT_NODE and child.node_value:

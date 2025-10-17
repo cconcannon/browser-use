@@ -20,7 +20,7 @@ _gmail_service: GmailService | None = None
 
 
 class GetRecentEmailsParams(BaseModel):
-	"""Parameters for getting recent emails"""
+	"""Parameters for getting recent emails."""
 
 	keyword: str = Field(default='', description='A single keyword for search, e.g. github, airbnb, etc.')
 	max_results: int = Field(default=3, ge=1, le=50, description='Maximum number of emails to retrieve (1-50, default: 3)')
@@ -49,7 +49,7 @@ def register_gmail_actions(tools: Tools, gmail_service: GmailService | None = No
 		param_model=GetRecentEmailsParams,
 	)
 	async def get_recent_emails(params: GetRecentEmailsParams) -> ActionResult:
-		"""Get recent emails from the last 5 minutes with full content"""
+		"""Get recent emails from the last 5 minutes with full content."""
 		try:
 			if _gmail_service is None:
 				raise RuntimeError('Gmail service not initialized')

@@ -1,3 +1,5 @@
+"""WhatsApp Web login helper using browser-use."""
+
 import asyncio
 import os
 from pathlib import Path
@@ -16,7 +18,7 @@ STORAGE_STATE_FILE = USER_DATA_DIR / 'storage_state.json'
 
 
 async def login_to_whatsapp():
-	"""Open WhatsApp Web and wait for user to scan QR code"""
+	"""Open WhatsApp Web and wait for user to scan QR code."""
 	if not GOOGLE_API_KEY:
 		print('❌ Error: GOOGLE_API_KEY environment variable is required')
 		print("Please set it with: export GOOGLE_API_KEY='your-api-key-here'")

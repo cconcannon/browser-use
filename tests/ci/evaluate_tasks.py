@@ -31,12 +31,14 @@ TASK_FILES = glob.glob(os.path.join(TASK_DIR, '*.yaml'))
 
 
 class JudgeResponse(BaseModel):
+	"""Response model for task evaluation judgment."""
+
 	success: bool
 	explanation: str
 
 
 async def run_single_task(task_file):
-	"""Run a single task in the current process (called by subprocess)"""
+	"""Run a single task in the current process (called by subprocess)."""
 	try:
 		print(f'[DEBUG] Starting task: {os.path.basename(task_file)}', file=sys.stderr)
 
@@ -177,7 +179,7 @@ If the agent provided no output, explain what might have gone wrong.
 
 
 async def run_task_subprocess(task_file, semaphore):
-	"""Run a task in a separate subprocess"""
+	"""Run a task in a separate subprocess."""
 	async with semaphore:
 		try:
 			# Set environment to reduce noise in subprocess
@@ -256,7 +258,7 @@ async def run_task_subprocess(task_file, semaphore):
 
 
 async def main():
-	"""Run all tasks in parallel using subprocesses"""
+	"""Run all tasks in parallel using subprocesses."""
 	semaphore = asyncio.Semaphore(MAX_PARALLEL)
 
 	print(f'Found task files: {TASK_FILES}')

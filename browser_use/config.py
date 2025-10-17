@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 @cache
 def is_running_in_docker() -> bool:
-	"""Detect if we are running in a docker container, for the purpose of optimizing chrome launch flags (dev shm usage, gpu settings, etc.)"""
+	"""Detect if we are running in a docker container, for the purpose of optimizing chrome launch flags (dev shm usage, gpu settings, etc.)."""
 	try:
 		if Path('/.dockerenv').exists() or 'docker' in Path('/proc/1/cgroup').read_text().lower():
 			return True
@@ -52,24 +52,29 @@ class OldConfig:
 
 	@property
 	def BROWSER_USE_LOGGING_LEVEL(self) -> str:
+		"""Get the browser-use logging level from environment."""
 		return os.getenv('BROWSER_USE_LOGGING_LEVEL', 'info').lower()
 
 	@property
 	def ANONYMIZED_TELEMETRY(self) -> bool:
+		"""Check if anonymized telemetry is enabled."""
 		return os.getenv('ANONYMIZED_TELEMETRY', 'true').lower()[:1] in 'ty1'
 
 	@property
 	def BROWSER_USE_CLOUD_SYNC(self) -> bool:
+		"""Check if cloud sync is enabled."""
 		return os.getenv('BROWSER_USE_CLOUD_SYNC', str(self.ANONYMIZED_TELEMETRY)).lower()[:1] in 'ty1'
 
 	@property
 	def BROWSER_USE_CLOUD_API_URL(self) -> str:
+		"""Get the cloud API URL."""
 		url = os.getenv('BROWSER_USE_CLOUD_API_URL', 'https://api.browser-use.com')
 		assert '://' in url, 'BROWSER_USE_CLOUD_API_URL must be a valid URL'
 		return url
 
 	@property
 	def BROWSER_USE_CLOUD_UI_URL(self) -> str:
+		"""Get the cloud UI URL."""
 		url = os.getenv('BROWSER_USE_CLOUD_UI_URL', '')
 		# Allow empty string as default, only validate if set
 		if url and '://' not in url:
@@ -79,40 +84,47 @@ class OldConfig:
 	# Path configuration
 	@property
 	def XDG_CACHE_HOME(self) -> Path:
+		"""Get the XDG cache home directory."""
 		return Path(os.getenv('XDG_CACHE_HOME', '~/.cache')).expanduser().resolve()
 
 	@property
 	def XDG_CONFIG_HOME(self) -> Path:
+		"""Get the XDG config home directory."""
 		return Path(os.getenv('XDG_CONFIG_HOME', '~/.config')).expanduser().resolve()
 
 	@property
 	def BROWSER_USE_CONFIG_DIR(self) -> Path:
+		"""Get the browser-use config directory."""
 		path = Path(os.getenv('BROWSER_USE_CONFIG_DIR', str(self.XDG_CONFIG_HOME / 'browseruse'))).expanduser().resolve()
 		self._ensure_dirs()
 		return path
 
 	@property
 	def BROWSER_USE_CONFIG_FILE(self) -> Path:
+		"""Get the browser-use config file path."""
 		return self.BROWSER_USE_CONFIG_DIR / 'config.json'
 
 	@property
 	def BROWSER_USE_PROFILES_DIR(self) -> Path:
+		"""Get the browser-use profiles directory."""
 		path = self.BROWSER_USE_CONFIG_DIR / 'profiles'
 		self._ensure_dirs()
 		return path
 
 	@property
 	def BROWSER_USE_DEFAULT_USER_DATA_DIR(self) -> Path:
+		"""Get the default user data directory."""
 		return self.BROWSER_USE_PROFILES_DIR / 'default'
 
 	@property
 	def BROWSER_USE_EXTENSIONS_DIR(self) -> Path:
+		"""Get the extensions directory."""
 		path = self.BROWSER_USE_CONFIG_DIR / 'extensions'
 		self._ensure_dirs()
 		return path
 
 	def _ensure_dirs(self) -> None:
-		"""Create directories if they don't exist (only once)"""
+		"""Create directories if they don't exist (only once)."""
 		if not self._dirs_created:
 			config_dir = (
 				Path(os.getenv('BROWSER_USE_CONFIG_DIR', str(self.XDG_CONFIG_HOME / 'browseruse'))).expanduser().resolve()
@@ -125,55 +137,68 @@ class OldConfig:
 	# LLM API key configuration
 	@property
 	def OPENAI_API_KEY(self) -> str:
+		"""Get the OpenAI API key."""
 		return os.getenv('OPENAI_API_KEY', '')
 
 	@property
 	def ANTHROPIC_API_KEY(self) -> str:
+		"""Get the Anthropic API key."""
 		return os.getenv('ANTHROPIC_API_KEY', '')
 
 	@property
 	def GOOGLE_API_KEY(self) -> str:
+		"""Get the Google API key."""
 		return os.getenv('GOOGLE_API_KEY', '')
 
 	@property
 	def DEEPSEEK_API_KEY(self) -> str:
+		"""Get the DeepSeek API key."""
 		return os.getenv('DEEPSEEK_API_KEY', '')
 
 	@property
 	def GROK_API_KEY(self) -> str:
+		"""Get the Grok API key."""
 		return os.getenv('GROK_API_KEY', '')
 
 	@property
 	def NOVITA_API_KEY(self) -> str:
+		"""Get the Novita API key."""
 		return os.getenv('NOVITA_API_KEY', '')
 
 	@property
 	def AZURE_OPENAI_ENDPOINT(self) -> str:
+		"""Get the Azure OpenAI endpoint."""
 		return os.getenv('AZURE_OPENAI_ENDPOINT', '')
 
 	@property
 	def AZURE_OPENAI_KEY(self) -> str:
+		"""Get the Azure OpenAI key."""
 		return os.getenv('AZURE_OPENAI_KEY', '')
 
 	@property
 	def SKIP_LLM_API_KEY_VERIFICATION(self) -> bool:
+		"""Check if LLM API key verification should be skipped."""
 		return os.getenv('SKIP_LLM_API_KEY_VERIFICATION', 'false').lower()[:1] in 'ty1'
 
 	@property
 	def DEFAULT_LLM(self) -> str:
+		"""Get the default LLM model."""
 		return os.getenv('DEFAULT_LLM', '')
 
 	# Runtime hints
 	@property
 	def IN_DOCKER(self) -> bool:
+		"""Check if running in Docker."""
 		return os.getenv('IN_DOCKER', 'false').lower()[:1] in 'ty1' or is_running_in_docker()
 
 	@property
 	def IS_IN_EVALS(self) -> bool:
+		"""Check if running in evaluation mode."""
 		return os.getenv('IS_IN_EVALS', 'false').lower()[:1] in 'ty1'
 
 	@property
 	def WIN_FONT_DIR(self) -> str:
+		"""Get the Windows font directory."""
 		return os.getenv('WIN_FONT_DIR', 'C:\\Windows\\Fonts')
 
 
@@ -348,6 +373,7 @@ class Config:
 	"""
 
 	def __init__(self):
+		"""Initialize the config with directory creation cache."""
 		# Cache for directory creation tracking only
 		self._dirs_created = False
 

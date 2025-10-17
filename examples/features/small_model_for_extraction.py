@@ -1,3 +1,5 @@
+"""Example demonstrating using a smaller model for page extraction to optimize costs."""
+
 import asyncio
 import os
 import sys
@@ -20,6 +22,7 @@ agent = Agent(task=task, llm=llm, page_extraction_llm=small_llm)
 
 
 async def main():
+	"""Run multi-model example with separate planning and extraction models."""
 	await agent.run()
 
 

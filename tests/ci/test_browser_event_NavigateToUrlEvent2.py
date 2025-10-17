@@ -78,6 +78,7 @@ async def test_navigation_events_slow_page_with_timeout(httpserver):
 
 	# Set up a slow endpoint that takes longer than we want to wait
 	def slow_handler(request):
+		"""Handler that sleeps for 5 seconds before responding."""
 		time.sleep(5.0)  # 5 seconds - longer than our timeout
 		from werkzeug import Response
 

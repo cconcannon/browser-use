@@ -1,3 +1,5 @@
+"""Example demonstrating Google Gemini model integration."""
+
 import asyncio
 import os
 import sys
@@ -16,6 +18,7 @@ if not api_key:
 
 
 async def run_search():
+	"""Run search task with Gemini model."""
 	llm = ChatGoogle(model='gemini-flash-latest', api_key=api_key)
 	agent = Agent(
 		llm=llm,

@@ -1,3 +1,5 @@
+"""Browser automation tools and controller implementation."""
+
 import asyncio
 import enum
 import json
@@ -85,6 +87,7 @@ def _detect_sensitive_key_name(text: str, sensitive_data: dict[str, str | dict[s
 
 
 def handle_browser_error(e: BrowserError) -> ActionResult:
+	"""Handle BrowserError and convert to ActionResult with appropriate memory fields."""
 	if e.long_term_memory is not None:
 		if e.short_term_memory is not None:
 			return ActionResult(
@@ -100,12 +103,15 @@ def handle_browser_error(e: BrowserError) -> ActionResult:
 
 
 class Tools(Generic[Context]):
+	"""Registry and manager for all browser automation actions."""
+
 	def __init__(
 		self,
 		exclude_actions: list[str] = [],
 		output_model: type[T] | None = None,
 		display_files_in_done_text: bool = True,
 	):
+		"""Initialize the Tools manager with action registry and configuration."""
 		self.registry = Registry[Context](exclude_actions)
 		self.display_files_in_done_text = display_files_in_done_text
 
@@ -119,6 +125,7 @@ class Tools(Generic[Context]):
 			param_model=SearchAction,
 		)
 		async def search(params: SearchAction, browser_session: BrowserSession):
+			"""Search the web using the specified search engine."""
 			import urllib.parse
 
 			# Encode query for URL safety
@@ -162,6 +169,7 @@ class Tools(Generic[Context]):
 			param_model=NavigateAction,
 		)
 		async def navigate(params: NavigateAction, browser_session: BrowserSession):
+			"""Navigate to a URL in the current or new tab."""
 			try:
 				# Dispatch navigation event
 				event = browser_session.event_bus.dispatch(NavigateToUrlEvent(url=params.url, new_tab=params.new_tab))
@@ -206,6 +214,7 @@ class Tools(Generic[Context]):
 
 		@self.registry.action('', param_model=NoParamsAction)
 		async def go_back(_: NoParamsAction, browser_session: BrowserSession):
+			"""Navigate back to the previous page in browser history."""
 			try:
 				event = browser_session.event_bus.dispatch(GoBackEvent())
 				await event
@@ -220,6 +229,7 @@ class Tools(Generic[Context]):
 
 		@self.registry.action('')
 		async def wait(seconds: int = 3):
+			"""Wait for a specified number of seconds (max 30)."""
 			# Cap wait time at maximum 30 seconds
 			# Reduce the wait time by 3 seconds to account for the llm call which takes at least 3 seconds
 			# So if the model decides to wait for 5 seconds, the llm call took at least 3 seconds, so we only need to wait for 2 seconds
@@ -238,6 +248,7 @@ class Tools(Generic[Context]):
 			param_model=ClickElementAction,
 		)
 		async def click(params: ClickElementAction, browser_session: BrowserSession):
+			"""Click on an element identified by index."""
 			# Dispatch click event with node
 			try:
 				assert params.index != 0, (
@@ -293,6 +304,7 @@ class Tools(Generic[Context]):
 			has_sensitive_data: bool = False,
 			sensitive_data: dict[str, str | dict[str, str]] | None = None,
 		):
+			"""Type text into an input element, with support for sensitive data."""
 			# Look up the node from the selector map
 			node = await browser_session.get_element_by_index(params.index)
 			if node is None:
@@ -355,6 +367,7 @@ class Tools(Generic[Context]):
 		async def upload_file(
 			params: UploadFileAction, browser_session: BrowserSession, available_file_paths: list[str], file_system: FileSystem
 		):
+			"""Upload a file to a file input element."""
 			# Check if file is in available_file_paths (user-provided or downloaded files)
 			# For remote browsers (is_local=False), we allow absolute remote paths even if not tracked locally
 			if params.path not in available_file_paths:
@@ -407,6 +420,7 @@ class Tools(Generic[Context]):
 				"""Find the closest file input to the selected element."""
 
 				def find_file_input_in_descendants(n: EnhancedDOMTreeNode, depth: int) -> EnhancedDOMTreeNode | None:
+					"""Recursively search descendants for file input element."""
 					if depth < 0:
 						return None
 					if browser_session.is_file_input(n):
@@ -508,6 +522,7 @@ class Tools(Generic[Context]):
 
 		@self.registry.action('', param_model=SwitchTabAction)
 		async def switch(params: SwitchTabAction, browser_session: BrowserSession):
+			"""Switch to a different browser tab by tab ID."""
 			# Simple switch tab logic
 			try:
 				target_id = await browser_session.get_target_id_from_tab_id(params.tab_id)
@@ -530,6 +545,7 @@ class Tools(Generic[Context]):
 
 		@self.registry.action('', param_model=CloseTabAction)
 		async def close(params: CloseTabAction, browser_session: BrowserSession):
+			"""Close a browser tab by tab ID."""
 			# Simple close tab logic
 			try:
 				target_id = await browser_session.get_target_id_from_tab_id(params.tab_id)
@@ -570,6 +586,7 @@ class Tools(Generic[Context]):
 			extract_links: bool = False,
 			start_from_char: int = 0,
 		):
+			"""Extract structured information from page content using LLM."""
 			# Constants
 			MAX_CHAR_LIMIT = 30000
 
@@ -688,6 +705,7 @@ You will be given a query and the markdown of a webpage that has been filtered t
 			param_model=ScrollAction,
 		)
 		async def scroll(params: ScrollAction, browser_session: BrowserSession):
+			"""Scroll the page or a specific element by a number of pages."""
 			try:
 				# Look up the node from the selector map if index is provided
 				# Special case: index 0 means scroll the whole page (root/body element)
@@ -793,6 +811,7 @@ You will be given a query and the markdown of a webpage that has been filtered t
 			param_model=SendKeysAction,
 		)
 		async def send_keys(params: SendKeysAction, browser_session: BrowserSession):
+			"""Send keyboard keys to the browser (e.g., Enter, Escape, Tab)."""
 			# Dispatch send keys event
 			try:
 				event = browser_session.event_bus.dispatch(SendKeysEvent(keys=params.keys))
@@ -809,6 +828,7 @@ You will be given a query and the markdown of a webpage that has been filtered t
 
 		@self.registry.action('')
 		async def find_text(text: str, browser_session: BrowserSession):  # type: ignore
+			"""Find and scroll to specific text on the page."""
 			# Dispatch scroll to text event
 			event = browser_session.event_bus.dispatch(ScrollToTextEvent(text=text))
 
@@ -832,7 +852,7 @@ You will be given a query and the markdown of a webpage that has been filtered t
 			'Request screenshot of current viewport. Use when: visual inspection needed, layout unclear, element positions uncertain, debugging UI issues, or verifying page state. Screenshot included in next observation.',
 		)
 		async def screenshot():
-			"""Request that a screenshot be included in the next observation"""
+			"""Request that a screenshot be included in the next observation."""
 			memory = 'Requested screenshot for next observation'
 			msg = f'📸 {memory}'
 			logger.info(msg)
@@ -850,7 +870,7 @@ You will be given a query and the markdown of a webpage that has been filtered t
 			param_model=GetDropdownOptionsAction,
 		)
 		async def dropdown_options(params: GetDropdownOptionsAction, browser_session: BrowserSession):
-			"""Get all options from a native dropdown or ARIA menu"""
+			"""Get all options from a native dropdown or ARIA menu."""
 			# Look up the node from the selector map
 			node = await browser_session.get_element_by_index(params.index)
 			if node is None:
@@ -876,7 +896,7 @@ You will be given a query and the markdown of a webpage that has been filtered t
 			param_model=SelectDropdownOptionAction,
 		)
 		async def select_dropdown(params: SelectDropdownOptionAction, browser_session: BrowserSession):
-			"""Select dropdown option by the text of the option you want to select"""
+			"""Select dropdown option by the text of the option you want to select."""
 			# Look up the node from the selector map
 			node = await browser_session.get_element_by_index(params.index)
 			if node is None:
@@ -924,6 +944,7 @@ You will be given a query and the markdown of a webpage that has been filtered t
 			trailing_newline: bool = True,
 			leading_newline: bool = False,
 		):
+			"""Write or append content to a file in the file system."""
 			if trailing_newline:
 				content += '\n'
 			if leading_newline:
@@ -937,12 +958,14 @@ You will be given a query and the markdown of a webpage that has been filtered t
 
 		@self.registry.action('')
 		async def replace_file(file_name: str, old_str: str, new_str: str, file_system: FileSystem):
+			"""Replace text in a file using string replacement."""
 			result = await file_system.replace_file_str(file_name, old_str, new_str)
 			logger.info(f'💾 {result}')
 			return ActionResult(extracted_content=result, long_term_memory=result)
 
 		@self.registry.action('')
 		async def read_file(file_name: str, available_file_paths: list[str], file_system: FileSystem):
+			"""Read and return the contents of a file."""
 			if available_file_paths and file_name in available_file_paths:
 				result = await file_system.read_file(file_name, external_file=True)
 			else:
@@ -974,6 +997,7 @@ You will be given a query and the markdown of a webpage that has been filtered t
 			"""Execute browser JavaScript. MUST: wrap in IIFE (function(){...})(). Use ONLY browser APIs (document, window, DOM). NO Node.js APIs (fs, require, process). Add try-catch. Example: (function(){try{const el=document.querySelector('#id');return el?el.value:'not found'}catch(e){return 'Error: '+e.message}})() Never use comments. You are not allowed to use // in code. No human reads this. Use e.g. for hover, drag, zoom, custom selectors, extract/filter links, shadow DOM or to analyse page structure. Limit output.""",
 		)
 		async def evaluate(code: str, browser_session: BrowserSession):
+			"""Execute JavaScript code in the browser context."""
 			# Execute JavaScript with proper error handling and promise support
 
 			cdp_session = await browser_session.get_or_create_cdp_session()
@@ -1047,7 +1071,7 @@ Validated Code (after quote fixing):
 				return ActionResult(error=error_msg)
 
 	def _validate_and_fix_javascript(self, code: str) -> str:
-		"""Validate and fix common JavaScript issues before execution"""
+		"""Validate and fix common JavaScript issues before execution."""
 
 		import re
 
@@ -1063,6 +1087,7 @@ Validated Code (after quote fixing):
 		xpath_pattern = r'document\.evaluate\s*\(\s*"([^"]*\'[^"]*)"'
 
 		def fix_xpath_quotes(match):
+			"""Fix XPath expressions with mixed quotes by converting to template literals."""
 			xpath_with_quotes = match.group(1)
 			return f'document.evaluate(`{xpath_with_quotes}`,'
 
@@ -1072,6 +1097,7 @@ Validated Code (after quote fixing):
 		selector_pattern = r'(querySelector(?:All)?)\s*\(\s*"([^"]*\'[^"]*)"'
 
 		def fix_selector_quotes(match):
+			"""Fix querySelector expressions with mixed quotes by converting to template literals."""
 			method_name = match.group(1)
 			selector_with_quotes = match.group(2)
 			return f'{method_name}(`{selector_with_quotes}`)'
@@ -1082,6 +1108,7 @@ Validated Code (after quote fixing):
 		closest_pattern = r'\.closest\s*\(\s*"([^"]*\'[^"]*)"'
 
 		def fix_closest_quotes(match):
+			"""Fix closest() expressions with mixed quotes by converting to template literals."""
 			selector_with_quotes = match.group(1)
 			return f'.closest(`{selector_with_quotes}`)'
 
@@ -1091,6 +1118,7 @@ Validated Code (after quote fixing):
 		matches_pattern = r'\.matches\s*\(\s*"([^"]*\'[^"]*)"'
 
 		def fix_matches_quotes(match):
+			"""Fix matches() expressions with mixed quotes by converting to template literals."""
 			selector_with_quotes = match.group(1)
 			return f'.matches(`{selector_with_quotes}`)'
 
@@ -1120,6 +1148,7 @@ Validated Code (after quote fixing):
 				param_model=StructuredOutputAction[output_model],
 			)
 			async def done(params: StructuredOutputAction):
+				"""Complete the task with structured output data."""
 				# Exclude success from the output JSON since it's an internal parameter
 				output_dict = params.data.model_dump()
 
@@ -1142,6 +1171,7 @@ Validated Code (after quote fixing):
 				param_model=DoneAction,
 			)
 			async def done(params: DoneAction, file_system: FileSystem):
+				"""Complete the task with text output and optional file attachments."""
 				user_message = params.text
 
 				len_text = len(params.text)
@@ -1181,6 +1211,7 @@ Validated Code (after quote fixing):
 				)
 
 	def use_structured_output_action(self, output_model: type[T]):
+		"""Register a structured output action for the given model type."""
 		self._register_done_action(output_model)
 
 	# Register ---------------------------------------------------------------
@@ -1205,7 +1236,7 @@ Validated Code (after quote fixing):
 		available_file_paths: list[str] | None = None,
 		file_system: FileSystem | None = None,
 	) -> ActionResult:
-		"""Execute an action"""
+		"""Execute an action."""
 
 		for action_name, params in action.model_dump(exclude_unset=True).items():
 			if params is not None:

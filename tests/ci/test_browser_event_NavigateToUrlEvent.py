@@ -1,3 +1,5 @@
+"""Tests for browser navigate to URL events."""
+
 import asyncio
 
 import pytest
@@ -67,6 +69,8 @@ class TestNavigateToUrlEvent:
 		action_data = {'navigate': GoToUrlAction(url=f'{base_url}/page1', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		action_model = NavigateActionModel(**action_data)
@@ -84,6 +88,8 @@ class TestNavigateToUrlEvent:
 
 		# Create the ActionModel instance
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		action_model = NavigateActionModel(**action_data)
@@ -133,6 +139,8 @@ class TestNavigateToUrlEvent:
 		action_data = {'navigate': GoToUrlAction(url=f'{base_url}/page2', new_tab=True)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		result = await tools.act(NavigateActionModel(**action_data), browser_session)
@@ -158,6 +166,8 @@ class TestNavigateToUrlEvent:
 		action_data = {'navigate': GoToUrlAction(url=f'{base_url}/page1', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**action_data), browser_session)
@@ -177,6 +187,8 @@ class TestNavigateToUrlEvent:
 		action_data = {'navigate': GoToUrlAction(url=data_url, new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		result = await tools.act(NavigateActionModel(**action_data), browser_session)
@@ -213,6 +225,8 @@ class TestNavigateToUrlEvent:
 		action_data = {'navigate': GoToUrlAction(url=f'{base_url}/page-with-anchors#section1', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		result = await tools.act(NavigateActionModel(**action_data), browser_session)
@@ -250,6 +264,8 @@ class TestNavigateToUrlEvent:
 		action_data = {'navigate': GoToUrlAction(url=f'{base_url}/search?q=test+query&page=1', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		result = await tools.act(NavigateActionModel(**action_data), browser_session)
@@ -270,6 +286,8 @@ class TestNavigateToUrlEvent:
 		action1 = {'navigate': GoToUrlAction(url=f'{base_url}/page1', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**action1), browser_session)
@@ -299,6 +317,8 @@ class TestNavigateToUrlEvent:
 		action_data = {'navigate': GoToUrlAction(url=timeout_url, new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		# This should complete without hanging indefinitely
@@ -320,6 +340,8 @@ class TestNavigateToUrlEvent:
 		action_data = {'navigate': GoToUrlAction(url=f'{base_url}/redirect', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		result = await tools.act(NavigateActionModel(**action_data), browser_session)

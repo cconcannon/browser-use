@@ -1,3 +1,5 @@
+"""Core agent service for autonomous browser interaction driven by LLMs."""
+
 import asyncio
 import gc
 import inspect
@@ -121,6 +123,8 @@ AgentHookFunc = Callable[['Agent'], Awaitable[None]]
 
 
 class Agent(Generic[Context, AgentStructuredOutput]):
+	"""Main agent orchestrator that manages browser sessions and executes LLM-driven action loops."""
+
 	@time_execution_sync('--init')
 	def __init__(
 		self,
@@ -181,6 +185,7 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 		_url_shortening_limit: int = 25,
 		**kwargs,
 	):
+		"""Initialize an agent with task, LLM, browser session, and configuration options."""
 		if llm is None:
 			default_llm_name = CONFIG.DEFAULT_LLM
 			if default_llm_name:
@@ -464,7 +469,7 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 
 	@property
 	def logger(self) -> logging.Logger:
-		"""Get instance-specific logger with task ID in the name"""
+		"""Get instance-specific logger with task ID in the name."""
 
 		_browser_session_id = self.browser_session.id if self.browser_session else '----'
 		_current_target_id = (
@@ -476,6 +481,7 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 
 	@property
 	def browser_profile(self) -> BrowserProfile:
+		"""Get the browser profile from the browser session."""
 		assert self.browser_session is not None, 'BrowserSession is not set up'
 		return self.browser_session.browser_profile
 
@@ -567,7 +573,7 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 			raise e
 
 	def save_file_system_state(self) -> None:
-		"""Save current file system state to agent state"""
+		"""Save current file system state to agent state."""
 		if self.file_system:
 			self.state.file_system_state = self.file_system.get_state()
 		else:
@@ -619,7 +625,7 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 			self.DoneAgentOutput = AgentOutput.type_with_custom_actions_no_thinking(self.DoneActionModel)
 
 	def add_new_task(self, new_task: str) -> None:
-		"""Add a new task to the agent, keeping the same task_id as tasks are continuous"""
+		"""Add a new task to the agent, keeping the same task_id as tasks are continuous."""
 		# Simply delegate to message manager - no need for new task_id or events
 		# The task continues with new instructions, it doesn't end and start a new one
 		self.task = new_task
@@ -654,7 +660,7 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 	@observe(name='agent.step', ignore_output=True, ignore_input=True)
 	@time_execution_async('--step')
 	async def step(self, step_info: AgentStepInfo | None = None) -> None:
-		"""Execute one step of the task"""
+		"""Execute one step of the task."""
 		# Initialize timing first, before any exceptions can occur
 
 		self.step_start_time = time.time()
@@ -1031,7 +1037,7 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 		replaced_urls: dict[str, str] = {}
 
 		def replace_url(match: re.Match) -> str:
-			"""Url can only have 1 query and 1 fragment"""
+			"""Url can only have 1 query and 1 fragment."""
 			import hashlib
 
 			original_url = match.group(0)
@@ -1178,7 +1184,7 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 	@time_execution_async('--get_next_action')
 	@observe_debug(ignore_input=True, ignore_output=True, name='get_model_output')
 	async def get_model_output(self, input_messages: list[BaseMessage]) -> AgentOutput:
-		"""Get next action from LLM based on current state"""
+		"""Get next action from LLM based on current state."""
 
 		urls_replaced = self._process_messsages_and_replace_long_urls_shorter_ones(input_messages)
 
@@ -1417,7 +1423,7 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 		on_step_start: AgentHookFunc | None = None,
 		on_step_end: AgentHookFunc | None = None,
 	) -> AgentHistoryList[AgentStructuredOutput]:
-		"""Execute the task with maximum number of steps"""
+		"""Execute the task with maximum number of steps."""
 
 		loop = asyncio.get_event_loop()
 		agent_run_error: str | None = None  # Initialize error tracking variable
@@ -1428,6 +1434,7 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 
 		# Define the custom exit callback function for second CTRL+C
 		def on_force_exit_log_telemetry():
+			"""Log telemetry event when user forces exit with SIGINT."""
 			self._log_agent_event(max_steps=max_steps, agent_run_error='SIGINT: Cancelled by user')
 			# NEW: Call the flush method on the telemetry instance
 			if hasattr(self, 'telemetry') and self.telemetry:
@@ -1624,7 +1631,7 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 	@observe_debug(ignore_input=True, ignore_output=True)
 	@time_execution_async('--multi_act')
 	async def multi_act(self, actions: list[ActionModel]) -> list[ActionResult]:
-		"""Execute multiple actions"""
+		"""Execute multiple actions."""
 		results: list[ActionResult] = []
 		time_elapsed = 0
 		total_actions = len(actions)
@@ -1733,7 +1740,7 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 			self.logger.info(f'  {action_header}')
 
 	async def log_completion(self) -> None:
-		"""Log the completion of the task"""
+		"""Log the completion of the task."""
 		# self._task_end_time = time.time()
 		# self._task_duration = self._task_end_time - self._task_start_time TODO: this is not working when using take_step
 		if self.history.is_successful():
@@ -1929,19 +1936,19 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 		return await self.rerun_history(history, **kwargs)
 
 	def save_history(self, file_path: str | Path | None = None) -> None:
-		"""Save the history to a file with sensitive data filtering"""
+		"""Save the history to a file with sensitive data filtering."""
 		if not file_path:
 			file_path = 'AgentHistory.json'
 		self.history.save_to_file(file_path, sensitive_data=self.sensitive_data)
 
 	def pause(self) -> None:
-		"""Pause the agent before the next step"""
+		"""Pause the agent before the next step."""
 		print('\n\n⏸️ Paused the agent and left the browser open.\n\tPress [Enter] to resume or [Ctrl+C] again to quit.')
 		self.state.paused = True
 		self._external_pause_event.clear()
 
 	def resume(self) -> None:
-		"""Resume the agent"""
+		"""Resume the agent."""
 		# TODO: Locally the browser got closed
 		print('----------------------------------------------------------------------')
 		print('▶️  Resuming agent execution where it left off...\n')
@@ -1949,7 +1956,7 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 		self._external_pause_event.set()
 
 	def stop(self) -> None:
-		"""Stop the agent"""
+		"""Stop the agent."""
 		self.logger.info('⏹️ Agent stopping')
 		self.state.stopped = True
 
@@ -1993,10 +2000,11 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 
 	@property
 	def message_manager(self) -> MessageManager:
+		"""Get the message manager instance."""
 		return self._message_manager
 
 	async def close(self):
-		"""Close all resources"""
+		"""Close all resources."""
 		try:
 			# Only close browser if keep_alive is False (or not set)
 			if self.browser_session is not None:
@@ -2048,9 +2056,10 @@ class Agent(Generic[Context, AgentStructuredOutput]):
 			self.DoneAgentOutput = AgentOutput.type_with_custom_actions_no_thinking(self.DoneActionModel)
 
 	def get_trace_object(self) -> dict[str, Any]:
-		"""Get the trace and trace_details objects for the agent"""
+		"""Get the trace and trace_details objects for the agent."""
 
 		def extract_task_website(task_text: str) -> str | None:
+			"""Extract website URL from task text."""
 			url_pattern = r'https?://[^\s<>"\']+|www\.[^\s<>"\']+|[^\s<>"\']+\.[a-z]{2,}(?:/[^\s<>"\']*)?'
 			match = re.search(url_pattern, task_text, re.IGNORECASE)
 			return match.group(0) if match else None

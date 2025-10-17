@@ -1,3 +1,5 @@
+"""Tests for browser dropdown options events with ARIA menus."""
+
 import pytest
 from pytest_httpserver import HTTPServer
 
@@ -155,6 +157,8 @@ class TestARIAMenuDropdown:
 		goto_action = {'navigate': GoToUrlAction(url=f'{base_url}/aria-menu', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -193,6 +197,8 @@ class TestARIAMenuDropdown:
 
 		# Create a model for the get_dropdown_options action
 		class GetDropdownOptionsModel(ActionModel):
+			"""Test action model for getting dropdown options."""
+
 			get_dropdown_options: dict[str, int]
 
 		# Execute the action with the menu index
@@ -222,6 +228,8 @@ class TestARIAMenuDropdown:
 		goto_action = {'navigate': GoToUrlAction(url=f'{base_url}/aria-menu', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -260,6 +268,8 @@ class TestARIAMenuDropdown:
 
 		# Create a model for the select_dropdown_option action
 		class SelectDropdownOptionModel(ActionModel):
+			"""Test action model for selecting dropdown option."""
+
 			select_dropdown_option: dict
 
 		# Execute the action with the menu index to select "Filter"
@@ -292,6 +302,8 @@ class TestARIAMenuDropdown:
 		goto_action = {'navigate': GoToUrlAction(url=f'{base_url}/aria-menu', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -334,6 +346,8 @@ class TestARIAMenuDropdown:
 
 		# Create a model for the get_dropdown_options action
 		class GetDropdownOptionsModel(ActionModel):
+			"""Test action model for getting dropdown options."""
+
 			get_dropdown_options: dict[str, int]
 
 		# Execute the action with the menu index

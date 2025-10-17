@@ -1,3 +1,5 @@
+"""Tests for LLM custom structured output handling."""
+
 import json
 import os
 

@@ -1,3 +1,5 @@
+"""Telemetry service for browser-use using PostHog."""
+
 import logging
 import os
 
@@ -36,6 +38,7 @@ class ProductTelemetry:
 	_curr_user_id = None
 
 	def __init__(self) -> None:
+		"""Initialize telemetry service with PostHog client if enabled."""
 		telemetry_disabled = not CONFIG.ANONYMIZED_TELEMETRY
 		self.debug_logging = CONFIG.BROWSER_USE_LOGGING_LEVEL == 'debug'
 
@@ -59,6 +62,7 @@ class ProductTelemetry:
 			logger.debug('Telemetry disabled')
 
 	def capture(self, event: BaseTelemetryEvent) -> None:
+		"""Capture telemetry event using PostHog client."""
 		if self._posthog_client is None:
 			return
 
@@ -81,6 +85,7 @@ class ProductTelemetry:
 			logger.error(f'Failed to send telemetry event {event.name}: {e}')
 
 	def flush(self) -> None:
+		"""Flush PostHog client telemetry queue."""
 		if self._posthog_client:
 			try:
 				self._posthog_client.flush()
@@ -92,6 +97,7 @@ class ProductTelemetry:
 
 	@property
 	def user_id(self) -> str:
+		"""Get or create anonymized user ID for telemetry."""
 		if self._curr_user_id:
 			return self._curr_user_id
 

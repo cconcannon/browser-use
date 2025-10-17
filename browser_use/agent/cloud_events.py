@@ -1,3 +1,5 @@
+"""Cloud event models for agent telemetry and state synchronization."""
+
 import base64
 import os
 from datetime import datetime, timezone
@@ -16,6 +18,8 @@ MAX_FILE_CONTENT_SIZE = 50 * 1024 * 1024  # 50MB
 
 
 class UpdateAgentTaskEvent(BaseEvent):
+	"""Event to update an existing agent task with status and results."""
+
 	# Required fields for identification
 	id: str  # The task ID to update
 	user_id: str = Field(max_length=255)  # For authorization
@@ -33,7 +37,7 @@ class UpdateAgentTaskEvent(BaseEvent):
 
 	@classmethod
 	def from_agent(cls, agent) -> 'UpdateAgentTaskEvent':
-		"""Create an UpdateAgentTaskEvent from an Agent instance"""
+		"""Create an UpdateAgentTaskEvent from an Agent instance."""
 		if not hasattr(agent, '_task_start_time'):
 			raise ValueError('Agent must have _task_start_time attribute')
 
@@ -58,6 +62,8 @@ class UpdateAgentTaskEvent(BaseEvent):
 
 
 class CreateAgentOutputFileEvent(BaseEvent):
+	"""Event to create an output file (e.g., GIF) for an agent task."""
+
 	# Model fields
 	id: str = Field(default_factory=uuid7str)
 	user_id: str = Field(max_length=255)
@@ -85,7 +91,7 @@ class CreateAgentOutputFileEvent(BaseEvent):
 
 	@classmethod
 	async def from_agent_and_file(cls, agent, output_path: str) -> 'CreateAgentOutputFileEvent':
-		"""Create a CreateAgentOutputFileEvent from a file path"""
+		"""Create a CreateAgentOutputFileEvent from a file path."""
 
 		gif_path = Path(output_path)
 		if not gif_path.exists():
@@ -113,6 +119,8 @@ class CreateAgentOutputFileEvent(BaseEvent):
 
 
 class CreateAgentStepEvent(BaseEvent):
+	"""Event to record a single step of agent execution with state and actions."""
+
 	# Model fields
 	id: str = Field(default_factory=uuid7str)
 	user_id: str = Field(max_length=255)  # Added for authorization checks
@@ -145,7 +153,7 @@ class CreateAgentStepEvent(BaseEvent):
 	def from_agent_step(
 		cls, agent, model_output, result: list, actions_data: list[dict], browser_state_summary
 	) -> 'CreateAgentStepEvent':
-		"""Create a CreateAgentStepEvent from agent step data"""
+		"""Create a CreateAgentStepEvent from agent step data."""
 		# Get first action details if available
 		first_action = model_output.action[0] if model_output.action else None
 
@@ -183,6 +191,8 @@ class CreateAgentStepEvent(BaseEvent):
 
 
 class CreateAgentTaskEvent(BaseEvent):
+	"""Event to create a new agent task with initial configuration."""
+
 	# Model fields
 	id: str = Field(default_factory=uuid7str)
 	user_id: str = Field(max_length=255)  # Added for authorization checks
@@ -203,7 +213,7 @@ class CreateAgentTaskEvent(BaseEvent):
 
 	@classmethod
 	def from_agent(cls, agent) -> 'CreateAgentTaskEvent':
-		"""Create a CreateAgentTaskEvent from an Agent instance"""
+		"""Create a CreateAgentTaskEvent from an Agent instance."""
 		return cls(
 			id=str(agent.task_id),
 			user_id='',  # To be filled by cloud handler
@@ -226,6 +236,8 @@ class CreateAgentTaskEvent(BaseEvent):
 
 
 class CreateAgentSessionEvent(BaseEvent):
+	"""Event to create a new agent session with browser configuration."""
+
 	# Model fields
 	id: str = Field(default_factory=uuid7str)
 	user_id: str = Field(max_length=255)
@@ -241,7 +253,7 @@ class CreateAgentSessionEvent(BaseEvent):
 
 	@classmethod
 	def from_agent(cls, agent) -> 'CreateAgentSessionEvent':
-		"""Create a CreateAgentSessionEvent from an Agent instance"""
+		"""Create a CreateAgentSessionEvent from an Agent instance."""
 		return cls(
 			id=str(agent.session_id),
 			user_id='',  # To be filled by cloud handler
@@ -271,7 +283,7 @@ class CreateAgentSessionEvent(BaseEvent):
 
 
 class UpdateAgentSessionEvent(BaseEvent):
-	"""Event to update an existing agent session"""
+	"""Event to update an existing agent session."""
 
 	# Model fields
 	id: str  # Session ID to update

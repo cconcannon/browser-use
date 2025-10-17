@@ -1,3 +1,5 @@
+"""Tests for browser security watchdog functionality."""
+
 from browser_use.browser import BrowserProfile, BrowserSession
 
 

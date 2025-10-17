@@ -1,3 +1,5 @@
+"""Action registry for managing browser automation actions."""
+
 import asyncio
 import functools
 import inspect
@@ -30,9 +32,10 @@ logger = logging.getLogger(__name__)
 
 
 class Registry(Generic[Context]):
-	"""Service for registering and managing actions"""
+	"""Service for registering and managing actions."""
 
 	def __init__(self, exclude_actions: list[str] | None = None):
+		"""Initialize registry with optional excluded actions."""
 		self.registry = ActionRegistry()
 		self.telemetry = ProductTelemetry()
 		self.exclude_actions = exclude_actions if exclude_actions is not None else []
@@ -150,7 +153,7 @@ class Registry(Generic[Context]):
 		# Step 4: Create normalized wrapper function
 		@functools.wraps(func)
 		async def normalized_wrapper(*args, params: BaseModel | None = None, **kwargs):
-			"""Normalized action that only accepts kwargs"""
+			"""Normalized action that only accepts kwargs."""
 			# Validate no positional args
 			if args:
 				raise TypeError(f'{func.__name__}() does not accept positional arguments, only keyword arguments are allowed')
@@ -277,7 +280,7 @@ class Registry(Generic[Context]):
 		domains: list[str] | None = None,
 		allowed_domains: list[str] | None = None,
 	):
-		"""Decorator for registering actions"""
+		"""Decorator for registering actions."""
 		# Handle aliases: domains and allowed_domains are the same parameter
 		if allowed_domains is not None and domains is not None:
 			raise ValueError("Cannot specify both 'domains' and 'allowed_domains' - they are aliases for the same parameter")
@@ -285,6 +288,7 @@ class Registry(Generic[Context]):
 		final_domains = allowed_domains if allowed_domains is not None else domains
 
 		def decorator(func: Callable):
+			"""Register action function with normalization and validation."""
 			# Skip registration if action is in exclude_actions
 			if func.__name__ in self.exclude_actions:
 				return func
@@ -318,7 +322,7 @@ class Registry(Generic[Context]):
 		sensitive_data: dict[str, str | dict[str, str]] | None = None,
 		available_file_paths: list[str] | None = None,
 	) -> Any:
-		"""Execute a registered action with simplified parameter handling"""
+		"""Execute a registered action with simplified parameter handling."""
 		if action_name not in self.registry.actions:
 			raise ValueError(f'Action {action_name} not found')
 
@@ -436,6 +440,7 @@ class Registry(Generic[Context]):
 		applicable_secrets = {k: v for k, v in applicable_secrets.items() if v}
 
 		def recursively_replace_secrets(value: str | dict | list) -> str | dict | list:
+			"""Recursively replace secret placeholders in nested data structures."""
 			if isinstance(value, str):
 				matches = secret_pattern.findall(value)
 				# check if the placeholder key, like x_password is in the output parameters of the LLM and replace it with the sensitive data
@@ -538,19 +543,21 @@ class Registry(Generic[Context]):
 			union_type = Union[tuple(individual_action_models)]  # type: ignore : Typing doesn't understand that the length is >= 2 (by design)
 
 			class ActionModelUnion(RootModel[union_type]):  # type: ignore
+				"""Union model that delegates to underlying action models."""
+
 				def get_index(self) -> int | None:
-					"""Delegate get_index to the underlying action model"""
+					"""Delegate get_index to the underlying action model."""
 					if hasattr(self.root, 'get_index'):
 						return self.root.get_index()  # type: ignore
 					return None
 
 				def set_index(self, index: int):
-					"""Delegate set_index to the underlying action model"""
+					"""Delegate set_index to the underlying action model."""
 					if hasattr(self.root, 'set_index'):
 						self.root.set_index(index)  # type: ignore
 
 				def model_dump(self, **kwargs):
-					"""Delegate model_dump to the underlying action model"""
+					"""Delegate model_dump to the underlying action model."""
 					if hasattr(self.root, 'model_dump'):
 						return self.root.model_dump(**kwargs)  # type: ignore
 					return super().model_dump(**kwargs)

@@ -1,3 +1,9 @@
+"""Data models for browser state and tab information.
+
+This module provides pydantic models and dataclasses for representing browser state,
+tab information, and error handling.
+"""
+
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -15,7 +21,7 @@ PLACEHOLDER_4PX_SCREENSHOT = (
 
 # Pydantic
 class TabInfo(BaseModel):
-	"""Represents information about a browser tab"""
+	"""Represents information about a browser tab."""
 
 	model_config = ConfigDict(
 		extra='forbid',
@@ -34,15 +40,17 @@ class TabInfo(BaseModel):
 
 	@field_serializer('target_id')
 	def serialize_target_id(self, target_id: TargetID, _info: Any) -> str:
+		"""Serialize target ID to last 4 characters for readability."""
 		return target_id[-4:]
 
 	@field_serializer('parent_target_id')
 	def serialize_parent_target_id(self, parent_target_id: TargetID | None, _info: Any) -> str | None:
+		"""Serialize parent target ID to last 4 characters for readability."""
 		return parent_target_id[-4:] if parent_target_id else None
 
 
 class PageInfo(BaseModel):
-	"""Comprehensive page size and scroll information"""
+	"""Comprehensive page size and scroll information."""
 
 	# Current viewport dimensions
 	viewport_width: int
@@ -67,7 +75,7 @@ class PageInfo(BaseModel):
 
 @dataclass
 class BrowserStateSummary:
-	"""The summary of the browser's current state designed for an LLM to process"""
+	"""The summary of the browser's current state designed for an LLM to process."""
 
 	# provided by SerializedDOMState:
 	dom_state: SerializedDOMState
@@ -88,7 +96,7 @@ class BrowserStateSummary:
 
 @dataclass
 class BrowserStateHistory:
-	"""The summary of the browser's state at a past point in time to usse in LLM message history"""
+	"""The summary of the browser's state at a past point in time to use in LLM message history."""
 
 	url: str
 	title: str
@@ -97,7 +105,7 @@ class BrowserStateHistory:
 	screenshot_path: str | None = None
 
 	def get_screenshot(self) -> str | None:
-		"""Load screenshot from disk and return as base64 string"""
+		"""Load screenshot from disk and return as base64 string."""
 		if not self.screenshot_path:
 			return None
 
@@ -116,6 +124,7 @@ class BrowserStateHistory:
 			return None
 
 	def to_dict(self) -> dict[str, Any]:
+		"""Convert browser state history to a dictionary."""
 		data = {}
 		data['tabs'] = [tab.model_dump() for tab in self.tabs]
 		data['screenshot_path'] = self.screenshot_path
@@ -164,6 +173,7 @@ class BrowserError(Exception):
 		super().__init__(message)
 
 	def __str__(self) -> str:
+		"""Return a string representation of the error with context."""
 		if self.details:
 			return f'{self.message} ({self.details}) during: {self.while_handling_event}'
 		elif self.while_handling_event:
@@ -173,4 +183,4 @@ class BrowserError(Exception):
 
 
 class URLNotAllowedError(BrowserError):
-	"""Error raised when a URL is not allowed"""
+	"""Error raised when a URL is not allowed."""

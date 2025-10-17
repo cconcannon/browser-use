@@ -1,3 +1,5 @@
+"""Example demonstrating file system operations with PDF reading and data extraction."""
+
 import asyncio
 import os
 import pathlib
@@ -27,6 +29,7 @@ agent = Agent(
 
 
 async def main():
+	"""Run Alphabet earnings PDF extraction example."""
 	await agent.run()
 	input(f'Press Enter to clean the file system at {agent_dir}...')
 	# clean the file system

@@ -1,3 +1,5 @@
+"""GIF generation utilities for visualizing agent execution history."""
+
 from __future__ import annotations
 
 import base64
@@ -18,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 def decode_unicode_escapes_to_utf8(text: str) -> str:
-	"""Handle decoding any unicode escape sequences embedded in a string (needed to render non-ASCII languages like chinese or arabic in the GIF overlay text)"""
+	"""Handle decoding any unicode escape sequences embedded in a string (needed to render non-ASCII languages like chinese or arabic in the GIF overlay text)."""
 
 	if r'\u' not in text:
 		# doesn't have any escape sequences that need to be decoded

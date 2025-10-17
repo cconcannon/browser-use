@@ -1,3 +1,5 @@
+"""Gradio UI demo for browser automation with rich console output."""
+
 # pyright: reportMissingImports=false
 import asyncio
 import os
@@ -22,6 +24,8 @@ from browser_use import Agent, ChatOpenAI
 
 @dataclass
 class ActionResult:
+	"""Result of a browser action."""
+
 	is_done: bool
 	extracted_content: str | None
 	error: str | None
@@ -30,11 +34,14 @@ class ActionResult:
 
 @dataclass
 class AgentHistoryList:
+	"""Collection of agent execution history."""
+
 	all_results: list[ActionResult]
 	all_model_outputs: list[dict]
 
 
 def parse_agent_history(history_str: str) -> None:
+	"""Parse and display agent history with rich formatting."""
 	console = Console()
 
 	# Split the content into sections based on ActionResult entries
@@ -61,6 +68,7 @@ async def run_browser_task(
 	model: str = 'gpt-4.1',
 	headless: bool = True,
 ) -> str:
+	"""Run browser automation task and return results."""
 	if not api_key.strip():
 		return 'Please provide an API key'
 
@@ -79,6 +87,7 @@ async def run_browser_task(
 
 
 def create_ui():
+	"""Create and configure Gradio UI interface."""
 	with gr.Blocks(title='Browser Use GUI') as interface:
 		gr.Markdown('# Browser Use Task Automation')
 

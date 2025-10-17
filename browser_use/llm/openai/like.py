@@ -1,3 +1,5 @@
+"""OpenAI-like chat model implementation for providers using OpenAI API schema."""
+
 from dataclasses import dataclass
 
 from browser_use.llm.openai.chat import ChatOpenAI

@@ -1,3 +1,5 @@
+"""LangChain chat model wrapper for browser-use integration."""
+
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, TypeVar, overload
 
@@ -29,6 +31,7 @@ class ChatLangchain(BaseChatModel):
 
 	@property
 	def model(self) -> str:
+		"""Get model name."""
 		return self.name
 
 	@property
@@ -92,10 +95,14 @@ class ChatLangchain(BaseChatModel):
 		)
 
 	@overload
-	async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]: ...
+	async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]:
+		"""Invoke model without structured output."""
+		...
 
 	@overload
-	async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]: ...
+	async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]:
+		"""Invoke model with structured output."""
+		...
 
 	async def ainvoke(
 		self, messages: list[BaseMessage], output_format: type[T] | None = None

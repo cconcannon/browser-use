@@ -1,3 +1,5 @@
+"""Example demonstrating comprehensive file system operations including write, append, and read."""
+
 import asyncio
 import os
 import pathlib
@@ -38,6 +40,7 @@ agent = Agent(
 
 
 async def main():
+	"""Run file system operations example."""
 	agent_history = await agent.run()
 	print(f'Final result: {agent_history.final_result()}', flush=True)
 

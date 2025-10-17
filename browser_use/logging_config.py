@@ -1,3 +1,5 @@
+"""Logging configuration for browser-use."""
+
 import logging
 import os
 import sys
@@ -49,10 +51,12 @@ def addLoggingLevel(levelName, levelNum, methodName=None):
 	# http://stackoverflow.com/q/2183233/2988730, especially
 	# http://stackoverflow.com/a/13638084/2988730
 	def logForLevel(self, message, *args, **kwargs):
+		"""Log at the custom level for this logger instance."""
 		if self.isEnabledFor(levelNum):
 			self._log(levelNum, message, args, **kwargs)
 
 	def logToRoot(message, *args, **kwargs):
+		"""Log at the custom level to root logger."""
 		logging.log(levelNum, message, *args, **kwargs)
 
 	logging.addLevelName(levelNum, levelName)
@@ -88,11 +92,15 @@ def setup_logging(stream=None, log_level=None, force_setup=False, debug_log_file
 	root.handlers = []
 
 	class BrowserUseFormatter(logging.Formatter):
+		"""Custom formatter for browser-use logs that simplifies logger names."""
+
 		def __init__(self, fmt, log_level):
+			"""Initialize the formatter with format string and log level."""
 			super().__init__(fmt)
 			self.log_level = log_level
 
 		def format(self, record):
+			"""Format the log record with simplified names."""
 			# Only clean up names in INFO mode, keep everything in DEBUG mode
 			if self.log_level > logging.DEBUG and isinstance(record.name, str) and record.name.startswith('browser_use.'):
 				# Extract clean component names from logger names
@@ -240,6 +248,7 @@ class FIFOHandler(logging.Handler):
 	"""Non-blocking handler that writes to a named pipe."""
 
 	def __init__(self, fifo_path: str):
+		"""Initialize the FIFO handler with the given path."""
 		super().__init__()
 		self.fifo_path = fifo_path
 		Path(fifo_path).parent.mkdir(parents=True, exist_ok=True)
@@ -252,6 +261,7 @@ class FIFOHandler(logging.Handler):
 		self.fd = None
 
 	def emit(self, record):
+		"""Emit a log record to the FIFO."""
 		try:
 			# Open FIFO on first write if not already open
 			if self.fd is None:
@@ -273,6 +283,7 @@ class FIFOHandler(logging.Handler):
 				self.fd = None
 
 	def close(self):
+		"""Close the FIFO handler."""
 		if hasattr(self, 'fd') and self.fd is not None:
 			try:
 				os.close(self.fd)

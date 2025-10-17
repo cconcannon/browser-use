@@ -44,6 +44,11 @@ class CloudBrowserClient:
 	"""Client for browser-use cloud browser service."""
 
 	def __init__(self, api_base_url: str = 'https://api.browser-use.com'):
+		"""Initialize the cloud browser client.
+
+		Args:
+			api_base_url: Base URL for the cloud browser API.
+		"""
 		self.api_base_url = api_base_url
 		self.client = httpx.AsyncClient(timeout=30.0)
 		self.current_session_id: str | None = None

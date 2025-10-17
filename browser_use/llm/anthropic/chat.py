@@ -1,3 +1,5 @@
+"""Anthropic chat model implementation using the Anthropic API."""
+
 import json
 from collections.abc import Mapping
 from dataclasses import dataclass
@@ -54,6 +56,7 @@ class ChatAnthropic(BaseChatModel):
 	# Static
 	@property
 	def provider(self) -> str:
+		"""Return the provider name."""
 		return 'anthropic'
 
 	def _get_client_params(self) -> dict[str, Any]:
@@ -108,6 +111,7 @@ class ChatAnthropic(BaseChatModel):
 
 	@property
 	def name(self) -> str:
+		"""Return the model name."""
 		return str(self.model)
 
 	def _get_usage(self, response: Message) -> ChatInvokeUsage | None:
@@ -125,14 +129,19 @@ class ChatAnthropic(BaseChatModel):
 		return usage
 
 	@overload
-	async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]: ...
+	async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]:
+		"""Invoke LLM with messages and return unstructured text completion."""
+		...
 
 	@overload
-	async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]: ...
+	async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]:
+		"""Invoke LLM with messages and return structured output of type T."""
+		...
 
 	async def ainvoke(
 		self, messages: list[BaseMessage], output_format: type[T] | None = None
 	) -> ChatInvokeCompletion[T] | ChatInvokeCompletion[str]:
+		"""Invoke LLM with messages, optionally returning structured output."""
 		anthropic_messages, system_prompt = AnthropicMessageSerializer.serialize_messages(messages)
 
 		try:

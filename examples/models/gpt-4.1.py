@@ -21,6 +21,7 @@ agent = Agent(
 
 
 async def main():
+	"""Run GPT-4.1 example."""
 	await agent.run(max_steps=10)
 	input('Press Enter to continue...')
 

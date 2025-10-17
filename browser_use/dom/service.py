@@ -1,3 +1,5 @@
+"""Service for DOM tree extraction and serialization."""
+
 import asyncio
 import logging
 import time
@@ -51,6 +53,7 @@ class DomService:
 		max_iframes: int = 100,
 		max_iframe_depth: int = 5,
 	):
+		"""Initialize the DOM service with a browser session and configuration options."""
 		self.browser_session = browser_session
 		self.logger = logger or browser_session.logger
 		self.cross_origin_iframes = cross_origin_iframes
@@ -59,9 +62,11 @@ class DomService:
 		self.max_iframe_depth = max_iframe_depth
 
 	async def __aenter__(self):
+		"""Enter the async context manager."""
 		return self
 
 	async def __aexit__(self, exc_type, exc_value, traceback):
+		"""Exit the async context manager."""
 		pass  # no need to cleanup anything, browser_session auto handles cleaning up session cache
 
 	async def _get_targets_for_page(self, target_id: TargetID | None = None) -> CurrentPageTargets:
@@ -341,6 +346,7 @@ class DomService:
 
 		# Define CDP request factories to avoid duplication
 		def create_snapshot_request():
+			"""Create a CDP request to capture the DOM snapshot."""
 			return cdp_session.cdp_client.send.DOMSnapshot.captureSnapshot(
 				params={
 					'computedStyles': REQUIRED_COMPUTED_STYLES,
@@ -353,6 +359,7 @@ class DomService:
 			)
 
 		def create_dom_tree_request():
+			"""Create a CDP request to get the DOM tree."""
 			return cdp_session.cdp_client.send.DOM.getDocument(
 				params={'depth': -1, 'pierce': True}, session_id=cdp_session.session_id
 			)

@@ -1,3 +1,5 @@
+"""Cerebras inference chat model implementation."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -44,6 +46,7 @@ class ChatCerebras(BaseChatModel):
 
 	@property
 	def provider(self) -> str:
+		"""Return the provider name."""
 		return 'cerebras'
 
 	def _client(self) -> AsyncOpenAI:
@@ -56,6 +59,7 @@ class ChatCerebras(BaseChatModel):
 
 	@property
 	def name(self) -> str:
+		"""Return the model name."""
 		return self.model
 
 	def _get_usage(self, response: ChatCompletion) -> ChatInvokeUsage | None:
@@ -77,14 +81,18 @@ class ChatCerebras(BaseChatModel):
 		self,
 		messages: list[BaseMessage],
 		output_format: None = None,
-	) -> ChatInvokeCompletion[str]: ...
+	) -> ChatInvokeCompletion[str]:
+		"""Invoke LLM with messages and return unstructured text completion."""
+		...
 
 	@overload
 	async def ainvoke(
 		self,
 		messages: list[BaseMessage],
 		output_format: type[T],
-	) -> ChatInvokeCompletion[T]: ...
+	) -> ChatInvokeCompletion[T]:
+		"""Invoke LLM with messages and return structured output of type T."""
+		...
 
 	async def ainvoke(
 		self,

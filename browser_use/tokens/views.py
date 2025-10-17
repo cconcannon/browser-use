@@ -1,3 +1,5 @@
+"""Token usage and pricing data models."""
+
 from datetime import datetime
 from typing import Any, TypeVar
 
@@ -9,7 +11,7 @@ T = TypeVar('T', bound=BaseModel)
 
 
 class TokenUsageEntry(BaseModel):
-	"""Single token usage entry"""
+	"""Single token usage entry."""
 
 	model: str
 	timestamp: datetime
@@ -17,7 +19,7 @@ class TokenUsageEntry(BaseModel):
 
 
 class TokenCostCalculated(BaseModel):
-	"""Token cost"""
+	"""Token cost."""
 
 	new_prompt_tokens: int
 	new_prompt_cost: float
@@ -34,10 +36,12 @@ class TokenCostCalculated(BaseModel):
 
 	@property
 	def prompt_cost(self) -> float:
+		"""Calculate total prompt cost including cached tokens."""
 		return self.new_prompt_cost + (self.prompt_read_cached_cost or 0) + (self.prompt_cache_creation_cost or 0)
 
 	@property
 	def total_cost(self) -> float:
+		"""Calculate total cost including all token types."""
 		return (
 			self.new_prompt_cost
 			+ (self.prompt_read_cached_cost or 0)
@@ -47,7 +51,7 @@ class TokenCostCalculated(BaseModel):
 
 
 class ModelPricing(BaseModel):
-	"""Pricing information for a model"""
+	"""Pricing information for a model."""
 
 	model: str
 	input_cost_per_token: float | None
@@ -62,14 +66,14 @@ class ModelPricing(BaseModel):
 
 
 class CachedPricingData(BaseModel):
-	"""Cached pricing data with timestamp"""
+	"""Cached pricing data with timestamp."""
 
 	timestamp: datetime
 	data: dict[str, Any]
 
 
 class ModelUsageStats(BaseModel):
-	"""Usage statistics for a single model"""
+	"""Usage statistics for a single model."""
 
 	model: str
 	prompt_tokens: int = 0
@@ -81,7 +85,7 @@ class ModelUsageStats(BaseModel):
 
 
 class ModelUsageTokens(BaseModel):
-	"""Usage tokens for a single model"""
+	"""Usage tokens for a single model."""
 
 	model: str
 	prompt_tokens: int
@@ -91,7 +95,7 @@ class ModelUsageTokens(BaseModel):
 
 
 class UsageSummary(BaseModel):
-	"""Summary of token usage and costs"""
+	"""Summary of token usage and costs."""
 
 	total_prompt_tokens: int
 	total_prompt_cost: float

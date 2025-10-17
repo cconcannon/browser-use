@@ -1,3 +1,5 @@
+"""Example demonstrating direct browser actor usage within custom actions."""
+
 import asyncio
 import os
 import sys
@@ -19,6 +21,7 @@ llm = ChatOpenAI(model='gpt-4.1-mini')
 
 @tools.registry.action('Click on submit button')
 async def click_submit_button(browser_session: BrowserSession):
+	"""Click the submit button on the current page using actor methods."""
 	page = await browser_session.must_get_current_page()
 
 	submit_button = await page.must_get_element_by_prompt('submit button', llm)
@@ -28,6 +31,7 @@ async def click_submit_button(browser_session: BrowserSession):
 
 
 async def main():
+	"""Run the actor usage example."""
 	task = 'go to brower-use.com and then click on the submit button'
 	agent = Agent(task=task, llm=llm, tools=tools)
 

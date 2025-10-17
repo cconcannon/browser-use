@@ -1,3 +1,5 @@
+"""Example demonstrating 1Password integration for 2FA code retrieval."""
+
 import asyncio
 import logging
 import os
@@ -42,6 +44,7 @@ async def get_1password_2fa() -> ActionResult:
 
 
 async def main():
+	"""Run 1Password 2FA example for Google account login."""
 	# Example task using the 1Password 2FA action
 	task = 'Go to account.google.com, enter username and password, then if prompted for 2FA code, get 2FA code from 1Password for and enter it'
 

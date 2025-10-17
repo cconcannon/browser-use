@@ -1,3 +1,5 @@
+"""Playground script for testing DOM extraction and element interaction."""
+
 import asyncio
 import json
 import os
@@ -19,6 +21,7 @@ TIMEOUT = 60
 
 
 async def test_focus_vs_all_elements():
+	"""Test DOM extraction and interactive element detection across various websites."""
 	browser_session = BrowserSession(
 		browser_profile=BrowserProfile(
 			# executable_path='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',

@@ -188,6 +188,7 @@ class BrowserUseServer:
 	"""MCP Server for browser-use capabilities."""
 
 	def __init__(self, session_timeout_minutes: int = 10):
+		"""Initialize MCP server with session timeout configuration."""
 		# Ensure all logging goes to stderr (in case new loggers were created)
 		_ensure_all_loggers_use_stderr()
 
@@ -1050,6 +1051,7 @@ class BrowserUseServer:
 		"""Start the background cleanup task."""
 
 		async def cleanup_loop():
+			"""Continuously clean up expired sessions every 2 minutes."""
 			while True:
 				try:
 					await self._cleanup_expired_sessions()
@@ -1082,6 +1084,7 @@ class BrowserUseServer:
 
 
 async def main(session_timeout_minutes: int = 10):
+	"""Main entry point for browser-use MCP server."""
 	if not MCP_AVAILABLE:
 		print('MCP SDK is required. Install with: pip install mcp', file=sys.stderr)
 		sys.exit(1)

@@ -56,6 +56,7 @@ class ElementSelectedEvent(BaseEvent[T_EventResultType]):
 	@field_validator('node', mode='before')
 	@classmethod
 	def serialize_node(cls, data: EnhancedDOMTreeNode | None) -> EnhancedDOMTreeNode | None:
+		"""Serialize node data for event handling, removing circular references."""
 		if data is None:
 			return None
 		return EnhancedDOMTreeNode(

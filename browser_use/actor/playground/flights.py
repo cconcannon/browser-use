@@ -1,3 +1,5 @@
+"""Playground example demonstrating AI-powered element finding on a form page."""
+
 import asyncio
 
 from browser_use import Agent, Browser, ChatOpenAI

@@ -26,6 +26,7 @@ agent = Agent(
 
 
 async def main():
+	"""Run OpenRouter example."""
 	await agent.run(max_steps=10)
 	input('Press Enter to continue...')
 

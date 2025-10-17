@@ -1,3 +1,5 @@
+"""Message serialization utilities for LangChain integration."""
+
 import json
 from typing import overload
 
@@ -107,15 +109,21 @@ class LangChainMessageSerializer:
 	# region - Serialize overloads
 	@overload
 	@staticmethod
-	def serialize(message: UserMessage) -> HumanMessage: ...
+	def serialize(message: UserMessage) -> HumanMessage:
+		"""Serialize user message."""
+		...
 
 	@overload
 	@staticmethod
-	def serialize(message: BrowserUseSystemMessage) -> SystemMessage: ...
+	def serialize(message: BrowserUseSystemMessage) -> SystemMessage:
+		"""Serialize system message."""
+		...
 
 	@overload
 	@staticmethod
-	def serialize(message: AssistantMessage) -> AIMessage: ...
+	def serialize(message: AssistantMessage) -> AIMessage:
+		"""Serialize assistant message."""
+		...
 
 	@staticmethod
 	def serialize(message: BaseMessage) -> LangChainBaseMessage:

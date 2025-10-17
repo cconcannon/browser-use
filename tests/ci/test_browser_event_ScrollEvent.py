@@ -1,3 +1,5 @@
+"""Tests for browser scroll events."""
+
 import asyncio
 
 import pytest
@@ -86,6 +88,8 @@ class TestScrollActions:
 		goto_action = {'navigate': GoToUrlAction(url=f'{base_url}/scrollable', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -94,6 +98,8 @@ class TestScrollActions:
 		scroll_action = {'scroll': ScrollAction(down=True, pages=1.0)}
 
 		class ScrollActionModel(ActionModel):
+			"""Test action model for scrolling."""
+
 			scroll: ScrollAction | None = None
 
 		result = await tools.act(ScrollActionModel(**scroll_action), browser_session)

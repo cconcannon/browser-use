@@ -1,3 +1,5 @@
+"""Example demonstrating Qwen model integration via Alibaba Cloud."""
+
 import os
 
 from dotenv import load_dotenv
@@ -19,6 +21,7 @@ llm = ChatOpenAI(model='qwen-vl-max', api_key=api_key, base_url=base_url)
 
 
 async def main():
+	"""Run Qwen model example."""
 	agent = Agent(task='go find the founders of browser-use', llm=llm, use_vision=True, max_actions_per_step=1)
 	await agent.run()
 

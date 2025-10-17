@@ -1,3 +1,5 @@
+"""Tests for various chat model implementations."""
+
 import os
 
 import pytest
@@ -17,13 +19,14 @@ except ImportError:
 
 
 class CapitalResponse(BaseModel):
-	"""Structured response for capital question"""
+	"""Structured response for capital question."""
 
 	country: str
 	capital: str
 
 
 class TestChatModels:
+	"""Test suite for various chat model implementations."""
 	from browser_use.llm.messages import (
 		AssistantMessage,
 		BaseMessage,
@@ -65,7 +68,7 @@ class TestChatModels:
 
 	@pytest.mark.asyncio
 	async def test_openai_ainvoke_normal(self):
-		"""Test normal text response from OpenAI"""
+		"""Test normal text response from OpenAI."""
 		# Skip if no API key
 		if not os.getenv('OPENAI_API_KEY'):
 			pytest.skip('OPENAI_API_KEY not set')
@@ -80,7 +83,7 @@ class TestChatModels:
 
 	@pytest.mark.asyncio
 	async def test_openai_ainvoke_structured(self):
-		"""Test structured output from OpenAI"""
+		"""Test structured output from OpenAI."""
 		# Skip if no API key
 		if not os.getenv('OPENAI_API_KEY'):
 			pytest.skip('OPENAI_API_KEY not set')
@@ -96,7 +99,7 @@ class TestChatModels:
 	# Anthropic Tests
 	@pytest.mark.asyncio
 	async def test_anthropic_ainvoke_normal(self):
-		"""Test normal text response from Anthropic"""
+		"""Test normal text response from Anthropic."""
 		# Skip if no API key
 		if not os.getenv('ANTHROPIC_API_KEY'):
 			pytest.skip('ANTHROPIC_API_KEY not set')
@@ -110,7 +113,7 @@ class TestChatModels:
 
 	@pytest.mark.asyncio
 	async def test_anthropic_ainvoke_structured(self):
-		"""Test structured output from Anthropic"""
+		"""Test structured output from Anthropic."""
 		# Skip if no API key
 		if not os.getenv('ANTHROPIC_API_KEY'):
 			pytest.skip('ANTHROPIC_API_KEY not set')
@@ -126,7 +129,7 @@ class TestChatModels:
 	# Google Gemini Tests
 	@pytest.mark.asyncio
 	async def test_google_ainvoke_normal(self):
-		"""Test normal text response from Google Gemini"""
+		"""Test normal text response from Google Gemini."""
 		# Skip if no API key
 		if not os.getenv('GOOGLE_API_KEY'):
 			pytest.skip('GOOGLE_API_KEY not set')
@@ -140,7 +143,7 @@ class TestChatModels:
 
 	@pytest.mark.asyncio
 	async def test_google_ainvoke_structured(self):
-		"""Test structured output from Google Gemini"""
+		"""Test structured output from Google Gemini."""
 		# Skip if no API key
 		if not os.getenv('GOOGLE_API_KEY'):
 			pytest.skip('GOOGLE_API_KEY not set')
@@ -156,7 +159,7 @@ class TestChatModels:
 	# Google Gemini with Vertex AI Tests
 	@pytest.mark.asyncio
 	async def test_google_vertex_ainvoke_normal(self):
-		"""Test normal text response from Google Gemini via Vertex AI"""
+		"""Test normal text response from Google Gemini via Vertex AI."""
 		# Skip if no project ID
 		if not os.getenv('GOOGLE_CLOUD_PROJECT'):
 			pytest.skip('GOOGLE_CLOUD_PROJECT not set')
@@ -176,7 +179,7 @@ class TestChatModels:
 
 	@pytest.mark.asyncio
 	async def test_google_vertex_ainvoke_structured(self):
-		"""Test structured output from Google Gemini via Vertex AI"""
+		"""Test structured output from Google Gemini via Vertex AI."""
 		# Skip if no project ID
 		if not os.getenv('GOOGLE_CLOUD_PROJECT'):
 			pytest.skip('GOOGLE_CLOUD_PROJECT not set')
@@ -198,7 +201,7 @@ class TestChatModels:
 	# Groq Tests
 	@pytest.mark.asyncio
 	async def test_groq_ainvoke_normal(self):
-		"""Test normal text response from Groq"""
+		"""Test normal text response from Groq."""
 		# Skip if no API key
 		if not os.getenv('GROQ_API_KEY'):
 			pytest.skip('GROQ_API_KEY not set')
@@ -212,7 +215,7 @@ class TestChatModels:
 
 	@pytest.mark.asyncio
 	async def test_groq_ainvoke_structured(self):
-		"""Test structured output from Groq"""
+		"""Test structured output from Groq."""
 		# Skip if no API key
 		if not os.getenv('GROQ_API_KEY'):
 			pytest.skip('GROQ_API_KEY not set')
@@ -229,7 +232,7 @@ class TestChatModels:
 	# OpenRouter Tests
 	@pytest.mark.asyncio
 	async def test_openrouter_ainvoke_normal(self):
-		"""Test normal text response from OpenRouter"""
+		"""Test normal text response from OpenRouter."""
 		# Skip if no API key
 		if not os.getenv('OPENROUTER_API_KEY'):
 			pytest.skip('OPENROUTER_API_KEY not set')
@@ -243,7 +246,7 @@ class TestChatModels:
 
 	@pytest.mark.asyncio
 	async def test_openrouter_ainvoke_structured(self):
-		"""Test structured output from OpenRouter"""
+		"""Test structured output from OpenRouter."""
 		# Skip if no API key
 		if not os.getenv('OPENROUTER_API_KEY'):
 			pytest.skip('OPENROUTER_API_KEY not set')
@@ -280,7 +283,7 @@ class TestChatModels:
 
 	@pytest.mark.asyncio
 	async def test_oci_raw_ainvoke_normal(self, oci_raw_chat):
-		"""Test normal text response from OCI Raw"""
+		"""Test normal text response from OCI Raw."""
 		response = await oci_raw_chat.ainvoke(self.CONVERSATION_MESSAGES)
 
 		completion = response.completion
@@ -290,7 +293,7 @@ class TestChatModels:
 
 	@pytest.mark.asyncio
 	async def test_oci_raw_ainvoke_structured(self, oci_raw_chat):
-		"""Test structured output from OCI Raw"""
+		"""Test structured output from OCI Raw."""
 		response = await oci_raw_chat.ainvoke(self.STRUCTURED_MESSAGES, output_format=CapitalResponse)
 		completion = response.completion
 

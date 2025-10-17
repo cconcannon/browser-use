@@ -1,3 +1,5 @@
+"""Tests for browser session proxy configuration and authentication."""
+
 import asyncio
 from typing import Any
 
@@ -9,6 +11,7 @@ from browser_use.config import CONFIG
 
 
 def test_chromium_args_include_proxy_flags():
+	"""Test that proxy settings are correctly included in Chromium args."""
 	profile = BrowserProfile(
 		headless=True,
 		user_data_dir=str(CONFIG.BROWSER_USE_PROFILES_DIR / 'proxy-smoke'),
@@ -24,6 +27,7 @@ def test_chromium_args_include_proxy_flags():
 
 @pytest.mark.asyncio
 async def test_cdp_proxy_auth_handler_registers_and_responds():
+	"""Test that CDP proxy authentication handler is registered and responds correctly."""
 	# Create profile with proxy auth credentials
 	profile = BrowserProfile(
 		headless=True,
@@ -34,7 +38,10 @@ async def test_cdp_proxy_auth_handler_registers_and_responds():
 
 	# Stub CDP client with minimal Fetch support
 	class StubCDP:
+		"""Stub CDP client for testing proxy authentication."""
+
 		def __init__(self) -> None:
+			"""Initialize the stub CDP client."""
 			self.enabled = False
 			self.last_auth: dict[str, Any] | None = None
 			self.last_default: dict[str, Any] | None = None
@@ -42,35 +49,52 @@ async def test_cdp_proxy_auth_handler_registers_and_responds():
 			self.request_paused_callback = None
 
 			class _FetchSend:
+				"""Stub Fetch send interface."""
+
 				def __init__(self, outer: 'StubCDP') -> None:
+					"""Initialize the Fetch send stub."""
 					self._outer = outer
 
 				async def enable(self, params: dict, session_id: str | None = None) -> None:
+					"""Enable fetch domain."""
 					self._outer.enabled = True
 
 				async def continueWithAuth(self, params: dict, session_id: str | None = None) -> None:
+					"""Continue request with authentication."""
 					self._outer.last_auth = {'params': params, 'session_id': session_id}
 
 				async def continueRequest(self, params: dict, session_id: str | None = None) -> None:
+					"""Continue the request (no-op in stub)."""
 					# no-op; included to mirror CDP API surface used by impl
 					pass
 
 			class _Send:
+				"""Stub send interface."""
+
 				def __init__(self, outer: 'StubCDP') -> None:
+					"""Initialize the send stub."""
 					self.Fetch = _FetchSend(outer)
 
 			class _FetchRegister:
+				"""Stub Fetch register interface."""
+
 				def __init__(self, outer: 'StubCDP') -> None:
+					"""Initialize the Fetch register stub."""
 					self._outer = outer
 
 				def authRequired(self, callback) -> None:
+					"""Register auth required callback."""
 					self._outer.auth_callback = callback
 
 				def requestPaused(self, callback) -> None:
+					"""Register request paused callback."""
 					self._outer.request_paused_callback = callback
 
 			class _Register:
+				"""Stub register interface."""
+
 				def __init__(self, outer: 'StubCDP') -> None:
+					"""Initialize the register stub."""
 					self.Fetch = _FetchRegister(outer)
 
 			self.send = _Send(self)

@@ -22,6 +22,7 @@ from browser_use import Agent, ChatOpenAI
 
 
 async def main():
+	"""Run CAPTCHA solving example."""
 	llm = ChatOpenAI(model='gpt-4.1-mini')
 	agent = Agent(
 		task='go to https://captcha.com/demos/features/captcha-demo.aspx and solve the captcha',

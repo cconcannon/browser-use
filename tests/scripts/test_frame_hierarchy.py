@@ -71,6 +71,7 @@ async def analyze_frame_hierarchy(url):
 				print('\n  Frame Tree Structure:')
 
 				def print_tree(node, indent=0, parent_id=None):
+					"""Print frame tree structure recursively."""
 					frame = node['frame']
 					frame_id = frame.get('id', 'unknown')
 					frame_url = frame.get('url', 'none')
@@ -184,6 +185,7 @@ async def analyze_frame_hierarchy(url):
 
 		# Build a tree structure
 		def print_frame_tree(frame_id, frame_info, indent=0, visited=None):
+			"""Print frame tree with parent-child relationships."""
 			if visited is None:
 				visited = set()
 
@@ -238,6 +240,7 @@ async def analyze_frame_hierarchy(url):
 
 
 def main():
+	"""Main entry point for frame hierarchy testing."""
 	if len(sys.argv) != 2:
 		print('Usage: python test_frame_hierarchy.py <URL>')
 		print('\nExample URLs to test:')

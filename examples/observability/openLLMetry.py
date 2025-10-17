@@ -1,3 +1,5 @@
+"""Example demonstrating OpenLLMetry observability integration."""
+
 import asyncio
 import os
 
@@ -18,6 +20,7 @@ Traceloop.init(api_key=api_key, disable_batch=True)
 
 
 async def main():
+	"""Run OpenLLMetry observability example."""
 	await Agent('Find the founders of browser-use').run()
 
 

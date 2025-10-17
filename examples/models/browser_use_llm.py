@@ -20,6 +20,7 @@ if not os.getenv('BROWSER_USE_API_KEY'):
 
 
 async def main():
+	"""Run Browser Use LLM example."""
 	agent = Agent(
 		task='Find the number of stars of the browser-use repo',
 		llm=ChatBrowserUse(),

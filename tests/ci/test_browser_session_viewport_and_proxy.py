@@ -1,3 +1,6 @@
+"""Tests for browser session viewport and proxy settings."""
+
+
 async def test_proxy_settings_pydantic_model():
 	"""
 	Test that ProxySettings as a Pydantic model is correctly converted to a dictionary when used.

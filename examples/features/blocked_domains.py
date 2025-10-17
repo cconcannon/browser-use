@@ -1,3 +1,5 @@
+"""Example demonstrating domain blocking to prevent navigation to specific sites."""
+
 import asyncio
 import os
 import sys
@@ -48,6 +50,7 @@ agent = Agent(
 
 
 async def main():
+	"""Run blocked domains demonstration."""
 	print('Demo: Blocked Domains Feature - "Lock the F in" Edition')
 	print("We're literally locking the F in Facebook and X!")
 	print(f'Prohibited domains: {prohibited_domains}')

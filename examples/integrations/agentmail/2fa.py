@@ -1,3 +1,5 @@
+"""Example demonstrating 2FA authentication using AgentMail for email verification."""
+
 import asyncio
 import os
 import sys
@@ -18,6 +20,7 @@ Go to reddit.com, create a new account (use the get_email_address), make up pass
 
 
 async def main():
+	"""Run AgentMail 2FA example."""
 	# Create email inbox
 	# Get an API key from https://agentmail.to/
 	email_client = AsyncAgentMail()

@@ -19,6 +19,7 @@ from pydantic import BaseModel
 
 
 def setup_environment(debug: bool):
+	"""Configure logging and environment variables based on debug mode."""
 	if not debug:
 		os.environ['BROWSER_USE_SETUP_LOGGING'] = 'false'
 		os.environ['BROWSER_USE_LOGGING_LEVEL'] = 'critical'
@@ -50,6 +51,7 @@ if GEMINI_API_KEY == 'xxxx':
 
 
 class NewsArticle(BaseModel):
+	"""Structured model for news article data."""
 	title: str
 	url: str
 	posting_time: str
@@ -223,7 +225,7 @@ def _fmt(ts_raw: str) -> str:
 
 
 async def run_once(url: str, output_path: str, debug: bool):
-	"""Run a single extraction and exit"""
+	"""Run a single extraction and exit."""
 	res = await extract_latest_article(url, debug)
 
 	if res['status'] == 'success':
@@ -249,7 +251,7 @@ async def run_once(url: str, output_path: str, debug: bool):
 
 
 async def monitor(url: str, interval: int, output_path: str, debug: bool):
-	"""Continuous monitoring mode"""
+	"""Continuous monitoring mode."""
 	seen = load_seen_hashes(output_path)
 	print(f'Monitoring {url} every {interval}s')
 	print()
@@ -289,7 +291,7 @@ async def monitor(url: str, interval: int, output_path: str, debug: bool):
 
 
 def main():
-	"""Main entry point"""
+	"""Main entry point."""
 	if args.once:
 		asyncio.run(run_once(args.url, args.output, args.debug))
 	else:

@@ -1,3 +1,5 @@
+"""Example demonstrating secure handling of sensitive data with domain-specific credentials."""
+
 import asyncio
 import os
 import sys
@@ -40,6 +42,7 @@ agent = Agent(task=task, llm=llm, sensitive_data=sensitive_data)
 
 
 async def main():
+	"""Run sensitive data handling example."""
 	await agent.run()
 
 

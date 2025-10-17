@@ -1,3 +1,5 @@
+"""Example demonstrating advanced web search using custom search API with parallel processing."""
+
 import asyncio
 import http.client
 import json
@@ -21,11 +23,15 @@ logger = logging.getLogger(__name__)
 
 
 class Person(BaseModel):
+	"""Represents a person with their contact information."""
+
 	name: str
 	email: str | None = None
 
 
 class PersonList(BaseModel):
+	"""List of person records."""
+
 	people: list[Person]
 
 
@@ -38,6 +44,7 @@ tools = Tools(exclude_actions=['search'], output_model=PersonList)
 
 @tools.registry.action('Search the web for a specific query. Returns a short description and links of the results.')
 async def search_web(query: str):
+	"""Perform web search using SERP API and return organic results."""
 	# do a serp search for the query
 	conn = http.client.HTTPSConnection('google.serper.dev')
 	payload = json.dumps({'q': query})
@@ -90,6 +97,7 @@ names = [
 
 
 async def main():
+	"""Run advanced search example to find email addresses for professors."""
 	task = 'use search_web with "find email address of the following ETH professor:" for each of the following persons in a list of actions. Finally return the list with name and email if provided - do always 5 at once'
 	task += '\n' + '\n'.join(names)
 	model = ChatOpenAI(model='gpt-4.1-mini')

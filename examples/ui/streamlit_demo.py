@@ -27,6 +27,7 @@ if os.name == 'nt':
 
 # Function to get the LLM based on provider
 def get_llm(provider: str):
+	"""Get language model instance based on provider."""
 	if provider == 'anthropic':
 		from browser_use.llm import ChatAnthropic
 
@@ -53,6 +54,7 @@ def get_llm(provider: str):
 
 # Function to initialize the agent
 def initialize_agent(query: str, provider: str):
+	"""Initialize agent with configuration."""
 	llm = get_llm(provider)
 	tools = Tools()
 	browser_session = BrowserSession()
@@ -78,6 +80,7 @@ if st.button('Run Agent'):
 	agent, browser_session = initialize_agent(query, provider)
 
 	async def run_agent():
+		"""Run agent asynchronously within streamlit context."""
 		with st.spinner('Running automation...'):
 			await agent.run(max_steps=25)
 		st.success('Task completed! 🎉')

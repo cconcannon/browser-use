@@ -1,3 +1,5 @@
+"""Example demonstrating saving structured data to files from Hugging Face."""
+
 import asyncio
 import os
 import sys
@@ -19,6 +21,8 @@ tools = Tools()
 
 
 class Model(BaseModel):
+	"""Represents a Hugging Face model with metadata."""
+
 	title: str
 	url: str
 	likes: int
@@ -26,11 +30,14 @@ class Model(BaseModel):
 
 
 class Models(BaseModel):
+	"""Collection of Hugging Face models."""
+
 	models: list[Model]
 
 
 @tools.action('Save models', param_model=Models)
 def save_models(params: Models):
+	"""Save model information to a text file."""
 	with open('models.txt', 'a') as f:
 		for model in params.models:
 			f.write(f'{model.title} ({model.url}): {model.likes} likes, {model.license}\n')
@@ -38,6 +45,7 @@ def save_models(params: Models):
 
 # video: https://preview.screen.studio/share/EtOhIk0P
 async def main():
+	"""Run Hugging Face model search and save example."""
 	task = 'Look up models with a license of cc-by-sa-4.0 and sort by most likes on Hugging face, save top 5 to file.'
 
 	model = ChatOpenAI(model='gpt-4.1-mini')

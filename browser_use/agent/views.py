@@ -1,3 +1,5 @@
+"""Data models and views for agent state, history, and configuration."""
+
 from __future__ import annotations
 
 import json
@@ -31,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 
 class AgentSettings(BaseModel):
-	"""Configuration options for the Agent"""
+	"""Configuration options for the Agent."""
 
 	use_vision: bool | Literal['auto'] = 'auto'
 	vision_detail_level: Literal['auto', 'low', 'high'] = 'auto'
@@ -56,7 +58,7 @@ class AgentSettings(BaseModel):
 
 
 class AgentState(BaseModel):
-	"""Holds all state information for an Agent"""
+	"""Holds all state information for an Agent."""
 
 	model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -79,16 +81,18 @@ class AgentState(BaseModel):
 
 @dataclass
 class AgentStepInfo:
+	"""Information about the current step in agent execution."""
+
 	step_number: int
 	max_steps: int
 
 	def is_last_step(self) -> bool:
-		"""Check if this is the last step"""
+		"""Check if this is the last step."""
 		return self.step_number >= self.max_steps - 1
 
 
 class ActionResult(BaseModel):
-	"""Result of executing an action"""
+	"""Result of executing an action."""
 
 	# For done action
 	is_done: bool | None = False
@@ -116,7 +120,7 @@ class ActionResult(BaseModel):
 
 	@model_validator(mode='after')
 	def validate_success_requires_done(self):
-		"""Ensure success=True can only be set when is_done=True"""
+		"""Ensure success=True can only be set when is_done=True."""
 		if self.success is True and self.is_done is not True:
 			raise ValueError(
 				'success=True can only be set when is_done=True. '
@@ -127,7 +131,7 @@ class ActionResult(BaseModel):
 
 
 class StepMetadata(BaseModel):
-	"""Metadata for a single step including timing and token information"""
+	"""Metadata for a single step including timing and token information."""
 
 	step_start_time: float
 	step_end_time: float
@@ -135,11 +139,13 @@ class StepMetadata(BaseModel):
 
 	@property
 	def duration_seconds(self) -> float:
-		"""Calculate step duration in seconds"""
+		"""Calculate step duration in seconds."""
 		return self.step_end_time - self.step_start_time
 
 
 class AgentBrain(BaseModel):
+	"""Model representing the agent's cognitive state and reasoning."""
+
 	thinking: str | None = None
 	evaluation_previous_goal: str
 	memory: str
@@ -147,6 +153,7 @@ class AgentBrain(BaseModel):
 
 
 class AgentOutput(BaseModel):
+	"""Output model for agent decisions including thoughts and actions."""
 	model_config = ConfigDict(arbitrary_types_allowed=True, extra='forbid')
 
 	thinking: str | None = None
@@ -160,13 +167,14 @@ class AgentOutput(BaseModel):
 
 	@classmethod
 	def model_json_schema(cls, **kwargs):
+		"""Generate JSON schema for the model."""
 		schema = super().model_json_schema(**kwargs)
 		schema['required'] = ['evaluation_previous_goal', 'memory', 'next_goal', 'action']
 		return schema
 
 	@property
 	def current_state(self) -> AgentBrain:
-		"""For backward compatibility - returns an AgentBrain with the flattened properties"""
+		"""For backward compatibility - returns an AgentBrain with the flattened properties."""
 		return AgentBrain(
 			thinking=self.thinking,
 			evaluation_previous_goal=self.evaluation_previous_goal if self.evaluation_previous_goal else '',
@@ -176,7 +184,7 @@ class AgentOutput(BaseModel):
 
 	@staticmethod
 	def type_with_custom_actions(custom_actions: type[ActionModel]) -> type[AgentOutput]:
-		"""Extend actions with custom actions"""
+		"""Extend actions with custom actions."""
 
 		model_ = create_model(
 			'AgentOutput',
@@ -191,11 +199,14 @@ class AgentOutput(BaseModel):
 
 	@staticmethod
 	def type_with_custom_actions_no_thinking(custom_actions: type[ActionModel]) -> type[AgentOutput]:
-		"""Extend actions with custom actions and exclude thinking field"""
+		"""Extend actions with custom actions and exclude thinking field."""
 
 		class AgentOutputNoThinking(AgentOutput):
+			"""Agent output without thinking field."""
+
 			@classmethod
 			def model_json_schema(cls, **kwargs):
+				"""Generate JSON schema for the model."""
 				schema = super().model_json_schema(**kwargs)
 				del schema['properties']['thinking']
 				schema['required'] = ['evaluation_previous_goal', 'memory', 'next_goal', 'action']
@@ -215,11 +226,14 @@ class AgentOutput(BaseModel):
 
 	@staticmethod
 	def type_with_custom_actions_flash_mode(custom_actions: type[ActionModel]) -> type[AgentOutput]:
-		"""Extend actions with custom actions for flash mode - memory and action fields only"""
+		"""Extend actions with custom actions for flash mode - memory and action fields only."""
 
 		class AgentOutputFlashMode(AgentOutput):
+			"""Agent output for flash mode with minimal fields."""
+
 			@classmethod
 			def model_json_schema(cls, **kwargs):
+				"""Generate JSON schema for the model."""
 				schema = super().model_json_schema(**kwargs)
 				# Remove thinking, evaluation_previous_goal, and next_goal fields
 				del schema['properties']['thinking']
@@ -243,7 +257,7 @@ class AgentOutput(BaseModel):
 
 
 class AgentHistory(BaseModel):
-	"""History item for agent actions"""
+	"""History item for agent actions."""
 
 	model_output: AgentOutput | None
 	result: list[ActionResult]
@@ -255,6 +269,7 @@ class AgentHistory(BaseModel):
 
 	@staticmethod
 	def get_interacted_element(model_output: AgentOutput, selector_map: DOMSelectorMap) -> list[DOMInteractedElement | None]:
+		"""Extract interacted DOM elements from model output using selector map."""
 		elements = []
 		for action in model_output.action:
 			index = action.get_index()
@@ -321,7 +336,7 @@ class AgentHistory(BaseModel):
 		return filtered_data
 
 	def model_dump(self, sensitive_data: dict[str, str | dict[str, str]] | None = None, **kwargs) -> dict[str, Any]:
-		"""Custom serialization handling circular references and filtering sensitive data"""
+		"""Custom serialization handling circular references and filtering sensitive data."""
 
 		# Handle action serialization
 		model_output_dump = None
@@ -370,7 +385,7 @@ class AgentHistoryList(BaseModel, Generic[AgentStructuredOutput]):
 	_output_model_schema: type[AgentStructuredOutput] | None = None
 
 	def total_duration_seconds(self) -> float:
-		"""Get total duration of all steps in seconds"""
+		"""Get total duration of all steps in seconds."""
 		total = 0.0
 		for h in self.history:
 			if h.metadata:
@@ -378,23 +393,23 @@ class AgentHistoryList(BaseModel, Generic[AgentStructuredOutput]):
 		return total
 
 	def __len__(self) -> int:
-		"""Return the number of history items"""
+		"""Return the number of history items."""
 		return len(self.history)
 
 	def __str__(self) -> str:
-		"""Representation of the AgentHistoryList object"""
+		"""Representation of the AgentHistoryList object."""
 		return f'AgentHistoryList(all_results={self.action_results()}, all_model_outputs={self.model_actions()})'
 
 	def add_item(self, history_item: AgentHistory) -> None:
-		"""Add a history item to the list"""
+		"""Add a history item to the list."""
 		self.history.append(history_item)
 
 	def __repr__(self) -> str:
-		"""Representation of the AgentHistoryList object"""
+		"""Representation of the AgentHistoryList object."""
 		return self.__str__()
 
 	def save_to_file(self, filepath: str | Path, sensitive_data: dict[str, str | dict[str, str]] | None = None) -> None:
-		"""Save history to JSON file with proper serialization and optional sensitive data filtering"""
+		"""Save history to JSON file with proper serialization and optional sensitive data filtering."""
 		try:
 			Path(filepath).parent.mkdir(parents=True, exist_ok=True)
 			data = self.model_dump(sensitive_data=sensitive_data)
@@ -436,14 +451,14 @@ class AgentHistoryList(BaseModel, Generic[AgentStructuredOutput]):
 	# 		raise e
 
 	def model_dump(self, **kwargs) -> dict[str, Any]:
-		"""Custom serialization that properly uses AgentHistory's model_dump"""
+		"""Custom serialization that properly uses AgentHistory's model_dump."""
 		return {
 			'history': [h.model_dump(**kwargs) for h in self.history],
 		}
 
 	@classmethod
 	def load_from_file(cls, filepath: str | Path, output_model: type[AgentOutput]) -> AgentHistoryList:
-		"""Load history from JSON file"""
+		"""Load history from JSON file."""
 		with open(filepath, encoding='utf-8') as f:
 			data = json.load(f)
 		# loop through history and validate output_model actions to enrich with custom actions
@@ -459,13 +474,13 @@ class AgentHistoryList(BaseModel, Generic[AgentStructuredOutput]):
 		return history
 
 	def last_action(self) -> None | dict:
-		"""Last action in history"""
+		"""Last action in history."""
 		if self.history and self.history[-1].model_output:
 			return self.history[-1].model_output.action[-1].model_dump(exclude_none=True)
 		return None
 
 	def errors(self) -> list[str | None]:
-		"""Get all errors from history, with None for steps without errors"""
+		"""Get all errors from history, with None for steps without errors."""
 		errors = []
 		for h in self.history:
 			step_errors = [r.error for r in h.result if r.error]
@@ -475,13 +490,13 @@ class AgentHistoryList(BaseModel, Generic[AgentStructuredOutput]):
 		return errors
 
 	def final_result(self) -> None | str:
-		"""Final result from history"""
+		"""Final result from history."""
 		if self.history and self.history[-1].result[-1].extracted_content:
 			return self.history[-1].result[-1].extracted_content
 		return None
 
 	def is_done(self) -> bool:
-		"""Check if the agent is done"""
+		"""Check if the agent is done."""
 		if self.history and len(self.history[-1].result) > 0:
 			last_result = self.history[-1].result[-1]
 			return last_result.is_done is True
@@ -496,15 +511,15 @@ class AgentHistoryList(BaseModel, Generic[AgentStructuredOutput]):
 		return None
 
 	def has_errors(self) -> bool:
-		"""Check if the agent has any non-None errors"""
+		"""Check if the agent has any non-None errors."""
 		return any(error is not None for error in self.errors())
 
 	def urls(self) -> list[str | None]:
-		"""Get all unique URLs from history"""
+		"""Get all unique URLs from history."""
 		return [h.state.url if h.state.url is not None else None for h in self.history]
 
 	def screenshot_paths(self, n_last: int | None = None, return_none_if_not_screenshot: bool = True) -> list[str | None]:
-		"""Get all screenshot paths from history"""
+		"""Get all screenshot paths from history."""
 		if n_last == 0:
 			return []
 		if n_last is None:
@@ -519,7 +534,7 @@ class AgentHistoryList(BaseModel, Generic[AgentStructuredOutput]):
 				return [h.state.screenshot_path for h in self.history[-n_last:] if h.state.screenshot_path is not None]
 
 	def screenshots(self, n_last: int | None = None, return_none_if_not_screenshot: bool = True) -> list[str | None]:
-		"""Get all screenshots from history as base64 strings"""
+		"""Get all screenshots from history as base64 strings."""
 		if n_last == 0:
 			return []
 
@@ -538,7 +553,7 @@ class AgentHistoryList(BaseModel, Generic[AgentStructuredOutput]):
 		return screenshots
 
 	def action_names(self) -> list[str]:
-		"""Get all action names from history"""
+		"""Get all action names from history."""
 		action_names = []
 		for action in self.model_actions():
 			actions = list(action.keys())
@@ -547,16 +562,16 @@ class AgentHistoryList(BaseModel, Generic[AgentStructuredOutput]):
 		return action_names
 
 	def model_thoughts(self) -> list[AgentBrain]:
-		"""Get all thoughts from history"""
+		"""Get all thoughts from history."""
 		return [h.model_output.current_state for h in self.history if h.model_output]
 
 	def model_outputs(self) -> list[AgentOutput]:
-		"""Get all model outputs from history"""
+		"""Get all model outputs from history."""
 		return [h.model_output for h in self.history if h.model_output]
 
 	# get all actions with params
 	def model_actions(self) -> list[dict]:
-		"""Get all actions from history"""
+		"""Get all actions from history."""
 		outputs = []
 
 		for h in self.history:
@@ -570,7 +585,7 @@ class AgentHistoryList(BaseModel, Generic[AgentStructuredOutput]):
 		return outputs
 
 	def action_history(self) -> list[list[dict]]:
-		"""Get truncated action history with only essential fields"""
+		"""Get truncated action history with only essential fields."""
 		step_outputs = []
 
 		for h in self.history:
@@ -590,21 +605,21 @@ class AgentHistoryList(BaseModel, Generic[AgentStructuredOutput]):
 		return step_outputs
 
 	def action_results(self) -> list[ActionResult]:
-		"""Get all results from history"""
+		"""Get all results from history."""
 		results = []
 		for h in self.history:
 			results.extend([r for r in h.result if r])
 		return results
 
 	def extracted_content(self) -> list[str]:
-		"""Get all extracted content from history"""
+		"""Get all extracted content from history."""
 		content = []
 		for h in self.history:
 			content.extend([r.extracted_content for r in h.result if r.extracted_content])
 		return content
 
 	def model_actions_filtered(self, include: list[str] | None = None) -> list[dict]:
-		"""Get all model actions from history as JSON"""
+		"""Get all model actions from history as JSON."""
 		if include is None:
 			include = []
 		outputs = self.model_actions()
@@ -616,7 +631,7 @@ class AgentHistoryList(BaseModel, Generic[AgentStructuredOutput]):
 		return result
 
 	def number_of_steps(self) -> int:
-		"""Get the number of steps in the history"""
+		"""Get the number of steps in the history."""
 		return len(self.history)
 
 	@property
@@ -635,7 +650,7 @@ class AgentHistoryList(BaseModel, Generic[AgentStructuredOutput]):
 
 
 class AgentError:
-	"""Container for agent error handling"""
+	"""Container for agent error handling."""
 
 	VALIDATION_ERROR = 'Invalid model output format. Please follow the correct schema.'
 	RATE_LIMIT_ERROR = 'Rate limit reached. Waiting before retry.'
@@ -643,7 +658,7 @@ class AgentError:
 
 	@staticmethod
 	def format_error(error: Exception, include_trace: bool = False) -> str:
-		"""Format error message based on error type and optionally include trace"""
+		"""Format error message based on error type and optionally include trace."""
 		message = ''
 		if isinstance(error, ValidationError):
 			return f'{AgentError.VALIDATION_ERROR}\nDetails: {str(error)}'

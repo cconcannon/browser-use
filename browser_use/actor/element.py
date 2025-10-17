@@ -67,6 +67,7 @@ class Element:
 		backend_node_id: int,
 		session_id: str | None = None,
 	):
+		"""Initialize Element with browser session and backend node ID."""
 		self._browser_session = browser_session
 		self._client = browser_session.cdp_client
 		self._backend_node_id = backend_node_id

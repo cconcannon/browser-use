@@ -40,6 +40,7 @@ class GmailGrantManager:
 	"""
 
 	def __init__(self):
+		"""Initialize Gmail grant manager with configuration paths."""
 		self.config_dir = CONFIG.BROWSER_USE_CONFIG_DIR
 		self.credentials_file = self.config_dir / 'gmail_credentials.json'
 		self.token_file = self.config_dir / 'gmail_token.json'
@@ -199,6 +200,7 @@ class GmailGrantManager:
 
 
 async def main():
+	"""Run Gmail 2FA integration example."""
 	print('🚀 Gmail 2FA Integration Example with Grant Mechanism')
 	print('=' * 60)
 

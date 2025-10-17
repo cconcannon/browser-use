@@ -1,3 +1,5 @@
+"""Utility functions for browser-use."""
+
 import asyncio
 import logging
 import os
@@ -105,6 +107,7 @@ class SignalHandler:
 			if self.is_windows:
 				# On Windows, use simple signal handling with immediate exit on Ctrl+C
 				def windows_handler(sig, frame):
+					"""Handle Windows signals."""
 					print('\n\n🛑 Got Ctrl+C. Exiting immediately on Windows...\n', file=stderr)
 					# Run the custom exit callback if provided
 					if self.custom_exit_callback:
@@ -328,9 +331,14 @@ class SignalHandler:
 
 
 def time_execution_sync(additional_text: str = '') -> Callable[[Callable[P, R]], Callable[P, R]]:
+	"""Decorator to time synchronous function execution."""
+
 	def decorator(func: Callable[P, R]) -> Callable[P, R]:
+		"""Inner decorator function."""
+
 		@wraps(func)
 		def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
+			"""Wrapper that times execution."""
 			start_time = time.time()
 			result = func(*args, **kwargs)
 			execution_time = time.time() - start_time
@@ -356,9 +364,14 @@ def time_execution_sync(additional_text: str = '') -> Callable[[Callable[P, R]],
 def time_execution_async(
 	additional_text: str = '',
 ) -> Callable[[Callable[P, Coroutine[Any, Any, R]]], Callable[P, Coroutine[Any, Any, R]]]:
+	"""Decorator to time asynchronous function execution."""
+
 	def decorator(func: Callable[P, Coroutine[Any, Any, R]]) -> Callable[P, Coroutine[Any, Any, R]]:
+		"""Inner decorator function."""
+
 		@wraps(func)
 		async def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
+			"""Wrapper that times execution."""
 			start_time = time.time()
 			result = await func(*args, **kwargs)
 			execution_time = time.time() - start_time
@@ -383,9 +396,11 @@ def time_execution_async(
 
 
 def singleton(cls):
+	"""Decorator to make a class a singleton."""
 	instance = [None]
 
 	def wrapper(*args, **kwargs):
+		"""Wrapper that ensures only one instance exists."""
 		if instance[0] is None:
 			instance[0] = cls(*args, **kwargs)
 		return instance[0]
@@ -394,7 +409,7 @@ def singleton(cls):
 
 
 def check_env_variables(keys: list[str], any_or_all=all) -> bool:
-	"""Check if all required environment variables are set"""
+	"""Check if all required environment variables are set."""
 	return any_or_all(os.getenv(key, '').strip() for key in keys)
 
 
@@ -535,6 +550,7 @@ def match_url_with_domain_pattern(url: str, domain_pattern: str, log_warnings: b
 
 
 def merge_dicts(a: dict, b: dict, path: tuple[str, ...] = ()):
+	"""Recursively merge dict b into dict a."""
 	for key in b:
 		if key in a:
 			if isinstance(a[key], dict) and isinstance(b[key], dict):
@@ -550,7 +566,7 @@ def merge_dicts(a: dict, b: dict, path: tuple[str, ...] = ()):
 
 @cache
 def get_browser_use_version() -> str:
-	"""Get the browser-use package version using the same logic as Agent._set_browser_use_version_and_source"""
+	"""Get the browser-use package version using the same logic as Agent._set_browser_use_version_and_source."""
 	try:
 		package_root = Path(__file__).parent.parent
 		pyproject_path = package_root / 'pyproject.toml'
@@ -599,7 +615,7 @@ async def check_latest_browser_use_version() -> str | None:
 
 @cache
 def get_git_info() -> dict[str, str] | None:
-	"""Get git information if installed from git repository"""
+	"""Get git information if installed from git repository."""
 	try:
 		import subprocess
 

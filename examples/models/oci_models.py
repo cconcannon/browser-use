@@ -28,6 +28,8 @@ from browser_use.llm import ChatOCIRaw
 
 
 class SearchSummary(BaseModel):
+	"""Structured output for search task results."""
+
 	query: str
 	results_found: int
 	top_result_title: str

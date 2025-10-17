@@ -1,3 +1,5 @@
+"""Example demonstrating email notifications on task completion."""
+
 import asyncio
 import os
 import sys
@@ -15,6 +17,7 @@ tools = Tools()
 
 @tools.registry.action('Done with task')
 async def done(text: str):
+	"""Mark task as complete and send email notification with results."""
 	import yagmail  # type: ignore
 
 	# To send emails use
@@ -32,6 +35,7 @@ async def done(text: str):
 
 
 async def main():
+	"""Run notification example."""
 	task = 'go to brower-use.com and then done'
 	model = ChatOpenAI(model='gpt-4.1-mini')
 	agent = Agent(task=task, llm=model, tools=tools)

@@ -1,3 +1,9 @@
+"""Browser profile configuration and launch arguments.
+
+This module provides configuration models for browser profiles, including launch arguments,
+context settings, proxy configuration, and display management.
+"""
+
 import sys
 import tempfile
 from collections.abc import Iterable
@@ -175,18 +181,23 @@ CHROME_DEFAULT_ARGS = [
 
 
 class ViewportSize(BaseModel):
+	"""Viewport size configuration with width and height."""
+
 	width: int = Field(ge=0)
 	height: int = Field(ge=0)
 
 	def __getitem__(self, key: str) -> int:
+		"""Get viewport dimension by key."""
 		return dict(self)[key]
 
 	def __setitem__(self, key: str, value: int) -> None:
+		"""Set viewport dimension by key."""
 		setattr(self, key, value)
 
 
 @cache
 def get_display_size() -> ViewportSize | None:
+	"""Detect the display size on macOS, Windows, or Linux."""
 	# macOS
 	try:
 		from AppKit import NSScreen  # type: ignore[import]
@@ -215,7 +226,7 @@ def get_display_size() -> ViewportSize | None:
 
 
 def get_window_adjustments() -> tuple[int, int]:
-	"""Returns recommended x, y offsets for window positioning"""
+	"""Returns recommended x, y offsets for window positioning."""
 
 	if sys.platform == 'darwin':  # macOS
 		return -4, 24  # macOS has a small title bar, no border
@@ -253,17 +264,22 @@ def validate_cli_arg(arg: str) -> str:
 
 
 class RecordHarContent(str, Enum):
+	"""HAR recording content options."""
+
 	OMIT = 'omit'
 	EMBED = 'embed'
 	ATTACH = 'attach'
 
 
 class RecordHarMode(str, Enum):
+	"""HAR recording mode options."""
+
 	FULL = 'full'
 	MINIMAL = 'minimal'
 
 
 class BrowserChannel(str, Enum):
+	"""Browser channel options for different Chrome/Chromium releases."""
 	CHROMIUM = 'chromium'
 	CHROME = 'chrome'
 	CHROME_BETA = 'chrome-beta'
@@ -408,7 +424,7 @@ class BrowserLaunchArgs(BaseModel):
 
 	@model_validator(mode='after')
 	def validate_devtools_headless(self) -> Self:
-		"""Cannot open devtools when headless is True"""
+		"""Cannot open devtools when headless is True."""
 		assert not (self.headless and self.devtools), 'headless=True and devtools=True cannot both be set at the same time'
 		return self
 
@@ -520,6 +536,7 @@ class ProxySettings(BaseModel):
 	password: str | None = Field(default=None, description='Proxy auth password')
 
 	def __getitem__(self, key: str) -> str | None:
+		"""Get proxy setting by key."""
 		return getattr(self, key)
 
 
@@ -669,10 +686,12 @@ class BrowserProfile(BrowserConnectArgs, BrowserLaunchPersistentContextArgs, Bro
 	# )
 
 	def __repr__(self) -> str:
+		"""Return detailed string representation of the profile."""
 		short_dir = _log_pretty_path(self.user_data_dir) if self.user_data_dir else '<incognito>'
 		return f'BrowserProfile(user_data_dir= {short_dir}, headless={self.headless})'
 
 	def __str__(self) -> str:
+		"""Return simple string representation of the profile."""
 		return 'BrowserProfile'
 
 	@field_validator('allowed_domains', 'prohibited_domains', mode='after')
@@ -745,6 +764,7 @@ class BrowserProfile(BrowserConnectArgs, BrowserLaunchPersistentContextArgs, Bro
 
 	@model_validator(mode='after')
 	def warn_deterministic_rendering_weirdness(self) -> Self:
+		"""Warn about potential issues when using deterministic rendering mode."""
 		if self.deterministic_rendering:
 			logger.warning(
 				'⚠️ BrowserSession(deterministic_rendering=True) is NOT RECOMMENDED. It breaks many sites and increases chances of getting blocked by anti-bot systems. '

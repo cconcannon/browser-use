@@ -11,10 +11,10 @@ from browser_use.observability import observe_debug
 
 
 class ScreenshotService:
-	"""Simple screenshot storage service that saves screenshots to disk"""
+	"""Simple screenshot storage service that saves screenshots to disk."""
 
 	def __init__(self, agent_directory: str | Path):
-		"""Initialize with agent directory path"""
+		"""Initialize with agent directory path."""
 		self.agent_directory = Path(agent_directory) if isinstance(agent_directory, str) else agent_directory
 
 		# Create screenshots subdirectory
@@ -23,7 +23,7 @@ class ScreenshotService:
 
 	@observe_debug(ignore_input=True, ignore_output=True, name='store_screenshot')
 	async def store_screenshot(self, screenshot_b64: str, step_number: int) -> str:
-		"""Store screenshot to disk and return the full path as string"""
+		"""Store screenshot to disk and return the full path as string."""
 		screenshot_filename = f'step_{step_number}.png'
 		screenshot_path = self.screenshots_dir / screenshot_filename
 
@@ -37,7 +37,7 @@ class ScreenshotService:
 
 	@observe_debug(ignore_input=True, ignore_output=True, name='get_screenshot_from_disk')
 	async def get_screenshot(self, screenshot_path: str) -> str | None:
-		"""Load screenshot from disk path and return as base64"""
+		"""Load screenshot from disk path and return as base64."""
 		if not screenshot_path:
 			return None
 

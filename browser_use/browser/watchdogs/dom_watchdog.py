@@ -43,6 +43,7 @@ class DOMWatchdog(BaseWatchdog):
 	_dom_service: DomService | None = None
 
 	async def on_TabCreatedEvent(self, event: TabCreatedEvent) -> None:
+		"""Handle tab creation events."""
 		# self.logger.debug('Setting up init scripts in browser')
 		return None
 

@@ -13,11 +13,11 @@ from browser_use.browser.events import NavigateToUrlEvent, ScreenshotEvent
 
 
 class TestHeadlessScreenshots:
-	"""Test screenshot functionality specifically in headless browsers"""
+	"""Test screenshot functionality specifically in headless browsers."""
 
 	@pytest.mark.skip(reason='TODO: fix')
 	async def test_screenshot_works_in_headless_mode(self, httpserver):
-		"""Explicitly test that screenshots can be captured in headless=True mode"""
+		"""Explicitly test that screenshots can be captured in headless=True mode."""
 		# Create a browser session with headless=True
 		browser_session = BrowserSession(
 			browser_profile=BrowserProfile(
@@ -82,7 +82,7 @@ class TestHeadlessScreenshots:
 
 	@pytest.mark.skip(reason='TODO: fix')
 	async def test_screenshot_with_state_summary_in_headless(self, httpserver):
-		"""Test that get_state_summary includes screenshots in headless mode"""
+		"""Test that get_state_summary includes screenshots in headless mode."""
 		browser_session = BrowserSession(
 			browser_profile=BrowserProfile(
 				headless=True,
@@ -121,7 +121,7 @@ class TestHeadlessScreenshots:
 
 	@pytest.mark.skip(reason='TODO: fix')
 	async def test_screenshot_graceful_handling_in_headless(self, httpserver):
-		"""Test that screenshot handling works correctly in headless mode even with closed pages"""
+		"""Test that screenshot handling works correctly in headless mode even with closed pages."""
 		# Set up test page
 		httpserver.expect_request('/test').respond_with_data(
 			'<html><body><h1>Test Page</h1></body></html>', content_type='text/html'
@@ -165,7 +165,7 @@ class TestHeadlessScreenshots:
 
 	@pytest.mark.skip(reason='TODO: fix')
 	async def test_parallel_screenshots_long_page(self, httpserver):
-		"""Test screenshots in a highly parallel environment with a very long page"""
+		"""Test screenshots in a highly parallel environment with a very long page."""
 
 		# Generate a very long page (50,000px+)
 		long_content = []
@@ -332,7 +332,7 @@ class TestHeadlessScreenshots:
 
 	@pytest.mark.skip(reason='TODO: fix')
 	async def test_screenshot_at_bottom_of_page(self, httpserver):
-		"""Test screenshot capture when scrolled to bottom of page (regression test for clipping issue)"""
+		"""Test screenshot capture when scrolled to bottom of page (regression test for clipping issue)."""
 		browser_session = BrowserSession(
 			browser_profile=BrowserProfile(
 				headless=True,

@@ -1,3 +1,5 @@
+"""Example demonstrating how to process and analyze agent execution output."""
+
 import asyncio
 import os
 import sys
@@ -18,6 +20,7 @@ llm = ChatOpenAI(model='gpt-4.1-mini')
 
 
 async def main():
+	"""Run agent output processing example."""
 	browser_session = BrowserSession(
 		browser_profile=BrowserProfile(
 			headless=False,

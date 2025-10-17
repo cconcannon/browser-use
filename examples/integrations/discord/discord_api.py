@@ -1,3 +1,5 @@
+"""Discord bot integration for browser automation tasks."""
+
 import os
 import sys
 
@@ -50,6 +52,7 @@ class DiscordBot(commands.Bot):
 		ack: bool = False,
 		browser_profile: BrowserProfile = BrowserProfile(headless=True),
 	):
+		"""Initialize Discord bot with language model and configuration."""
 		self.llm = llm
 		self.prefix = prefix.strip()
 		self.ack = ack
@@ -105,6 +108,7 @@ class DiscordBot(commands.Bot):
 	#    await self.process_commands(message)  # Needed to process bot commands
 
 	async def run_agent(self, task: str) -> str:
+		"""Run browser automation agent with the given task."""
 		try:
 			browser_session = BrowserSession(browser_profile=self.browser_profile)
 			agent = Agent(task=(task), llm=self.llm, browser_session=browser_session)

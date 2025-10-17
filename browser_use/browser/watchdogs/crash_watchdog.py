@@ -26,6 +26,15 @@ class NetworkRequestTracker:
 	"""Tracks ongoing network requests."""
 
 	def __init__(self, request_id: str, start_time: float, url: str, method: str, resource_type: str | None = None):
+		"""Initialize a network request tracker.
+
+		Args:
+			request_id: Unique identifier for the request.
+			start_time: Timestamp when the request started.
+			url: URL of the request.
+			method: HTTP method (GET, POST, etc.).
+			resource_type: Type of resource being requested.
+		"""
 		self.request_id = request_id
 		self.start_time = start_time
 		self.url = url
@@ -108,6 +117,7 @@ class CrashWatchdog(BaseWatchdog):
 			# cdp_client.on('Network.loadingFinished', on_loading_finished, session_id=session_id)
 
 			def on_target_crashed(event: TargetCrashedEvent, session_id: SessionID | None = None):
+				"""Handle target crash events from CDP."""
 				# Create and track the task
 				task = asyncio.create_task(self._on_target_crash_cdp(target_id))
 				self._cdp_event_tasks.add(task)

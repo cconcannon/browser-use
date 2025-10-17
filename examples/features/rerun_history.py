@@ -23,6 +23,7 @@ from browser_use.llm.openai.chat import ChatOpenAI
 
 
 async def main():
+	"""Run history saving and rerunning example."""
 	# Example task to demonstrate history saving and rerunning
 	history_file = Path('agent_history.json')
 	task = 'Go to https://browser-use.github.io/stress-tests/challenges/ember-form.html and fill the form with example data.'

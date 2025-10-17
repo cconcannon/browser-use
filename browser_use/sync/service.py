@@ -14,9 +14,10 @@ logger = logging.getLogger(__name__)
 
 
 class CloudSync:
-	"""Service for syncing events to the Browser Use cloud"""
+	"""Service for syncing events to the Browser Use cloud."""
 
 	def __init__(self, base_url: str | None = None, allow_session_events_for_auth: bool = False):
+		"""Initialize cloud sync service with base URL and auth configuration."""
 		# Backend API URL for all API requests - can be passed directly or defaults to env var
 		self.base_url = base_url or CONFIG.BROWSER_USE_CLOUD_API_URL
 		self.auth_client = DeviceAuthClient(base_url=self.base_url)
@@ -27,7 +28,7 @@ class CloudSync:
 		self.enabled = CONFIG.BROWSER_USE_CLOUD_SYNC
 
 	async def handle_event(self, event: BaseEvent) -> None:
-		"""Handle an event by sending it to the cloud"""
+		"""Handle an event by sending it to the cloud."""
 		try:
 			# If cloud sync is disabled, don't handle any events
 			if not self.enabled:
@@ -139,11 +140,11 @@ class CloudSync:
 	# 		logger.warning(f'Failed to update WAL user IDs: {e}')
 
 	def set_auth_flow_active(self) -> None:
-		"""Mark auth flow as active to allow all events"""
+		"""Mark auth flow as active to allow all events."""
 		self.auth_flow_active = True
 
 	async def authenticate(self, show_instructions: bool = True) -> bool:
-		"""Authenticate with the cloud service"""
+		"""Authenticate with the cloud service."""
 		# If cloud sync is disabled, don't authenticate
 		if not self.enabled:
 			return False

@@ -1,3 +1,5 @@
+"""Serializer for converting between custom message types and Groq message param types."""
+
 from typing import overload
 
 from groq.types.chat import (
@@ -99,15 +101,21 @@ class GroqMessageSerializer:
 	# region - Serialize overloads
 	@overload
 	@staticmethod
-	def serialize(message: UserMessage) -> ChatCompletionUserMessageParam: ...
+	def serialize(message: UserMessage) -> ChatCompletionUserMessageParam:
+		"""Serialize a user message."""
+		...
 
 	@overload
 	@staticmethod
-	def serialize(message: SystemMessage) -> ChatCompletionSystemMessageParam: ...
+	def serialize(message: SystemMessage) -> ChatCompletionSystemMessageParam:
+		"""Serialize a system message."""
+		...
 
 	@overload
 	@staticmethod
-	def serialize(message: AssistantMessage) -> ChatCompletionAssistantMessageParam: ...
+	def serialize(message: AssistantMessage) -> ChatCompletionAssistantMessageParam:
+		"""Serialize an assistant message."""
+		...
 
 	@staticmethod
 	def serialize(message: BaseMessage) -> ChatCompletionMessageParam:
@@ -156,4 +164,5 @@ class GroqMessageSerializer:
 
 	@staticmethod
 	def serialize_messages(messages: list[BaseMessage]) -> list[ChatCompletionMessageParam]:
+		"""Serialize list of BaseMessage to Groq message format."""
 		return [GroqMessageSerializer.serialize(m) for m in messages]

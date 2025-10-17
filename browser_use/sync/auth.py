@@ -46,7 +46,7 @@ def get_or_create_device_id() -> str:
 
 
 class CloudAuthConfig(BaseModel):
-	"""Configuration for cloud authentication"""
+	"""Configuration for cloud authentication."""
 
 	api_token: str | None = None
 	user_id: str | None = None
@@ -54,7 +54,7 @@ class CloudAuthConfig(BaseModel):
 
 	@classmethod
 	def load_from_file(cls) -> 'CloudAuthConfig':
-		"""Load auth config from local file"""
+		"""Load auth config from local file."""
 
 		config_path = CONFIG.BROWSER_USE_CONFIG_DIR / 'cloud_auth.json'
 		if config_path.exists():
@@ -68,7 +68,7 @@ class CloudAuthConfig(BaseModel):
 		return cls()
 
 	def save_to_file(self) -> None:
-		"""Save auth config to local file"""
+		"""Save auth config to local file."""
 
 		CONFIG.BROWSER_USE_CONFIG_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -85,9 +85,10 @@ class CloudAuthConfig(BaseModel):
 
 
 class DeviceAuthClient:
-	"""Client for OAuth2 device authorization flow"""
+	"""Client for OAuth2 device authorization flow."""
 
 	def __init__(self, base_url: str | None = None, http_client: httpx.AsyncClient | None = None):
+		"""Initialize device auth client with base URL and optional HTTP client."""
 		# Backend API URL for OAuth requests - can be passed directly or defaults to env var
 		self.base_url = base_url or CONFIG.BROWSER_USE_CLOUD_API_URL
 		self.client_id = 'library'
@@ -107,17 +108,17 @@ class DeviceAuthClient:
 
 	@property
 	def is_authenticated(self) -> bool:
-		"""Check if we have valid authentication"""
+		"""Check if we have valid authentication."""
 		return bool(self.auth_config.api_token and self.auth_config.user_id)
 
 	@property
 	def api_token(self) -> str | None:
-		"""Get the current API token"""
+		"""Get the current API token."""
 		return self.auth_config.api_token
 
 	@property
 	def user_id(self) -> str:
-		"""Get the current user ID (temporary or real)"""
+		"""Get the current user ID (temporary or real)."""
 		return self.auth_config.user_id or self.temp_user_id
 
 	async def start_device_authorization(
@@ -343,13 +344,13 @@ class DeviceAuthClient:
 		return False
 
 	def get_headers(self) -> dict:
-		"""Get headers for API requests"""
+		"""Get headers for API requests."""
 		if self.api_token:
 			return {'Authorization': f'Bearer {self.api_token}'}
 		return {}
 
 	def clear_auth(self) -> None:
-		"""Clear stored authentication"""
+		"""Clear stored authentication."""
 		self.auth_config = CloudAuthConfig()
 
 		# Remove the config file entirely instead of saving empty values

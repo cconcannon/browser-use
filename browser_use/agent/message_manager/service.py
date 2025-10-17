@@ -1,3 +1,5 @@
+"""Message manager service for handling agent conversation history and state messages."""
+
 from __future__ import annotations
 
 import logging
@@ -94,6 +96,8 @@ def _log_format_message_line(message: BaseMessage, content: str, is_last_message
 
 
 class MessageManager:
+	"""Manages LLM conversation history and constructs state messages for the agent."""
+
 	vision_detail_level: Literal['auto', 'low', 'high']
 
 	def __init__(
@@ -111,6 +115,7 @@ class MessageManager:
 		include_recent_events: bool = False,
 		sample_images: list[ContentPartTextParam | ContentPartImageParam] | None = None,
 	):
+		"""Initialize the message manager with task, system message, and configuration."""
 		self.task = task
 		self.state = state
 		self.system_prompt = system_message
@@ -136,7 +141,7 @@ class MessageManager:
 
 	@property
 	def agent_history_description(self) -> str:
-		"""Build agent history description from list of items, respecting max_history_items limit"""
+		"""Build agent history description from list of items, respecting max_history_items limit."""
 		if self.max_history_items is None:
 			# Include all items
 			return '\n'.join(item.to_string() for item in self.state.agent_history_items)
@@ -164,6 +169,7 @@ class MessageManager:
 		return '\n'.join(items_to_include)
 
 	def add_new_task(self, new_task: str) -> None:
+		"""Add a follow-up task to the agent's task history."""
 		new_task = '<follow_up_user_request> ' + new_task.strip() + ' </follow_up_user_request>'
 		if '<initial_user_request>' not in self.task:
 			self.task = '<initial_user_request>' + self.task + '</initial_user_request>'
@@ -291,7 +297,7 @@ class MessageManager:
 		sensitive_data=None,
 		available_file_paths: list[str] | None = None,  # Always pass current available_file_paths
 	) -> None:
-		"""Create single state message with all content"""
+		"""Create single state message with all content."""
 
 		# Clear contextual messages from previous steps to prevent accumulation
 		self.state.history.context_messages.clear()
@@ -401,7 +407,7 @@ class MessageManager:
 
 	@time_execution_sync('--get_messages')
 	def get_messages(self) -> list[BaseMessage]:
-		"""Get current message list, potentially trimmed to max tokens"""
+		"""Get current message list, potentially trimmed to max tokens."""
 
 		# Log message history for debugging
 		logger.debug(self._log_history_lines())
@@ -425,9 +431,10 @@ class MessageManager:
 
 	@time_execution_sync('--filter_sensitive_data')
 	def _filter_sensitive_data(self, message: BaseMessage) -> BaseMessage:
-		"""Filter out sensitive data from the message"""
+		"""Filter out sensitive data from the message."""
 
 		def replace_sensitive(value: str) -> str:
+			"""Replace sensitive values with placeholder tags."""
 			if not self.sensitive_data:
 				return value
 

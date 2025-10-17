@@ -1,3 +1,5 @@
+"""Example demonstrating lazy import of pre-configured LLM models."""
+
 from browser_use import Agent, models
 
 # available providers for this import style: openai, azure, google

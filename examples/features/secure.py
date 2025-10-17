@@ -77,6 +77,7 @@ agent = Agent(task=task, llm=llm, browser_profile=browser_profile, sensitive_dat
 
 
 async def main():
+	"""Run secure authentication example."""
 	await agent.run(max_steps=10)
 
 

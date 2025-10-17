@@ -1,3 +1,5 @@
+"""Utility functions for saving and formatting conversation history."""
+
 from __future__ import annotations
 
 import json

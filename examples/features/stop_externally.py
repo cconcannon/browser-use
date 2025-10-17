@@ -1,3 +1,5 @@
+"""Example demonstrating external task stopping via callback function."""
+
 import asyncio
 import os
 import random
@@ -17,6 +19,7 @@ llm = ChatGoogle(model='gemini-flash-latest', temperature=1.0)
 
 
 def check_is_task_stopped():
+	"""Create a callback function that randomly decides if the task should stop."""
 	async def _internal_check_is_task_stopped() -> bool:
 		if random.random() < 0.1:
 			print('[TASK STOPPER] Task is stopped')
@@ -36,6 +39,7 @@ agent = Agent(task=task, llm=llm, flash_mode=True, register_should_stop_callback
 
 
 async def main():
+	"""Run external stop callback example."""
 	await agent.run(max_steps=30)
 
 

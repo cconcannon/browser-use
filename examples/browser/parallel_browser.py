@@ -1,3 +1,5 @@
+"""Example demonstrating parallel browser automation with multiple agents."""
+
 import asyncio
 
 from browser_use import Agent, Browser, ChatOpenAI
@@ -6,6 +8,7 @@ from browser_use import Agent, Browser, ChatOpenAI
 
 
 async def main():
+	"""Run multiple browser agents in parallel."""
 	# Create 3 separate browser instances
 	browsers = [
 		Browser(

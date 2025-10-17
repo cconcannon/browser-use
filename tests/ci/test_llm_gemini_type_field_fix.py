@@ -92,6 +92,8 @@ class TestGeminiTypeFieldHandling:
 
 		# Create a test model that generates a schema with dict type
 		class TestModel(BaseModel):
+			"""Test model with dict field for schema generation."""
+
 			field_with_dict_type: dict = Field(default_factory=dict)
 
 		# OpenAI uses SchemaOptimizer directly

@@ -1,3 +1,5 @@
+"""Tests for Groq chat model loop."""
+
 import asyncio
 
 from browser_use.llm import ContentText
@@ -12,6 +14,7 @@ llm = ChatGroq(
 
 
 async def main():
+	"""Main test function for Groq loop."""
 	from pydantic import BaseModel
 
 	from browser_use.tokens.service import TokenCost
@@ -19,6 +22,8 @@ async def main():
 	tk = TokenCost().register_llm(llm)
 
 	class Output(BaseModel):
+		"""Output structure for test."""
+
 		reasoning: str
 		answer: str
 

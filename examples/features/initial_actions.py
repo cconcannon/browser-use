@@ -1,3 +1,5 @@
+"""Example demonstrating initial actions to set up browser state before task execution."""
+
 import asyncio
 import os
 import sys
@@ -24,6 +26,7 @@ agent = Agent(
 
 
 async def main():
+	"""Run initial actions example."""
 	await agent.run(max_steps=10)
 
 

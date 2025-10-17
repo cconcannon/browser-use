@@ -39,7 +39,7 @@ def temp_config_dir(monkeypatch):
 
 @pytest.fixture
 async def http_client(httpserver: HTTPServer):
-	"""Create a real HTTP client pointed at the test server"""
+	"""Create a real HTTP client pointed at the test server."""
 	async with httpx.AsyncClient(base_url=httpserver.url_for('')) as client:
 		yield client
 
@@ -196,6 +196,7 @@ class TestDeviceAuthClient:
 		request_count = 0
 
 		def handle_token_request(request):
+			"""Handle token request with polling simulation."""
 			nonlocal request_count
 			request_count += 1
 
@@ -329,6 +330,7 @@ class TestCloudSync:
 		requests = []
 
 		def capture_request(request):
+			"""Capture request for verification."""
 			requests.append(
 				{
 					'headers': dict(request.headers),
@@ -385,6 +387,7 @@ class TestCloudSync:
 		requests = []
 
 		def capture_request(request):
+			"""Capture request for verification."""
 			requests.append(
 				{
 					'headers': dict(request.headers),
@@ -428,6 +431,7 @@ class TestCloudSync:
 		requests = []
 
 		def capture_request(request):
+			"""Capture request for verification."""
 			requests.append(
 				{
 					'headers': dict(request.headers),
@@ -597,6 +601,7 @@ class TestIntegration:
 		token_attempts = 0
 
 		def handle_token_request(request):
+			"""Handle token request with polling simulation."""
 			nonlocal token_attempts
 			token_attempts += 1
 

@@ -1,3 +1,5 @@
+"""Playground script for testing multi-action agent tasks."""
+
 from browser_use import Agent
 from browser_use.browser import BrowserProfile, BrowserSession
 from browser_use.browser.types import ViewportSize
@@ -15,6 +17,7 @@ Go to https://browser-use.github.io/stress-tests/challenges/react-native-web-for
 
 
 async def main():
+	"""Run the browser automation agent with the specified task."""
 	browser = BrowserSession(
 		browser_profile=BrowserProfile(
 			window_size=ViewportSize(width=1100, height=1000),

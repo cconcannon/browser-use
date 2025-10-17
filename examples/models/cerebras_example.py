@@ -34,6 +34,7 @@ from browser_use import Agent
 
 
 async def main():
+	"""Run Cerebras example."""
 	# Set your API key (recommended to use environment variable)
 	api_key = os.getenv('CEREBRAS_API_KEY')
 	if not api_key:

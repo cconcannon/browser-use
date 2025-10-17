@@ -1,3 +1,5 @@
+"""Slack bot integration for browser automation tasks."""
+
 import logging
 import os
 import sys
@@ -26,6 +28,8 @@ app = FastAPI()
 
 
 class SlackBot:
+	"""Slack bot for processing browser automation tasks via Slack events."""
+
 	def __init__(
 		self,
 		llm: BaseChatModel,
@@ -34,6 +38,7 @@ class SlackBot:
 		ack: bool = False,
 		browser_profile: BrowserProfile = BrowserProfile(headless=True),
 	):
+		"""Initialize Slack bot with language model and credentials."""
 		if not bot_token or not signing_secret:
 			raise ValueError('Bot token and signing secret must be provided')
 
@@ -46,6 +51,7 @@ class SlackBot:
 		logger.info('SlackBot initialized')
 
 	async def handle_event(self, event, event_id):
+		"""Handle incoming Slack event and process browser automation tasks."""
 		try:
 			logger.info(f'Received event id: {event_id}')
 			if not event_id:
@@ -81,6 +87,7 @@ class SlackBot:
 			logger.error(f'Error in handle_event: {str(e)}')
 
 	async def run_agent(self, task: str) -> str:
+		"""Run browser automation agent with the given task."""
 		try:
 			browser_session = BrowserSession(browser_profile=self.browser_profile)
 			agent = Agent(task=task, llm=self.llm, browser_session=browser_session)
@@ -100,6 +107,7 @@ class SlackBot:
 			return f'Error during task execution: {str(e)}'
 
 	async def send_message(self, channel, text, thread_ts=None):
+		"""Send message to Slack channel."""
 		try:
 			await self.client.chat_postMessage(channel=channel, text=text, thread_ts=thread_ts)
 		except SlackApiError as e:
@@ -108,6 +116,7 @@ class SlackBot:
 
 @app.post('/slack/events')
 async def slack_events(request: Request, slack_bot: Annotated[SlackBot, Depends()]):
+	"""FastAPI endpoint for handling Slack events."""
 	try:
 		if not slack_bot.signature_verifier.is_valid_request(await request.body(), dict(request.headers)):
 			logger.warning('Request verification failed')

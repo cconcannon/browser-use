@@ -285,6 +285,8 @@ class MCPClient:
 		if param_fields:
 			# Create a BaseModel class with proper configuration
 			class ConfiguredBaseModel(BaseModel):
+				"""Base model with validation configuration."""
+
 				model_config = ConfigDict(extra='forbid', validate_by_name=True, validate_by_alias=True)
 
 			param_model = create_model(f'{action_name}_Params', __base__=ConfiguredBaseModel, **param_fields)
@@ -500,6 +502,8 @@ class MCPClient:
 
 				# Create a BaseModel class with proper configuration
 				class ConfiguredBaseModel(BaseModel):
+					"""Base model with validation configuration."""
+
 					model_config = ConfigDict(extra='forbid', validate_by_name=True, validate_by_alias=True)
 
 				try:

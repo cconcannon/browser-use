@@ -119,6 +119,7 @@ class CDPSession(BaseModel):
 		return await cdp_session.attach(domains=domains)
 
 	async def attach(self, domains: list[str] | None = None) -> Self:
+		"""Attach to the target and enable specified CDP domains."""
 		result = await self.cdp_client.send.Target.attachToTarget(
 			params={
 				'targetId': self.target_id,
@@ -171,6 +172,7 @@ class CDPSession(BaseModel):
 				pass  # Ignore errors during cleanup
 
 	async def get_tab_info(self) -> TabInfo:
+		"""Get tab information for this CDP session."""
 		target_info = await self.get_target_info()
 		return TabInfo(
 			target_id=target_info['targetId'],
@@ -179,6 +181,7 @@ class CDPSession(BaseModel):
 		)
 
 	async def get_target_info(self) -> TargetInfo:
+		"""Get target information from CDP."""
 		result = await self.cdp_client.send.Target.getTargetInfo(params={'targetId': self.target_id})
 		return result['targetInfo']
 
@@ -278,6 +281,7 @@ class BrowserSession(BaseModel):
 		max_iframes: int | None = None,
 		max_iframe_depth: int | None = None,
 	):
+		"""Initialize a browser session with configuration options."""
 		# Following the same pattern as AgentSettings in service.py
 		# Only pass non-None values to avoid validation errors
 		profile_kwargs = {k: v for k, v in locals().items() if k not in ['self', 'browser_profile', 'id'] and v is not None}
@@ -361,7 +365,7 @@ class BrowserSession(BaseModel):
 
 	@property
 	def logger(self) -> Any:
-		"""Get instance-specific logger with session ID in the name"""
+		"""Get instance-specific logger with session ID in the name."""
 		# **regenerate it every time** because our id and str(self) can change as browser connection state changes
 		# if self._logger is None or not self._cdp_client_root:
 		# 	self._logger = logging.getLogger(f'browser_use.{self}')
@@ -385,9 +389,11 @@ class BrowserSession(BaseModel):
 		return self.agent_focus.target_id[-2:] if self.agent_focus and self.agent_focus.target_id else f'{red}--{reset}'
 
 	def __repr__(self) -> str:
+		"""Return detailed string representation of the session."""
 		return f'BrowserSession🅑 {self._id_for_logs} 🅣 {self._tab_id_for_logs} (cdp_url={self.cdp_url}, profile={self.browser_profile})'
 
 	def __str__(self) -> str:
+		"""Return simple string representation of the session."""
 		return f'BrowserSession🅑 {self._id_for_logs} 🅣 {self._tab_id_for_logs}'
 
 	async def reset(self) -> None:
@@ -1108,10 +1114,12 @@ class BrowserSession(BaseModel):
 
 	@property
 	def current_target_id(self) -> str | None:
+		"""Get the currently focused target ID."""
 		return self.agent_focus.target_id if self.agent_focus else None
 
 	@property
 	def current_session_id(self) -> str | None:
+		"""Get the currently focused CDP session ID."""
 		return self.agent_focus.session_id if self.agent_focus else None
 
 	# endregion - ========== CDP-based ... ==========
@@ -1124,6 +1132,7 @@ class BrowserSession(BaseModel):
 		cached: bool = False,
 		include_recent_events: bool = False,
 	) -> BrowserStateSummary:
+		"""Get a summary of the current browser state including DOM and screenshot."""
 		if cached and self._cached_browser_state_summary is not None and self._cached_browser_state_summary.dom_state:
 			# Don't use cached state if it has 0 interactive elements
 			selector_map = self._cached_browser_state_summary.dom_state.selector_map
@@ -2839,6 +2848,7 @@ class BrowserSession(BaseModel):
 		return all_frames.get(frame_id)
 
 	async def cdp_client_for_target(self, target_id: TargetID) -> CDPSession:
+		"""Get a CDP client for the specified target ID."""
 		return await self.get_or_create_cdp_session(target_id, focus=False)
 
 	async def cdp_client_for_frame(self, frame_id: str) -> CDPSession:

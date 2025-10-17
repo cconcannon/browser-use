@@ -13,6 +13,13 @@ class Mouse:
 	"""Mouse operations for a target."""
 
 	def __init__(self, browser_session: 'BrowserSession', session_id: str | None = None, target_id: str | None = None):
+		"""Initialize Mouse with browser session and target context.
+
+		Args:
+			browser_session: The browser session to use for CDP communication
+			session_id: Optional CDP session ID for the target
+			target_id: Optional target ID for the page/frame
+		"""
 		self._browser_session = browser_session
 		self._client = browser_session.cdp_client
 		self._session_id = session_id

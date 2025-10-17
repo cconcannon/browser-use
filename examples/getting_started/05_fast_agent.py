@@ -1,3 +1,5 @@
+"""Example demonstrating fast agent execution with optimized settings."""
+
 import asyncio
 import os
 import sys
@@ -22,6 +24,7 @@ Speed optimization instructions:
 
 
 async def main():
+	"""Run fast agent example with speed optimizations."""
 	# 1. Use fast LLM - Llama 4 on Groq for ultra-fast inference
 	from browser_use import ChatGroq
 

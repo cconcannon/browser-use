@@ -1,3 +1,5 @@
+"""Azure OpenAI chat model implementation."""
+
 import os
 from dataclasses import dataclass
 from typing import Any
@@ -38,6 +40,7 @@ class ChatAzureOpenAI(ChatOpenAILike):
 
 	@property
 	def provider(self) -> str:
+		"""Return the provider name."""
 		return 'azure'
 
 	def _get_client_params(self) -> dict[str, Any]:

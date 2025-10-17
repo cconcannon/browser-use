@@ -1,3 +1,5 @@
+"""Chat model invocation views and usage information."""
+
 from typing import Generic, TypeVar, Union
 
 from pydantic import BaseModel

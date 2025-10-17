@@ -80,10 +80,12 @@ class ChatOCIRaw(BaseChatModel):
 	# Static properties
 	@property
 	def provider_name(self) -> str:
+		"""Return the provider name."""
 		return 'oci-raw'
 
 	@property
 	def name(self) -> str:
+		"""Return the model name."""
 		# Return a shorter name for telemetry (max 100 chars)
 		if len(self.model_id) > 90:
 			# Extract the model name from the OCID
@@ -96,10 +98,12 @@ class ChatOCIRaw(BaseChatModel):
 
 	@property
 	def model(self) -> str:
+		"""Return the model ID."""
 		return self.model_id
 
 	@property
 	def model_name(self) -> str:
+		"""Return shortened model name for telemetry (max 100 chars)."""
 		# Override for telemetry - return shorter name (max 100 chars)
 		if len(self.model_id) > 90:
 			# Extract the model name from the OCID
@@ -322,10 +326,14 @@ class ChatOCIRaw(BaseChatModel):
 		return await loop.run_in_executor(None, _sync_request)
 
 	@overload
-	async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]: ...
+	async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]:
+		"""Invoke LLM with messages and return unstructured text completion."""
+		...
 
 	@overload
-	async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]: ...
+	async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]:
+		"""Invoke LLM with messages and return structured output of type T."""
+		...
 
 	async def ainvoke(
 		self, messages: list[BaseMessage], output_format: type[T] | None = None

@@ -270,6 +270,7 @@ async def openai_cua_fallback(params: OpenAICUAAction, browser_session: BrowserS
 
 
 async def main():
+	"""Run custom user actions (CUA) example."""
 	# Initialize the language model
 	llm = ChatOpenAI(
 		model='o4-mini',

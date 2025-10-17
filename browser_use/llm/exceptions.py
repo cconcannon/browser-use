@@ -1,4 +1,9 @@
+"""Model error exceptions."""
+
+
 class ModelError(Exception):
+	"""Base exception for model errors."""
+
 	pass
 
 
@@ -11,6 +16,7 @@ class ModelProviderError(ModelError):
 		status_code: int = 502,
 		model: str | None = None,
 	):
+		"""Initialize ModelProviderError with message, status code, and model."""
 		super().__init__(message)
 		self.message = message
 		self.status_code = status_code
@@ -26,4 +32,5 @@ class ModelRateLimitError(ModelProviderError):
 		status_code: int = 429,
 		model: str | None = None,
 	):
+		"""Initialize ModelRateLimitError with message, status code, and model."""
 		super().__init__(message, status_code, model)

@@ -8,6 +8,8 @@ from pydantic import BaseModel
 
 
 class SchemaOptimizer:
+	"""Optimizer for creating optimized Pydantic schemas for LLM usage."""
+
 	@staticmethod
 	def create_optimized_json_schema(model: type[BaseModel]) -> dict[str, Any]:
 		"""
@@ -32,7 +34,7 @@ class SchemaOptimizer:
 			*,
 			in_properties: bool = False,  # NEW: track context
 		) -> Any:
-			"""Apply all optimization techniques including flattening all $ref/$defs"""
+			"""Apply all optimization techniques including flattening all $ref/$defs."""
 			if isinstance(obj, dict):
 				optimized: dict[str, Any] = {}
 				flattened_ref: dict[str, Any] | None = None
@@ -122,7 +124,7 @@ class SchemaOptimizer:
 
 		# Additional pass to ensure ALL objects have additionalProperties: false
 		def ensure_additional_properties_false(obj: Any) -> None:
-			"""Ensure all objects have additionalProperties: false"""
+			"""Ensure all objects have additionalProperties: false."""
 			if isinstance(obj, dict):
 				# If it's an object type, ensure additionalProperties is false
 				if obj.get('type') == 'object':
@@ -144,7 +146,7 @@ class SchemaOptimizer:
 
 	@staticmethod
 	def _make_strict_compatible(schema: dict[str, Any] | list[Any]) -> None:
-		"""Ensure all properties are required for OpenAI strict mode"""
+		"""Ensure all properties are required for OpenAI strict mode."""
 		if isinstance(schema, dict):
 			# First recursively apply to nested objects
 			for key, value in schema.items():
@@ -177,7 +179,7 @@ class SchemaOptimizer:
 		schema = SchemaOptimizer.create_optimized_json_schema(model)
 
 		def remove_required_arrays(obj: Any) -> Any:
-			"""Recursively remove 'required' arrays"""
+			"""Recursively remove 'required' arrays."""
 			if isinstance(obj, dict):
 				# Remove 'required' key
 				result = {k: v for k, v in obj.items() if k != 'required'}

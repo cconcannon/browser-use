@@ -29,6 +29,7 @@ from browser_use import Agent, ChatBrowserUse
 
 
 async def main():
+	"""Run form filling example."""
 	# Initialize the model
 	llm = ChatBrowserUse()
 

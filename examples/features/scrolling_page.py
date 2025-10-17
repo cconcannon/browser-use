@@ -1,4 +1,6 @@
-# Goal: Automates webpage scrolling with various scrolling actions, including element-specific scrolling.
+"""
+Goal: Automates webpage scrolling with various scrolling actions, including element-specific scrolling.
+"""
 
 import asyncio
 import os
@@ -71,6 +73,7 @@ agent3 = Agent(
 
 
 async def main():
+	"""Run scrolling examples with different scrolling strategies."""
 	print('Choose which scrolling example to run:')
 	print('1. Basic page scrolling with custom amounts (Wikipedia)')
 	print('2. Element-specific scrolling (Semantic UI dropdowns)')

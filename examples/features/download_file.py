@@ -1,3 +1,5 @@
+"""Example demonstrating file download functionality."""
+
 import asyncio
 import os
 import sys
@@ -22,6 +24,7 @@ browser = Browser(downloads_path='~/Downloads/tmp')
 
 
 async def run_download():
+	"""Run file download example."""
 	agent = Agent(
 		task='Go to "https://file-examples.com/" and download the smallest doc file. then go back and get the next file.',
 		llm=llm,

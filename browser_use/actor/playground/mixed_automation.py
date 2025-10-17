@@ -1,3 +1,5 @@
+"""Playground example demonstrating mixed automation combining low-level Actor API with high-level Agent for flight search."""
+
 import asyncio
 
 from pydantic import BaseModel

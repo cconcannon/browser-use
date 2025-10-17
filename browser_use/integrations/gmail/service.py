@@ -71,7 +71,7 @@ class GmailService:
 		self._authenticated = False
 
 	def is_authenticated(self) -> bool:
-		"""Check if Gmail service is authenticated"""
+		"""Check if Gmail service is authenticated."""
 		return self._authenticated and self.service is not None
 
 	async def authenticate(self) -> bool:

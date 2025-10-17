@@ -1,3 +1,5 @@
+"""Serializer for converting between custom message types and OpenRouter message formats."""
+
 from openai.types.chat import ChatCompletionMessageParam
 
 from browser_use.llm.messages import BaseMessage

@@ -1,3 +1,5 @@
+"""System and agent message prompt builders for LLM interactions."""
+
 import importlib.resources
 from datetime import datetime
 from typing import TYPE_CHECKING, Literal, Optional
@@ -14,6 +16,8 @@ if TYPE_CHECKING:
 
 
 class SystemPrompt:
+	"""Builder for system prompts with configurable templates and settings."""
+
 	def __init__(
 		self,
 		max_actions_per_step: int = 10,
@@ -22,6 +26,7 @@ class SystemPrompt:
 		use_thinking: bool = True,
 		flash_mode: bool = False,
 	):
+		"""Initialize the system prompt builder with configuration options."""
 		self.max_actions_per_step = max_actions_per_step
 		self.use_thinking = use_thinking
 		self.flash_mode = flash_mode
@@ -65,6 +70,8 @@ class SystemPrompt:
 
 
 class AgentMessagePrompt:
+	"""Builder for agent user messages containing browser state and task context."""
+
 	vision_detail_level: Literal['auto', 'low', 'high']
 
 	def __init__(
@@ -85,6 +92,7 @@ class AgentMessagePrompt:
 		include_recent_events: bool = False,
 		sample_images: list[ContentPartTextParam | ContentPartImageParam] | None = None,
 	):
+		"""Initialize the agent message prompt builder with browser state and context."""
 		self.browser_state: 'BrowserStateSummary' = browser_state_summary
 		self.file_system: 'FileSystem | None' = file_system
 		self.agent_history_description: str | None = agent_history_description
@@ -119,7 +127,7 @@ class AgentMessagePrompt:
 			return stats
 
 		def traverse_node(node: SimplifiedNode) -> None:
-			"""Recursively traverse simplified DOM tree to count elements"""
+			"""Recursively traverse simplified DOM tree to count elements."""
 			if not node or not node.original_node:
 				return
 
@@ -308,7 +316,7 @@ Available tabs:
 
 	@observe_debug(ignore_input=True, ignore_output=True, name='get_user_message')
 	def get_user_message(self, use_vision: bool = True) -> UserMessage:
-		"""Get complete state as a single cached message"""
+		"""Get complete state as a single cached message."""
 		# Don't pass screenshot to model if page is a new tab page, step is 0, and there's only one tab
 		if (
 			is_new_tab_page(self.browser_state.url)

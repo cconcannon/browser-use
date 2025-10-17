@@ -16,30 +16,43 @@ T = TypeVar('T', bound=BaseModel)
 
 @runtime_checkable
 class BaseChatModel(Protocol):
+	"""Base protocol for chat models."""
+
 	_verified_api_keys: bool = False
 
 	model: str
 
 	@property
-	def provider(self) -> str: ...
+	def provider(self) -> str:
+		"""Return the provider name."""
+		...
 
 	@property
-	def name(self) -> str: ...
+	def name(self) -> str:
+		"""Return the model name."""
+		...
 
 	@property
 	def model_name(self) -> str:
+		"""Return model name for legacy support."""
 		# for legacy support
 		return self.model
 
 	@overload
-	async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]: ...
+	async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]:
+		"""Invoke LLM with messages and return unstructured text completion."""
+		...
 
 	@overload
-	async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]: ...
+	async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]:
+		"""Invoke LLM with messages and return structured output of type T."""
+		...
 
 	async def ainvoke(
 		self, messages: list[BaseMessage], output_format: type[T] | None = None
-	) -> ChatInvokeCompletion[T] | ChatInvokeCompletion[str]: ...
+	) -> ChatInvokeCompletion[T] | ChatInvokeCompletion[str]:
+		"""Invoke LLM with messages, optionally returning structured output."""
+		...
 
 	@classmethod
 	def __get_pydantic_core_schema__(

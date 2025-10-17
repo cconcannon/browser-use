@@ -1,11 +1,9 @@
+"""Paint order filtering for DOM elements based on visual occlusion."""
+
 from collections import defaultdict
 from dataclasses import dataclass
 
 from browser_use.dom.views import SimplifiedNode
-
-"""
-Helper class for maintaining a union of rectangles (used for order of elements calculation)
-"""
 
 
 @dataclass(frozen=True, slots=True)
@@ -18,17 +16,21 @@ class Rect:
 	y2: float
 
 	def __post_init__(self):
+		"""Validate that the rectangle coordinates are properly ordered."""
 		if not (self.x1 <= self.x2 and self.y1 <= self.y2):
 			return False
 
 	# --- fast relations ----------------------------------------------------
 	def area(self) -> float:
+		"""Calculate the area of the rectangle."""
 		return (self.x2 - self.x1) * (self.y2 - self.y1)
 
 	def intersects(self, other: 'Rect') -> bool:
+		"""Check if this rectangle intersects with another rectangle."""
 		return not (self.x2 <= other.x1 or other.x2 <= self.x1 or self.y2 <= other.y1 or other.y2 <= self.y1)
 
 	def contains(self, other: 'Rect') -> bool:
+		"""Check if this rectangle fully contains another rectangle."""
 		return self.x1 <= other.x1 and self.y1 <= other.y1 and self.x2 >= other.x2 and self.y2 >= other.y2
 
 
@@ -41,6 +43,7 @@ class RectUnionPure:
 	__slots__ = ('_rects',)
 
 	def __init__(self):
+		"""Initialize an empty rectangle union."""
 		self._rects: list[Rect] = []
 
 	# -----------------------------------------------------------------
@@ -134,12 +137,15 @@ class PaintOrderRemover:
 	"""
 
 	def __init__(self, root: SimplifiedNode):
+		"""Initialize paint order remover with the root DOM node."""
 		self.root = root
 
 	def calculate_paint_order(self) -> None:
+		"""Calculate and mark nodes that should be removed based on paint order occlusion."""
 		all_simplified_nodes_with_paint_order: list[SimplifiedNode] = []
 
 		def collect_paint_order(node: SimplifiedNode) -> None:
+			"""Recursively collect all nodes with paint order information."""
 			if (
 				node.original_node.snapshot_node
 				and node.original_node.snapshot_node.paint_order is not None

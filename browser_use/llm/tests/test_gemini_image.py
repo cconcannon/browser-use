@@ -1,3 +1,5 @@
+"""Tests for Gemini image handling."""
+
 import asyncio
 import base64
 import io
@@ -18,6 +20,7 @@ from browser_use.llm.messages import (
 
 
 def create_random_text_image(text: str = 'hello world', width: int = 4000, height: int = 4000) -> str:
+	"""Create a random text image for testing."""
 	# Create image with random background color
 	bg_color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
 	image = Image.new('RGB', (width, height), bg_color)

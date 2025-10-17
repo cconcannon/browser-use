@@ -42,7 +42,7 @@ def get_oci_model_if_available():
 
 
 async def test_iterative_country_generation():
-	"""Test token cost tracking with iterative country generation"""
+	"""Test token cost tracking with iterative country generation."""
 
 	# Initialize token cost service
 	tc = TokenCost(include_cost=True)

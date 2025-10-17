@@ -119,6 +119,7 @@ def create_mock_llm(actions: list[str] | None = None) -> BaseChatModel:
 	action_index = 0
 
 	def get_next_action() -> str:
+		"""Get the next action from the list or return the default done action."""
 		nonlocal action_index
 		if actions is not None and action_index < len(actions):
 			action = actions[action_index]
@@ -128,6 +129,7 @@ def create_mock_llm(actions: list[str] | None = None) -> BaseChatModel:
 			return default_done_action
 
 	async def mock_ainvoke(*args, **kwargs):
+		"""Mock implementation of LLM ainvoke that returns structured actions."""
 		# Check if output_format is provided (2nd argument or in kwargs)
 		output_format = None
 		if len(args) >= 2:
@@ -156,7 +158,7 @@ def create_mock_llm(actions: list[str] | None = None) -> BaseChatModel:
 
 @pytest.fixture(scope='module')
 async def browser_session():
-	"""Create a real browser session for testing"""
+	"""Create a real browser session for testing."""
 	session = BrowserSession(
 		browser_profile=BrowserProfile(
 			headless=True,
@@ -197,7 +199,7 @@ def cloud_sync(httpserver: HTTPServer):
 
 @pytest.fixture(scope='function')
 def mock_llm():
-	"""Create a mock LLM that just returns the done action if queried"""
+	"""Create a mock LLM that just returns the done action if queried."""
 	return create_mock_llm(actions=None)
 
 
@@ -214,24 +216,30 @@ def agent_with_cloud(browser_session, mock_llm, cloud_sync):
 
 @pytest.fixture(scope='function')
 def event_collector():
-	"""Helper to collect all events emitted during tests"""
+	"""Helper to collect all events emitted during tests."""
 	events = []
 	event_order = []
 
 	class EventCollector:
+		"""Collects and organizes events emitted during tests."""
+
 		def __init__(self):
+			"""Initialize the event collector."""
 			self.events = events
 			self.event_order = event_order
 
 		async def collect_event(self, event: BaseEvent):
+			"""Collect an event and add it to the events list."""
 			self.events.append(event)
 			self.event_order.append(event.event_type)
 			return 'collected'
 
 		def get_events_by_type(self, event_type: str) -> list[BaseEvent]:
+			"""Get all events of a specific type."""
 			return [e for e in self.events if e.event_type == event_type]
 
 		def clear(self):
+			"""Clear all collected events."""
 			self.events.clear()
 			self.event_order.clear()
 

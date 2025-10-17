@@ -51,6 +51,7 @@ def load_blocklist_from_url(url: str) -> list[str]:
 
 
 async def main():
+	"""Run large blocklist example."""
 	# Load HaGeZi's Pro++ blocklist (blocks ads, tracking, malware, etc.)
 	# Source: https://github.com/hagezi/dns-blocklists
 	blocklist_url = 'https://gitlab.com/hagezi/mirror/-/raw/main/dns-blocklists/domains/pro.plus.txt'

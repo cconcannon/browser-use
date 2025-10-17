@@ -34,6 +34,7 @@ tools = Tools()
 
 
 async def main():
+	"""Run an agent using Chrome DevTools Protocol connection."""
 	agent = Agent(
 		task='Visit https://duckduckgo.com and search for "browser-use founders"',
 		llm=ChatOpenAI(model='gpt-4.1-mini'),

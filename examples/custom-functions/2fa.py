@@ -1,3 +1,5 @@
+"""Example demonstrating 2FA authentication using TOTP secret codes."""
+
 import os
 import sys
 

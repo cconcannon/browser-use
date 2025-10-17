@@ -1,3 +1,5 @@
+"""Serializer for converting between custom message types and Anthropic message param types."""
+
 import json
 from typing import overload
 
@@ -152,15 +154,21 @@ class AnthropicMessageSerializer:
 	# region - Serialize overloads
 	@overload
 	@staticmethod
-	def serialize(message: UserMessage) -> MessageParam: ...
+	def serialize(message: UserMessage) -> MessageParam:
+		"""Serialize a user message."""
+		...
 
 	@overload
 	@staticmethod
-	def serialize(message: SystemMessage) -> SystemMessage: ...
+	def serialize(message: SystemMessage) -> SystemMessage:
+		"""Serialize a system message."""
+		...
 
 	@overload
 	@staticmethod
-	def serialize(message: AssistantMessage) -> MessageParam: ...
+	def serialize(message: AssistantMessage) -> MessageParam:
+		"""Serialize an assistant message."""
+		...
 
 	@staticmethod
 	def serialize(message: BaseMessage) -> MessageParam | SystemMessage:

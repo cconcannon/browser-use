@@ -1,3 +1,5 @@
+"""Tests for browser session screenshot functionality."""
+
 import pytest
 
 from browser_use.browser.events import NavigateToUrlEvent
@@ -7,6 +9,7 @@ from browser_use.browser.session import BrowserSession
 
 @pytest.fixture(scope='function')
 async def browser_session():
+	"""Create a browser session for screenshot tests."""
 	session = BrowserSession(browser_profile=BrowserProfile(headless=True))
 	await session.start()
 	yield session

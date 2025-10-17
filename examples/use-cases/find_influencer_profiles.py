@@ -23,11 +23,15 @@ from browser_use.agent.views import ActionResult
 
 
 class Profile(BaseModel):
+	"""Social media profile information."""
+
 	platform: str
 	profile_url: str
 
 
 class Profiles(BaseModel):
+	"""Collection of social media profiles."""
+
 	profiles: list[Profile]
 
 
@@ -42,6 +46,7 @@ if not BEARER_TOKEN:
 
 @tools.registry.action('Search the web for a specific query')
 async def search_web(query: str):
+	"""Perform web search using Tessa AI API."""
 	keys_to_use = ['url', 'title', 'content', 'author', 'score']
 	headers = {'Authorization': f'Bearer {BEARER_TOKEN}'}
 	async with httpx.AsyncClient() as client:
@@ -63,6 +68,7 @@ async def search_web(query: str):
 
 
 async def main():
+	"""Run influencer profile finding example."""
 	task = (
 		'Go to this tiktok video url, open it and extract the @username from the resulting url. Then do a websearch for this username to find all his social media profiles. Return me the links to the social media profiles with the platform name.'
 		' https://www.tiktokv.com/share/video/7470981717659110678/  '

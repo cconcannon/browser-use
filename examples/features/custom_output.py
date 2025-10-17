@@ -20,6 +20,8 @@ from browser_use import Agent, ChatOpenAI
 
 
 class Post(BaseModel):
+	"""Represents a single post on Hacker News."""
+
 	post_title: str
 	post_url: str
 	num_comments: int
@@ -27,10 +29,13 @@ class Post(BaseModel):
 
 
 class Posts(BaseModel):
+	"""Collection of Hacker News posts."""
+
 	posts: list[Post]
 
 
 async def main():
+	"""Run custom output example with structured data extraction."""
 	task = 'Go to hackernews show hn and give me the first  5 posts'
 	model = ChatOpenAI(model='gpt-4.1-mini')
 	agent = Agent(task=task, llm=model, output_model_schema=Posts)

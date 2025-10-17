@@ -1,3 +1,5 @@
+"""File system abstraction for managing agent-created files."""
+
 import asyncio
 import re
 import shutil
@@ -16,13 +18,13 @@ DEFAULT_FILE_SYSTEM_PATH = 'browseruse_agent_data'
 
 
 class FileSystemError(Exception):
-	"""Custom exception for file system operations that should be shown to LLM"""
+	"""Custom exception for file system operations that should be shown to LLM."""
 
 	pass
 
 
 class BaseFile(BaseModel, ABC):
-	"""Base class for all file types"""
+	"""Base class for all file types."""
 
 	name: str
 	content: str = ''
@@ -31,95 +33,110 @@ class BaseFile(BaseModel, ABC):
 	@property
 	@abstractmethod
 	def extension(self) -> str:
-		"""File extension (e.g. 'txt', 'md')"""
+		"""File extension (e.g. 'txt', 'md')."""
 		pass
 
 	def write_file_content(self, content: str) -> None:
-		"""Update internal content (formatted)"""
+		"""Update internal content (formatted)."""
 		self.update_content(content)
 
 	def append_file_content(self, content: str) -> None:
-		"""Append content to internal content"""
+		"""Append content to internal content."""
 		self.update_content(self.content + content)
 
 	# --- These are shared and implemented here ---
 
 	def update_content(self, content: str) -> None:
+		"""Update the file content."""
 		self.content = content
 
 	def sync_to_disk_sync(self, path: Path) -> None:
+		"""Synchronously write file to disk."""
 		file_path = path / self.full_name
 		file_path.write_text(self.content)
 
 	async def sync_to_disk(self, path: Path) -> None:
+		"""Asynchronously write file to disk."""
 		file_path = path / self.full_name
 		with ThreadPoolExecutor() as executor:
 			await asyncio.get_event_loop().run_in_executor(executor, lambda: file_path.write_text(self.content))
 
 	async def write(self, content: str, path: Path) -> None:
+		"""Write content to file and sync to disk."""
 		self.write_file_content(content)
 		await self.sync_to_disk(path)
 
 	async def append(self, content: str, path: Path) -> None:
+		"""Append content to file and sync to disk."""
 		self.append_file_content(content)
 		await self.sync_to_disk(path)
 
 	def read(self) -> str:
+		"""Read the file content."""
 		return self.content
 
 	@property
 	def full_name(self) -> str:
+		"""Get the full filename including extension."""
 		return f'{self.name}.{self.extension}'
 
 	@property
 	def get_size(self) -> int:
+		"""Get the file size in bytes."""
 		return len(self.content)
 
 	@property
 	def get_line_count(self) -> int:
+		"""Get the number of lines in the file."""
 		return len(self.content.splitlines())
 
 
 class MarkdownFile(BaseFile):
-	"""Markdown file implementation"""
+	"""Markdown file implementation."""
 
 	@property
 	def extension(self) -> str:
+		"""Return markdown extension."""
 		return 'md'
 
 
 class TxtFile(BaseFile):
-	"""Plain text file implementation"""
+	"""Plain text file implementation."""
 
 	@property
 	def extension(self) -> str:
+		"""Return text extension."""
 		return 'txt'
 
 
 class JsonFile(BaseFile):
-	"""JSON file implementation"""
+	"""JSON file implementation."""
 
 	@property
 	def extension(self) -> str:
+		"""Return JSON extension."""
 		return 'json'
 
 
 class CsvFile(BaseFile):
-	"""CSV file implementation"""
+	"""CSV file implementation."""
 
 	@property
 	def extension(self) -> str:
+		"""Return CSV extension."""
 		return 'csv'
 
 
 class PdfFile(BaseFile):
-	"""PDF file implementation"""
+	"""PDF file implementation."""
 
 	@property
 	def extension(self) -> str:
+		"""Return PDF extension."""
 		return 'pdf'
 
 	def sync_to_disk_sync(self, path: Path) -> None:
+		"""Synchronously write PDF file to disk with markdown content rendered."""
 		file_path = path / self.full_name
 		try:
 			# Create PDF document
@@ -152,12 +169,13 @@ class PdfFile(BaseFile):
 			raise FileSystemError(f"Error: Could not write to file '{self.full_name}'. {str(e)}")
 
 	async def sync_to_disk(self, path: Path) -> None:
+		"""Asynchronously write PDF file to disk using thread pool executor."""
 		with ThreadPoolExecutor() as executor:
 			await asyncio.get_event_loop().run_in_executor(executor, lambda: self.sync_to_disk_sync(path))
 
 
 class FileSystemState(BaseModel):
-	"""Serializable state of the file system"""
+	"""Serializable state of the file system."""
 
 	files: dict[str, dict[str, Any]] = Field(default_factory=dict)  # full filename -> file data
 	base_dir: str
@@ -165,9 +183,15 @@ class FileSystemState(BaseModel):
 
 
 class FileSystem:
-	"""Enhanced file system with in-memory storage and multiple file type support"""
+	"""Enhanced file system with in-memory storage and multiple file type support."""
 
 	def __init__(self, base_dir: str | Path, create_default_files: bool = True):
+		"""Initialize the file system.
+
+		Args:
+		        base_dir: Base directory for file operations.
+		        create_default_files: Whether to create default files.
+		"""
 		# Handle the Path conversion before calling super().__init__
 		self.base_dir = Path(base_dir) if isinstance(base_dir, str) else base_dir
 		self.base_dir.mkdir(parents=True, exist_ok=True)
@@ -195,7 +219,7 @@ class FileSystem:
 		self.extracted_content_count = 0
 
 	def get_allowed_extensions(self) -> list[str]:
-		"""Get allowed extensions"""
+		"""Get allowed extensions."""
 		return list(self._file_types.keys())
 
 	def _get_file_type_class(self, extension: str) -> type[BaseFile] | None:
@@ -203,7 +227,7 @@ class FileSystem:
 		return self._file_types.get(extension.lower(), None)
 
 	def _create_default_files(self) -> None:
-		"""Create default results and todo files"""
+		"""Create default results and todo files."""
 		for full_filename in self.default_files:
 			name_without_ext, extension = self._parse_filename(full_filename)
 			file_class = self._get_file_type_class(extension)
@@ -215,7 +239,7 @@ class FileSystem:
 			file_obj.sync_to_disk_sync(self.data_dir)
 
 	def _is_valid_filename(self, file_name: str) -> bool:
-		"""Check if filename matches the required pattern: name.extension"""
+		"""Check if filename matches the required pattern: name.extension."""
 		# Build extensions pattern from _file_types
 		extensions = '|'.join(self._file_types.keys())
 		pattern = rf'^[a-zA-Z0-9_\-]+\.({extensions})$'
@@ -227,11 +251,11 @@ class FileSystem:
 		return name, extension.lower()
 
 	def get_dir(self) -> Path:
-		"""Get the file system directory"""
+		"""Get the file system directory."""
 		return self.data_dir
 
 	def get_file(self, full_filename: str) -> BaseFile | None:
-		"""Get a file object by full filename"""
+		"""Get a file object by full filename."""
 		if not self._is_valid_filename(full_filename):
 			return None
 
@@ -239,11 +263,11 @@ class FileSystem:
 		return self.files.get(full_filename)
 
 	def list_files(self) -> list[str]:
-		"""List all files in the system"""
+		"""List all files in the system."""
 		return [file_obj.full_name for file_obj in self.files.values()]
 
 	def display_file(self, full_filename: str) -> str | None:
-		"""Display file content using file-specific display method"""
+		"""Display file content using file-specific display method."""
 		if not self._is_valid_filename(full_filename):
 			return None
 
@@ -254,7 +278,7 @@ class FileSystem:
 		return file_obj.read()
 
 	async def read_file(self, full_filename: str, external_file: bool = False) -> str:
-		"""Read file content using file-specific read method and return appropriate message to LLM"""
+		"""Read file content using file-specific read method and return appropriate message to LLM."""
 		if external_file:
 			try:
 				try:
@@ -304,7 +328,7 @@ class FileSystem:
 			return f"Error: Could not read file '{full_filename}'."
 
 	async def write_file(self, full_filename: str, content: str) -> str:
-		"""Write content to file using file-specific write method"""
+		"""Write content to file using file-specific write method."""
 		if not self._is_valid_filename(full_filename):
 			return INVALID_FILENAME_ERROR_MESSAGE
 
@@ -330,7 +354,7 @@ class FileSystem:
 			return f"Error: Could not write to file '{full_filename}'. {str(e)}"
 
 	async def append_file(self, full_filename: str, content: str) -> str:
-		"""Append content to file using file-specific append method"""
+		"""Append content to file using file-specific append method."""
 		if not self._is_valid_filename(full_filename):
 			return INVALID_FILENAME_ERROR_MESSAGE
 
@@ -347,7 +371,7 @@ class FileSystem:
 			return f"Error: Could not append to file '{full_filename}'. {str(e)}"
 
 	async def replace_file_str(self, full_filename: str, old_str: str, new_str: str) -> str:
-		"""Replace old_str with new_str in file_name"""
+		"""Replace old_str with new_str in file_name."""
 		if not self._is_valid_filename(full_filename):
 			return INVALID_FILENAME_ERROR_MESSAGE
 
@@ -369,7 +393,7 @@ class FileSystem:
 			return f"Error: Could not replace string in file '{full_filename}'. {str(e)}"
 
 	async def save_extracted_content(self, content: str) -> str:
-		"""Save extracted content to a numbered file"""
+		"""Save extracted content to a numbered file."""
 		initial_filename = f'extracted_content_{self.extracted_content_count}'
 		extracted_filename = f'{initial_filename}.md'
 		file_obj = MarkdownFile(name=initial_filename)
@@ -379,7 +403,7 @@ class FileSystem:
 		return extracted_filename
 
 	def describe(self) -> str:
-		"""List all files with their content information using file-specific display methods"""
+		"""List all files with their content information using file-specific display methods."""
 		DISPLAY_CHARS = 400
 		description = ''
 
@@ -452,12 +476,12 @@ class FileSystem:
 		return description.strip('\n')
 
 	def get_todo_contents(self) -> str:
-		"""Get todo file contents"""
+		"""Get todo file contents."""
 		todo_file = self.get_file('todo.md')
 		return todo_file.read() if todo_file else ''
 
 	def get_state(self) -> FileSystemState:
-		"""Get serializable state of the file system"""
+		"""Get serializable state of the file system."""
 		files_data = {}
 		for full_filename, file_obj in self.files.items():
 			files_data[full_filename] = {'type': file_obj.__class__.__name__, 'data': file_obj.model_dump()}
@@ -467,12 +491,12 @@ class FileSystem:
 		)
 
 	def nuke(self) -> None:
-		"""Delete the file system directory"""
+		"""Delete the file system directory."""
 		shutil.rmtree(self.data_dir)
 
 	@classmethod
 	def from_state(cls, state: FileSystemState) -> 'FileSystem':
-		"""Restore file system from serializable state at the exact same location"""
+		"""Restore file system from serializable state at the exact same location."""
 		# Create file system without default files
 		fs = cls(base_dir=Path(state.base_dir), create_default_files=False)
 		fs.extracted_content_count = state.extracted_content_count

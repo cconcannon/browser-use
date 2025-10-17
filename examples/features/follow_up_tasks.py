@@ -1,3 +1,5 @@
+"""Example demonstrating multiple follow-up tasks in a loop."""
+
 import asyncio
 import os
 import sys
@@ -19,6 +21,7 @@ task = """Go to reddit.com"""
 
 
 async def main():
+	"""Run multiple follow-up tasks in sequence."""
 	agent = Agent(task=task, browser_profile=profile)
 	await agent.run(max_steps=1)
 

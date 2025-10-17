@@ -1,3 +1,5 @@
+"""OpenRouter chat model implementation."""
+
 from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any, TypeVar, overload
@@ -52,6 +54,7 @@ class ChatOpenRouter(BaseChatModel):
 	# Static
 	@property
 	def provider(self) -> str:
+		"""Return the provider name."""
 		return 'openrouter'
 
 	def _get_client_params(self) -> dict[str, Any]:
@@ -92,6 +95,7 @@ class ChatOpenRouter(BaseChatModel):
 
 	@property
 	def name(self) -> str:
+		"""Return the model name."""
 		return str(self.model)
 
 	def _get_usage(self, response: ChatCompletion) -> ChatInvokeUsage | None:
@@ -113,10 +117,14 @@ class ChatOpenRouter(BaseChatModel):
 		)
 
 	@overload
-	async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]: ...
+	async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]:
+		"""Invoke LLM with messages and return unstructured text completion."""
+		...
 
 	@overload
-	async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]: ...
+	async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]:
+		"""Invoke LLM with messages and return structured output of type T."""
+		...
 
 	async def ainvoke(
 		self, messages: list[BaseMessage], output_format: type[T] | None = None

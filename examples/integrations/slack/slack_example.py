@@ -1,3 +1,5 @@
+"""Example Slack bot implementation for browser automation."""
+
 import os
 import sys
 

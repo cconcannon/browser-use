@@ -1,3 +1,5 @@
+"""Groq chat model implementation."""
+
 import logging
 from dataclasses import dataclass
 from typing import Literal, TypeVar, overload
@@ -74,14 +76,17 @@ class ChatGroq(BaseChatModel):
 	max_retries: int = 10  # Increase default retries for automation reliability
 
 	def get_client(self) -> AsyncGroq:
+		"""Return an AsyncGroq client."""
 		return AsyncGroq(api_key=self.api_key, base_url=self.base_url, timeout=self.timeout, max_retries=self.max_retries)
 
 	@property
 	def provider(self) -> str:
+		"""Return the provider name."""
 		return 'groq'
 
 	@property
 	def name(self) -> str:
+		"""Return the model name."""
 		return str(self.model)
 
 	def _get_usage(self, response: ChatCompletion) -> ChatInvokeUsage | None:
@@ -100,14 +105,19 @@ class ChatGroq(BaseChatModel):
 		return usage
 
 	@overload
-	async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]: ...
+	async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]:
+		"""Invoke LLM with messages and return unstructured text completion."""
+		...
 
 	@overload
-	async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]: ...
+	async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]:
+		"""Invoke LLM with messages and return structured output of type T."""
+		...
 
 	async def ainvoke(
 		self, messages: list[BaseMessage], output_format: type[T] | None = None
 	) -> ChatInvokeCompletion[T] | ChatInvokeCompletion[str]:
+		"""Invoke LLM with messages, optionally returning structured output."""
 		groq_messages = GroqMessageSerializer.serialize_messages(messages)
 
 		try:

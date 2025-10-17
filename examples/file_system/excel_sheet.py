@@ -1,3 +1,5 @@
+"""Example demonstrating CSV file creation with stock price data."""
+
 import asyncio
 import os
 import sys
@@ -23,6 +25,7 @@ agent = Agent(task=task, llm=llm)
 
 
 async def main():
+	"""Run CSV file creation example."""
 	import time
 
 	start_time = time.time()

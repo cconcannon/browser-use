@@ -1,3 +1,5 @@
+"""Tests for agent sensitive data handling and replacement."""
+
 import pytest
 from pydantic import BaseModel, Field
 
@@ -18,11 +20,13 @@ class SensitiveParams(BaseModel):
 
 @pytest.fixture
 def registry():
+	"""Create a registry instance for testing."""
 	return Registry()
 
 
 @pytest.fixture
 def message_manager():
+	"""Create a message manager instance for testing."""
 	import os
 	import tempfile
 	import uuid
@@ -38,7 +42,7 @@ def message_manager():
 
 
 def test_replace_sensitive_data_with_missing_keys(registry, caplog):
-	"""Test that _replace_sensitive_data handles missing keys gracefully"""
+	"""Test that _replace_sensitive_data handles missing keys gracefully."""
 	# Create a simple Pydantic model with sensitive data placeholders
 	params = SensitiveParams(text='Please enter <secret>username</secret> and <secret>password</secret>')
 
@@ -71,7 +75,7 @@ def test_replace_sensitive_data_with_missing_keys(registry, caplog):
 
 
 def test_simple_domain_specific_sensitive_data(registry, caplog):
-	"""Test the basic functionality of domain-specific sensitive data replacement"""
+	"""Test the basic functionality of domain-specific sensitive data replacement."""
 	# Create a simple Pydantic model with sensitive data placeholders
 	params = SensitiveParams(text='Please enter <secret>username</secret> and <secret>password</secret>')
 
@@ -97,7 +101,7 @@ def test_simple_domain_specific_sensitive_data(registry, caplog):
 
 
 def test_match_url_with_domain_pattern():
-	"""Test that the domain pattern matching utility works correctly"""
+	"""Test that the domain pattern matching utility works correctly."""
 
 	# Test exact domain matches
 	assert match_url_with_domain_pattern('https://example.com', 'example.com') is True
@@ -133,7 +137,7 @@ def test_match_url_with_domain_pattern():
 
 
 def test_unsafe_domain_patterns():
-	"""Test that unsafe domain patterns are rejected"""
+	"""Test that unsafe domain patterns are rejected."""
 
 	# These are unsafe patterns that could match too many domains
 	assert match_url_with_domain_pattern('https://evil.com', '*google.com') is False
@@ -152,7 +156,7 @@ def test_unsafe_domain_patterns():
 
 
 def test_malformed_urls_and_patterns():
-	"""Test handling of malformed URLs or patterns"""
+	"""Test handling of malformed URLs or patterns."""
 
 	# Malformed URLs
 	assert match_url_with_domain_pattern('not-a-url', 'example.com') is False
@@ -214,7 +218,7 @@ def test_url_components():
 
 
 def test_filter_sensitive_data(message_manager):
-	"""Test that _filter_sensitive_data handles all sensitive data scenarios correctly"""
+	"""Test that _filter_sensitive_data handles all sensitive data scenarios correctly."""
 	# Set up a message with sensitive information
 	message = UserMessage(content='My username is admin and password is secret123')
 
@@ -256,7 +260,7 @@ def test_filter_sensitive_data(message_manager):
 
 
 def test_is_new_tab_page():
-	"""Test is_new_tab_page function"""
+	"""Test is_new_tab_page function."""
 	# Test about:blank
 	assert is_new_tab_page('about:blank') is True
 

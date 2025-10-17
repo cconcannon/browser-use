@@ -20,6 +20,7 @@ load_dotenv()
 
 
 async def search_url(url: str, query: str, depth: int = 2):
+	"""Search and extract content from a specific URL using the Browser Use API."""
 	# Validate API key exists
 	api_key = os.getenv('BROWSER_USE_API_KEY')
 	if not api_key:

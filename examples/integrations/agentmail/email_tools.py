@@ -20,12 +20,15 @@ logger = logging.getLogger(__name__)
 
 
 class EmailTools(Tools):
+	"""Collection of email-related tools for agent integration."""
+
 	def __init__(
 		self,
 		email_client: AsyncAgentMail | None = None,
 		email_timeout: int = 30,
 		inbox: Inbox | None = None,
 	):
+		"""Initialize email tools with client and configuration."""
 		super().__init__()
 		self.email_client = email_client or AsyncAgentMail()
 
@@ -96,9 +99,7 @@ class EmailTools(Tools):
 		return inbox
 
 	async def wait_for_message(self, inbox_id: InboxId) -> Message:
-		"""
-		Wait for a message to be received in the inbox
-		"""
+		"""Wait for a message to be received in the inbox."""
 		async with self.email_client.websockets.connect() as ws:
 			await ws.send_subscribe(message=Subscribe(inbox_ids=[inbox_id]))
 
@@ -117,13 +118,11 @@ class EmailTools(Tools):
 				raise TimeoutError(f'No email received in the inbox in {self.email_timeout}s')
 
 	def register_email_tools(self):
-		"""Register all email-related controller actions"""
+		"""Register all email-related controller actions."""
 
-		@self.action('Get email address for login. You can use this email to login to any service with email and password')
+			@self.action('Get email address for login. You can use this email to login to any service with email and password')
 		async def get_email_address() -> str:
-			"""
-			Get the email address of the inbox
-			"""
+			"""Get the email address of the inbox."""
 			inbox = await self.get_or_create_inbox_client()
 			logger.info(f'Email address: {inbox.inbox_id}')
 			return inbox.inbox_id

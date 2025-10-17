@@ -146,6 +146,7 @@ async def test_assumption_3_action_gets_same_selector_map(browser_session, tools
 	# Create a test action that checks the selector map it receives
 	@tools.registry.action('Test: Check selector map')
 	async def test_check_selector_map(browser_session: BrowserSession):
+		"""Test action that checks the selector map contents."""
 		from browser_use import ActionResult
 
 		action_selector_map = await browser_session.get_selector_map()
@@ -184,6 +185,7 @@ async def test_assumption_4_click_action_specific_issue(browser_session, tools, 
 	# Create a test action that replicates click logic
 	@tools.registry.action('Test: Debug click logic')
 	async def test_debug_click_logic(index: int, browser_session: BrowserSession):
+		"""Test action that debugs click logic with selector maps."""
 		from browser_use import ActionResult
 
 		# This is the exact logic from click

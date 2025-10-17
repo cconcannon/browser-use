@@ -1,3 +1,5 @@
+"""Serializer for converting browser-use messages to DeepSeek messages."""
+
 from __future__ import annotations
 
 import json
@@ -71,18 +73,25 @@ class DeepSeekMessageSerializer:
 	# -------- 单条消息序列化 -------------------------------------------------
 	@overload
 	@staticmethod
-	def serialize(message: UserMessage) -> MessageDict: ...
+	def serialize(message: UserMessage) -> MessageDict:
+		"""Serialize a user message."""
+		...
 
 	@overload
 	@staticmethod
-	def serialize(message: SystemMessage) -> MessageDict: ...
+	def serialize(message: SystemMessage) -> MessageDict:
+		"""Serialize a system message."""
+		...
 
 	@overload
 	@staticmethod
-	def serialize(message: AssistantMessage) -> MessageDict: ...
+	def serialize(message: AssistantMessage) -> MessageDict:
+		"""Serialize an assistant message."""
+		...
 
 	@staticmethod
 	def serialize(message: BaseMessage) -> MessageDict:
+		"""Serialize a message to DeepSeek format."""
 		if isinstance(message, UserMessage):
 			return {
 				'role': 'user',
@@ -106,4 +115,5 @@ class DeepSeekMessageSerializer:
 	# -------- 列表序列化 -----------------------------------------------------
 	@staticmethod
 	def serialize_messages(messages: list[BaseMessage]) -> list[MessageDict]:
+		"""Serialize list of BaseMessage to DeepSeek message format."""
 		return [DeepSeekMessageSerializer.serialize(m) for m in messages]

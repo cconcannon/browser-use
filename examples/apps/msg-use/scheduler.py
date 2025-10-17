@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""
-WhatsApp Message Scheduler - Send scheduled messages via WhatsApp Web
-"""
+"""WhatsApp Message Scheduler - Send scheduled messages via WhatsApp Web."""
 
 import argparse
 import asyncio
@@ -15,6 +13,7 @@ from pathlib import Path
 
 
 def setup_environment(debug: bool):
+	"""Configure logging and environment variables based on debug mode."""
 	if not debug:
 		os.environ['BROWSER_USE_SETUP_LOGGING'] = 'false'
 		os.environ['BROWSER_USE_LOGGING_LEVEL'] = 'critical'
@@ -42,7 +41,7 @@ STORAGE_STATE_FILE = USER_DATA_DIR / 'storage_state.json'
 
 
 async def parse_messages():
-	"""Parse messages.txt and extract scheduling info"""
+	"""Parse messages.txt and extract scheduling info."""
 	messages_file = Path('messages.txt')
 	if not messages_file.exists():
 		print('❌ messages.txt not found!')
@@ -116,7 +115,7 @@ async def parse_messages():
 
 
 async def send_message(contact, message):
-	"""Send a WhatsApp message"""
+	"""Send a WhatsApp message."""
 	print(f'\n📱 Sending to {contact}: {message}')
 
 	llm = ChatGoogle(model='gemini-2.0-flash-exp', temperature=0.3, api_key=GOOGLE_API_KEY)
@@ -143,7 +142,7 @@ async def send_message(contact, message):
 
 
 async def auto_respond_to_unread():
-	"""Click unread tab and respond to messages"""
+	"""Click unread tab and respond to messages."""
 	print('\nAuto-responding to unread messages...')
 
 	llm = ChatGoogle(model='gemini-2.0-flash-exp', temperature=0.3, api_key=GOOGLE_API_KEY)
@@ -173,6 +172,7 @@ async def auto_respond_to_unread():
 
 
 async def main():
+	"""Main entry point for the WhatsApp scheduler."""
 	if not GOOGLE_API_KEY:
 		print('❌ Set GOOGLE_API_KEY or GEMINI_API_KEY environment variable')
 		return

@@ -1,3 +1,5 @@
+"""Serializer for converting browser-use messages to Cerebras messages."""
+
 from __future__ import annotations
 
 import json
@@ -71,18 +73,25 @@ class CerebrasMessageSerializer:
 	# -------- 单条消息序列化 -------------------------------------------------
 	@overload
 	@staticmethod
-	def serialize(message: UserMessage) -> MessageDict: ...
+	def serialize(message: UserMessage) -> MessageDict:
+		"""Serialize a user message."""
+		...
 
 	@overload
 	@staticmethod
-	def serialize(message: SystemMessage) -> MessageDict: ...
+	def serialize(message: SystemMessage) -> MessageDict:
+		"""Serialize a system message."""
+		...
 
 	@overload
 	@staticmethod
-	def serialize(message: AssistantMessage) -> MessageDict: ...
+	def serialize(message: AssistantMessage) -> MessageDict:
+		"""Serialize an assistant message."""
+		...
 
 	@staticmethod
 	def serialize(message: BaseMessage) -> MessageDict:
+		"""Serialize a message to Cerebras format."""
 		if isinstance(message, UserMessage):
 			return {
 				'role': 'user',
@@ -106,4 +115,5 @@ class CerebrasMessageSerializer:
 	# -------- 列表序列化 -----------------------------------------------------
 	@staticmethod
 	def serialize_messages(messages: list[BaseMessage]) -> list[MessageDict]:
+		"""Serialize list of BaseMessage to Cerebras message format."""
 		return [CerebrasMessageSerializer.serialize(m) for m in messages]

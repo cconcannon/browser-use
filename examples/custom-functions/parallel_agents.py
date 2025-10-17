@@ -122,7 +122,7 @@ async def create_subtasks(main_task: str, llm) -> list[str]:
 
 
 def simple_split_task(main_task: str) -> list[str]:
-	"""Simple fallback: split task by common separators"""
+	"""Simple fallback: split task by common separators."""
 	task_lower = main_task.lower()
 
 	# Try to split by common separators
@@ -141,7 +141,7 @@ def simple_split_task(main_task: str) -> list[str]:
 
 
 async def run_single_agent(task: str, llm, agent_id: int) -> tuple[int, str]:
-	"""Run a single agent and return its result"""
+	"""Run a single agent and return its result."""
 	print(f'🚀 Agent {agent_id} starting: {task}')
 	print(f'   📝 This agent will focus ONLY on: {task}')
 	print(f'   🌐 Creating isolated browser instance for agent {agent_id}')
@@ -225,7 +225,7 @@ async def run_single_agent(task: str, llm, agent_id: int) -> tuple[int, str]:
 
 
 def extract_clean_result(agent_result) -> str:
-	"""Extract clean result from agent history"""
+	"""Extract clean result from agent history."""
 	try:
 		# Get the last result from the agent history
 		if hasattr(agent_result, 'all_results') and agent_result.all_results:
@@ -240,7 +240,7 @@ def extract_clean_result(agent_result) -> str:
 
 
 async def run_parallel_agents():
-	"""Run multiple agents in parallel on different tasks"""
+	"""Run multiple agents in parallel on different tasks."""
 
 	# Use Gemini 1.5 Flash
 	llm = ChatGoogle(model='gemini-1.5-flash')
@@ -283,7 +283,7 @@ async def run_parallel_agents():
 
 
 def main():
-	"""Main function to run parallel agents"""
+	"""Main function to run parallel agents."""
 	# Check if Google API key is available
 	api_key = os.getenv('GOOGLE_API_KEY')
 	if not api_key:

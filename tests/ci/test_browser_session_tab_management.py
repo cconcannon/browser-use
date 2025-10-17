@@ -1,3 +1,5 @@
+"""Tests for browser session tab management."""
+
 import asyncio
 import logging
 
@@ -102,6 +104,8 @@ class TestTabManagement:
 
 		# Create the ActionModel with the single action field
 		class DynamicActionModel(ActionModel):
+			"""Test action model for dynamic actions."""
+
 			pass
 
 		# Dynamically add the field with the right type annotation

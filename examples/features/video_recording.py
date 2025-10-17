@@ -1,3 +1,5 @@
+"""Example demonstrating video recording of agent execution."""
+
 import asyncio
 from pathlib import Path
 
@@ -7,6 +9,7 @@ from browser_use import Agent, Browser, ChatOpenAI
 
 
 async def main():
+	"""Run video recording example."""
 	browser_session = Browser(record_video_dir=Path('./tmp/recordings'))
 
 	agent = Agent(

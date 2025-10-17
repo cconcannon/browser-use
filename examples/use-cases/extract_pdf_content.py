@@ -4,6 +4,8 @@
 # dependencies = ["browser-use", "mistralai"]
 # ///
 
+"""Example demonstrating PDF content extraction from web pages."""
+
 import os
 import sys
 
@@ -22,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 
 async def main():
+	"""Run PDF extraction example."""
 	agent = Agent(
 		task="""
         Objective: Navigate to the following UR, what is on page 3?

@@ -1,3 +1,5 @@
+"""Data models for telemetry events."""
+
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
 from dataclasses import asdict, dataclass
@@ -8,13 +10,17 @@ from browser_use.config import is_running_in_docker
 
 @dataclass
 class BaseTelemetryEvent(ABC):
+	"""Base class for all telemetry events."""
+
 	@property
 	@abstractmethod
 	def name(self) -> str:
+		"""Event name for telemetry tracking."""
 		pass
 
 	@property
 	def properties(self) -> dict[str, Any]:
+		"""Event properties including Docker context."""
 		props = {k: v for k, v in asdict(self).items() if k != 'name'}
 		# Add Docker context if running in Docker
 		props['is_docker'] = is_running_in_docker()
@@ -23,6 +29,8 @@ class BaseTelemetryEvent(ABC):
 
 @dataclass
 class AgentTelemetryEvent(BaseTelemetryEvent):
+	"""Telemetry event for agent run lifecycle and metrics."""
+
 	# start details
 	task: str
 	model: str
@@ -50,7 +58,7 @@ class AgentTelemetryEvent(BaseTelemetryEvent):
 
 @dataclass
 class MCPClientTelemetryEvent(BaseTelemetryEvent):
-	"""Telemetry event for MCP client usage"""
+	"""Telemetry event for MCP client usage."""
 
 	server_name: str
 	command: str
@@ -66,7 +74,7 @@ class MCPClientTelemetryEvent(BaseTelemetryEvent):
 
 @dataclass
 class MCPServerTelemetryEvent(BaseTelemetryEvent):
-	"""Telemetry event for MCP server usage"""
+	"""Telemetry event for MCP server usage."""
 
 	version: str
 	action: str  # 'start', 'stop', 'tool_call'
@@ -80,7 +88,7 @@ class MCPServerTelemetryEvent(BaseTelemetryEvent):
 
 @dataclass
 class CLITelemetryEvent(BaseTelemetryEvent):
-	"""Telemetry event for CLI usage"""
+	"""Telemetry event for CLI usage."""
 
 	version: str
 	action: str  # 'start', 'message_sent', 'task_completed', 'error'

@@ -39,6 +39,7 @@ cost_logger = logging.getLogger('cost')
 
 
 def xdg_cache_home() -> Path:
+	"""Get XDG cache home directory path."""
 	default = Path.home() / '.cache'
 	if CONFIG.XDG_CACHE_HOME and (path := Path(CONFIG.XDG_CACHE_HOME)).is_absolute():
 		return path
@@ -46,13 +47,14 @@ def xdg_cache_home() -> Path:
 
 
 class TokenCost:
-	"""Service for tracking token usage and calculating costs"""
+	"""Service for tracking token usage and calculating costs."""
 
 	CACHE_DIR_NAME = 'browser_use/token_cost'
 	CACHE_DURATION = timedelta(days=1)
 	PRICING_URL = 'https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json'
 
 	def __init__(self, include_cost: bool = False):
+		"""Initialize token cost service with cost calculation setting."""
 		self.include_cost = include_cost or os.getenv('BROWSER_USE_CALCULATE_COST', 'false').lower() == 'true'
 
 		self.usage_history: list[TokenUsageEntry] = []
@@ -62,7 +64,7 @@ class TokenCost:
 		self._cache_dir = xdg_cache_home() / self.CACHE_DIR_NAME
 
 	async def initialize(self) -> None:
-		"""Initialize the service by loading pricing data"""
+		"""Initialize the service by loading pricing data."""
 		if not self._initialized:
 			if self.include_cost:
 				await self._load_pricing_data()
@@ -159,7 +161,7 @@ class TokenCost:
 			self._pricing_data = {}
 
 	async def get_model_pricing(self, model_name: str) -> ModelPricing | None:
-		"""Get pricing information for a specific model"""
+		"""Get pricing information for a specific model."""
 		# Ensure we're initialized
 		if not self._initialized:
 			await self.initialize()
@@ -197,6 +199,7 @@ class TokenCost:
 		)
 
 	async def calculate_cost(self, model: str, usage: ChatInvokeUsage) -> TokenCostCalculated | None:
+		"""Calculate token costs for a specific model usage."""
 		if not self.include_cost:
 			return None
 
@@ -225,7 +228,7 @@ class TokenCost:
 		)
 
 	def add_usage(self, model: str, usage: ChatInvokeUsage) -> TokenUsageEntry:
-		"""Add token usage entry to history (without calculating cost)"""
+		"""Add token usage entry to history (without calculating cost)."""
 		entry = TokenUsageEntry(
 			model=model,
 			timestamp=datetime.now(),
@@ -337,6 +340,7 @@ class TokenCost:
 
 		# Create a wrapped version that tracks usage
 		async def tracked_ainvoke(messages, output_format=None, **kwargs):
+			"""Wrapper that tracks token usage for LLM invocations."""
 			# Call the original method, passing through any additional kwargs
 			result = await original_ainvoke(messages, output_format, **kwargs)
 
@@ -360,7 +364,7 @@ class TokenCost:
 		return llm
 
 	def get_usage_tokens_for_model(self, model: str) -> ModelUsageTokens:
-		"""Get usage tokens for a specific model"""
+		"""Get usage tokens for a specific model."""
 		filtered_usage = [u for u in self.usage_history if u.model == model]
 
 		return ModelUsageTokens(
@@ -372,7 +376,7 @@ class TokenCost:
 		)
 
 	async def get_usage_summary(self, model: str | None = None, since: datetime | None = None) -> UsageSummary:
-		"""Get summary of token usage and costs (costs calculated on-the-fly)"""
+		"""Get summary of token usage and costs (costs calculated on-the-fly)."""
 		filtered_usage = self.usage_history
 
 		if model:
@@ -455,7 +459,7 @@ class TokenCost:
 		return str(tokens)
 
 	async def log_usage_summary(self) -> None:
-		"""Log a comprehensive usage summary per model with colors and nice formatting"""
+		"""Log a comprehensive usage summary per model with colors and nice formatting."""
 		if not self.usage_history:
 			return
 
@@ -538,21 +542,21 @@ class TokenCost:
 			)
 
 	async def get_cost_by_model(self) -> dict[str, ModelUsageStats]:
-		"""Get cost breakdown by model"""
+		"""Get cost breakdown by model."""
 		summary = await self.get_usage_summary()
 		return summary.by_model
 
 	def clear_history(self) -> None:
-		"""Clear usage history"""
+		"""Clear usage history."""
 		self.usage_history = []
 
 	async def refresh_pricing_data(self) -> None:
-		"""Force refresh of pricing data from GitHub"""
+		"""Force refresh of pricing data from GitHub."""
 		if self.include_cost:
 			await self._fetch_and_cache_pricing_data()
 
 	async def clean_old_caches(self, keep_count: int = 3) -> None:
-		"""Clean up old cache files, keeping only the most recent ones"""
+		"""Clean up old cache files, keeping only the most recent ones."""
 		try:
 			# List all JSON files in the cache directory
 			cache_files = list(self._cache_dir.glob('*.json'))

@@ -128,7 +128,7 @@ async def debug_iframe_scrolling():
 
 		# Helper function to capture and analyze DOM state
 		async def capture_dom_state(label: str) -> dict:
-			"""Capture DOM state and return analysis"""
+			"""Capture DOM state and return analysis."""
 			print(f'\n📸 Capturing DOM state: {label}')
 			state_event = browser_session.event_bus.dispatch(
 				BrowserStateRequestEvent(include_dom=True, include_screenshot=False, include_recent_events=False)
@@ -201,6 +201,7 @@ async def debug_iframe_scrolling():
 		original_act = tools.act
 
 		async def wrapped_act(action, session):
+			"""Wrapped act function to capture state after each action."""
 			result = await original_act(action, session)
 			# Capture state after each action
 			action_type = 'unknown'

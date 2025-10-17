@@ -29,6 +29,7 @@ from browser_use import Agent, ChatBrowserUse
 
 
 async def main():
+	"""Run multi-step task example."""
 	# Initialize the model
 	llm = ChatBrowserUse()
 

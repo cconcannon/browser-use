@@ -30,6 +30,7 @@ from browser_use.tools.service import Tools
 
 
 def get_llm(provider: str):
+	"""Get language model instance based on provider."""
 	if provider == 'anthropic':
 		from browser_use.llm import ChatAnthropic
 

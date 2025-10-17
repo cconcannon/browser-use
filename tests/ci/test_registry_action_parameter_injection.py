@@ -1,3 +1,5 @@
+"""Tests for registry action parameter injection."""
+
 import asyncio
 import base64
 import socketserver
@@ -340,7 +342,7 @@ class TestBrowserContext:
 	@pytest.mark.asyncio
 	@pytest.mark.skip(reason='TODO: fix')
 	async def test_custom_action_with_no_arguments(self, browser_session, base_url):
-		"""Test that custom actions with no arguments are handled correctly"""
+		"""Test that custom actions with no arguments are handled correctly."""
 		from browser_use.agent.views import ActionResult
 		from browser_use.tools.registry.service import Registry
 
@@ -350,6 +352,7 @@ class TestBrowserContext:
 		# Register a custom action with no arguments
 		@registry.action('Some custom action with no args')
 		def simple_action():
+			"""Simple test action with no arguments."""
 			return ActionResult(extracted_content='return some result')
 
 		# Navigate to a test page
@@ -382,6 +385,7 @@ class TestBrowserContext:
 		# Test async version as well
 		@registry.action('Async custom action with no args')
 		async def async_simple_action():
+			"""Simple async test action with no arguments."""
 			return ActionResult(extracted_content='async result')
 
 		result = await registry.execute_action('async_simple_action', {})
@@ -390,6 +394,7 @@ class TestBrowserContext:
 		# Test with special parameters but no regular arguments
 		@registry.action('Action with only special params')
 		async def special_params_only(browser_session):
+			"""Test action with special parameters only."""
 			current_url = await browser_session.get_current_page_url()
 			return ActionResult(extracted_content=f'Page URL: {current_url}')
 

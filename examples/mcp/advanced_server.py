@@ -41,6 +41,7 @@ class TaskResult:
 	timestamp: datetime | None = None
 
 	def __post_init__(self):
+		"""Initialize post-dataclass setup."""
 		if self.timestamp is None:
 			self.timestamp = datetime.now()
 
@@ -49,6 +50,7 @@ class AIAssistant:
 	"""An AI assistant that uses MCP servers to perform complex tasks."""
 
 	def __init__(self):
+		"""Initialize AI assistant with empty server and tool registries."""
 		self.servers: dict[str, ClientSession] = {}
 		self.tools: dict[str, Tool] = {}
 		self.history: list[TaskResult] = []

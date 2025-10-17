@@ -76,7 +76,9 @@ class BaseWatchdog(BaseModel):
 		# Create a wrapper function with unique name to avoid duplicate handler warnings
 		# Capture handler by value to avoid closure issues
 		def make_unique_handler(actual_handler):
+			"""Create a unique handler wrapper for event bus registration."""
 			async def unique_handler(event):
+				"""Handle events with debug logging for event chains."""
 				# just for debug logging, not used for anything else
 				parent_event = event_bus.event_history.get(event.event_parent_id) if event.event_parent_id else None
 				grandparent_event = (

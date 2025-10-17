@@ -1,3 +1,5 @@
+"""Google Gemini chat model implementation using the genai client."""
+
 import asyncio
 import json
 import logging
@@ -97,11 +99,12 @@ class ChatGoogle(BaseChatModel):
 	# Static
 	@property
 	def provider(self) -> str:
+		"""Return the provider name."""
 		return 'google'
 
 	@property
 	def logger(self) -> logging.Logger:
-		"""Get logger for this chat instance"""
+		"""Get logger for this chat instance."""
 		return logging.getLogger(f'browser_use.llm.google.{self.model}')
 
 	def _get_client_params(self) -> dict[str, Any]:
@@ -137,6 +140,7 @@ class ChatGoogle(BaseChatModel):
 
 	@property
 	def name(self) -> str:
+		"""Return the model name."""
 		return str(self.model)
 
 	def _get_usage(self, response: types.GenerateContentResponse) -> ChatInvokeUsage | None:
@@ -164,10 +168,14 @@ class ChatGoogle(BaseChatModel):
 		return usage
 
 	@overload
-	async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]: ...
+	async def ainvoke(self, messages: list[BaseMessage], output_format: None = None) -> ChatInvokeCompletion[str]:
+		"""Invoke LLM with messages and return unstructured text completion."""
+		...
 
 	@overload
-	async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]: ...
+	async def ainvoke(self, messages: list[BaseMessage], output_format: type[T]) -> ChatInvokeCompletion[T]:
+		"""Invoke LLM with messages and return structured output of type T."""
+		...
 
 	async def ainvoke(
 		self, messages: list[BaseMessage], output_format: type[T] | None = None
@@ -451,6 +459,7 @@ class ChatGoogle(BaseChatModel):
 			defs = schema.pop('$defs')
 
 			def resolve_refs(obj: Any) -> Any:
+				"""Recursively resolve $ref references in JSON schema."""
 				if isinstance(obj, dict):
 					if '$ref' in obj:
 						ref = obj.pop('$ref')
@@ -475,6 +484,7 @@ class ChatGoogle(BaseChatModel):
 
 		# Remove unsupported properties
 		def clean_schema(obj: Any) -> Any:
+			"""Recursively clean unsupported properties from JSON schema."""
 			if isinstance(obj, dict):
 				# Remove unsupported properties
 				cleaned = {}

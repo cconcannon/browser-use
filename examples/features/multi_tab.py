@@ -25,6 +25,7 @@ agent = Agent(
 
 
 async def main():
+	"""Run multi-tab example."""
 	await agent.run()
 
 

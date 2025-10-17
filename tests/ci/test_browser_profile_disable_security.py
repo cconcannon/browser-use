@@ -23,6 +23,7 @@ class TestBrowserProfileDisableSecurity:
 
 		# Extract disable-features args
 		def extract_disable_features(args):
+			"""Extract the disable-features argument from Chrome args."""
 			for arg in args:
 				if arg.startswith('--disable-features='):
 					return set(arg.split('=', 1)[1].split(','))

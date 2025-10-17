@@ -1,5 +1,5 @@
 """
-Show how to use sample_images to add image context for your task
+Show how to use sample_images to add image context for your task.
 """
 
 import asyncio

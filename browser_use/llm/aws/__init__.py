@@ -1,3 +1,5 @@
+"""AWS Bedrock chat model integrations."""
+
 from typing import TYPE_CHECKING
 
 # Type stubs for lazy imports

@@ -281,6 +281,8 @@ class TestGetDropdownOptionsEvent:
 		goto_action = {'navigate': GoToUrlAction(url=f'{base_url}/native-dropdown', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -302,6 +304,8 @@ class TestGetDropdownOptionsEvent:
 
 		# Test via tools action
 		class GetDropdownOptionsModel(ActionModel):
+			"""Test action model for getting dropdown options."""
+
 			get_dropdown_options: dict[str, int]
 
 		result = await tools.act(
@@ -339,6 +343,8 @@ class TestGetDropdownOptionsEvent:
 		goto_action = {'navigate': GoToUrlAction(url=f'{base_url}/aria-menu', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -367,6 +373,8 @@ class TestGetDropdownOptionsEvent:
 
 		# Test via tools action
 		class GetDropdownOptionsModel(ActionModel):
+			"""Test action model for getting dropdown options."""
+
 			get_dropdown_options: dict[str, int]
 
 		result = await tools.act(
@@ -401,6 +409,8 @@ class TestGetDropdownOptionsEvent:
 		goto_action = {'navigate': GoToUrlAction(url=f'{base_url}/custom-dropdown', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -425,6 +435,8 @@ class TestGetDropdownOptionsEvent:
 
 		# Test via tools action
 		class GetDropdownOptionsModel(ActionModel):
+			"""Test action model for getting dropdown options."""
+
 			get_dropdown_options: dict[str, int]
 
 		result = await tools.act(
@@ -459,6 +471,8 @@ class TestGetDropdownOptionsEvent:
 		goto_action = {'navigate': GoToUrlAction(url=f'{base_url}/native-dropdown', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -466,6 +480,7 @@ class TestGetDropdownOptionsEvent:
 
 		# Try to get dropdown options with invalid index
 		class GetDropdownOptionsModel(ActionModel):
+		"""Test action model for getting dropdown options."""
 			get_dropdown_options: dict[str, int]
 
 		result = await tools.act(
@@ -489,6 +504,8 @@ class TestSelectDropdownOptionEvent:
 		goto_action = {'navigate': GoToUrlAction(url=f'{base_url}/native-dropdown', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -509,6 +526,8 @@ class TestSelectDropdownOptionEvent:
 
 		# Test via tools action
 		class SelectDropdownOptionModel(ActionModel):
+			"""Test action model for selecting dropdown option."""
+
 			select_dropdown_option: dict
 
 		result = await tools.act(
@@ -537,6 +556,8 @@ class TestSelectDropdownOptionEvent:
 		goto_action = {'navigate': GoToUrlAction(url=f'{base_url}/aria-menu', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -561,6 +582,8 @@ class TestSelectDropdownOptionEvent:
 
 		# Test via tools action
 		class SelectDropdownOptionModel(ActionModel):
+			"""Test action model for selecting dropdown option."""
+
 			select_dropdown_option: dict
 
 		result = await tools.act(
@@ -589,6 +612,8 @@ class TestSelectDropdownOptionEvent:
 		goto_action = {'navigate': GoToUrlAction(url=f'{base_url}/custom-dropdown', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -609,6 +634,8 @@ class TestSelectDropdownOptionEvent:
 
 		# Test via tools action
 		class SelectDropdownOptionModel(ActionModel):
+			"""Test action model for selecting dropdown option."""
+
 			select_dropdown_option: dict
 
 		result = await tools.act(
@@ -637,6 +664,8 @@ class TestSelectDropdownOptionEvent:
 		goto_action = {'navigate': GoToUrlAction(url=f'{base_url}/native-dropdown', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)

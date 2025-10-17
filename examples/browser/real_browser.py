@@ -1,3 +1,5 @@
+"""Example demonstrating connection to an existing Chrome browser instance."""
+
 import asyncio
 import os
 import sys
@@ -19,6 +21,7 @@ browser = Browser(
 
 
 async def main():
+	"""Connect to existing Chrome browser and run an agent."""
 	# save storage state
 	agent = Agent(
 		llm=ChatGoogle(model='gemini-flash-latest'),

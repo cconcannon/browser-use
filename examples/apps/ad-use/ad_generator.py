@@ -1,3 +1,5 @@
+"""Ad generator using browser-use and Google Gemini for Instagram and TikTok ads."""
+
 import argparse
 import asyncio
 import logging
@@ -9,6 +11,7 @@ from pathlib import Path
 
 
 def setup_environment(debug: bool):
+	"""Configure logging and environment variables based on debug mode."""
 	if not debug:
 		os.environ['BROWSER_USE_SETUP_LOGGING'] = 'false'
 		os.environ['BROWSER_USE_LOGGING_LEVEL'] = 'critical'
@@ -43,13 +46,16 @@ GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 
 
 class LandingPageAnalyzer:
+	"""Analyzes landing pages to extract brand information for ad generation."""
 	def __init__(self, debug: bool = False):
+		"""Initialize the landing page analyzer."""
 		self.debug = debug
 		self.llm = ChatGoogle(model='gemini-2.0-flash-exp', api_key=GOOGLE_API_KEY)
 		self.output_dir = Path('output')
 		self.output_dir.mkdir(exist_ok=True)
 
 	async def analyze_landing_page(self, url: str, mode: str = 'instagram') -> dict:
+		"""Analyze a landing page and extract key brand information."""
 		browser_session = BrowserSession(
 			headless=not self.debug,
 		)
@@ -80,6 +86,7 @@ Return ONLY the key brand info, not page structure details.""",
 		timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
 
 		async def screenshot_callback(agent_instance):
+			"""Capture a screenshot of the landing page."""
 			nonlocal screenshot_path
 			await asyncio.sleep(4)
 			screenshot_path = self.output_dir / f'landing_page_{timestamp}.png'
@@ -97,7 +104,9 @@ Return ONLY the key brand info, not page structure details.""",
 
 
 class AdGenerator:
+	"""Generates Instagram or TikTok ads using Google Gemini."""
 	def __init__(self, api_key: str | None = GOOGLE_API_KEY, mode: str = 'instagram'):
+		"""Initialize the ad generator."""
 		if not api_key:
 			raise ValueError('GOOGLE_API_KEY is missing or empty – set the environment variable or pass api_key explicitly')
 
@@ -107,7 +116,7 @@ class AdGenerator:
 		self.mode = mode
 
 	async def create_video_concept(self, browser_analysis: str, ad_id: int) -> str:
-		"""Generate a unique creative concept for each video ad"""
+		"""Generate a unique creative concept for each video ad."""
 		if self.mode != 'tiktok':
 			return ''
 
@@ -130,6 +139,7 @@ Make it visually interesting and different from typical ads. Be specific about v
 		return response.text if response and response.text else ''
 
 	def create_ad_prompt(self, browser_analysis: str, video_concept: str = '') -> str:
+		"""Create a prompt for ad generation based on browser analysis and video concept."""
 		if self.mode == 'instagram':
 			prompt = f"""Create an Instagram ad for this brand:
 
@@ -254,6 +264,7 @@ Style: Modern TikTok advertisement, viral potential, authentic energy, minimal t
 		return video_bytes
 
 	async def save_results(self, ad_content: bytes, prompt: str, analysis: str, url: str, timestamp: str) -> str:
+		"""Save ad content and analysis to disk."""
 		if self.mode == 'instagram':
 			content_path = self.output_dir / f'ad_{timestamp}.png'
 		else:  # tiktok
@@ -274,7 +285,7 @@ Style: Modern TikTok advertisement, viral potential, authentic energy, minimal t
 
 
 def open_file(file_path: str):
-	"""Open file with default system viewer"""
+	"""Open file with default system viewer."""
 	try:
 		if sys.platform.startswith('darwin'):
 			subprocess.run(['open', file_path], check=True)
@@ -287,6 +298,7 @@ def open_file(file_path: str):
 
 
 async def create_ad_from_landing_page(url: str, debug: bool = False, mode: str = 'instagram', ad_id: int = 1):
+	"""Create a single ad from a landing page URL."""
 	analyzer = LandingPageAnalyzer(debug=debug)
 
 	try:
@@ -329,7 +341,7 @@ async def create_ad_from_landing_page(url: str, debug: bool = False, mode: str =
 
 
 async def generate_single_ad(page_data: dict, mode: str, ad_id: int):
-	"""Generate a single ad using pre-analyzed page data"""
+	"""Generate a single ad using pre-analyzed page data."""
 	generator = AdGenerator(mode=mode)
 
 	try:
@@ -360,7 +372,7 @@ async def generate_single_ad(page_data: dict, mode: str, ad_id: int):
 
 
 async def create_multiple_ads(url: str, debug: bool = False, mode: str = 'instagram', count: int = 1):
-	"""Generate multiple ads in parallel using asyncio concurrency"""
+	"""Generate multiple ads in parallel using asyncio concurrency."""
 	if count == 1:
 		return await create_ad_from_landing_page(url, debug, mode, 1)
 

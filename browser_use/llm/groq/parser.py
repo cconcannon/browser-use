@@ -1,3 +1,5 @@
+"""Parser for handling Groq failed generation responses."""
+
 import json
 import logging
 import re
@@ -12,6 +14,8 @@ T = TypeVar('T', bound=BaseModel)
 
 
 class ParseFailedGenerationError(Exception):
+	"""Exception raised when parsing a failed generation response fails."""
+
 	pass
 
 

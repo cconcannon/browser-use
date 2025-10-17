@@ -41,6 +41,14 @@ class Page:
 	def __init__(
 		self, browser_session: 'BrowserSession', target_id: str, session_id: str | None = None, llm: 'BaseChatModel | None' = None
 	):
+		"""Initialize Page with browser session, target context, and optional LLM.
+
+		Args:
+			browser_session: The browser session to use for CDP communication
+			target_id: The CDP target ID for this page/tab
+			session_id: Optional CDP session ID (will be created if not provided)
+			llm: Optional language model for AI-powered operations
+		"""
 		self._browser_session = browser_session
 		self._client = browser_session.cdp_client
 		self._target_id = target_id
@@ -452,6 +460,8 @@ Before you return the element index, reason about the state and elements for a s
 		)
 
 		class ElementResponse(BaseModel):
+			"""Response model for LLM element selection containing the selected element index."""
+
 			# thinking: str
 			element_highlight_index: int | None
 

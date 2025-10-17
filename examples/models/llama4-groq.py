@@ -1,3 +1,5 @@
+"""Example demonstrating Llama 4 model integration via Groq."""
+
 import asyncio
 import os
 import sys
@@ -28,6 +30,7 @@ task = 'Go to amazon.com, search for laptop, sort by best rating, and give me th
 
 
 async def main():
+	"""Run Llama 4 on Groq example."""
 	agent = Agent(
 		task=task,
 		llm=llm,

@@ -1,3 +1,5 @@
+"""DeepSeek chat model implementation."""
+
 from __future__ import annotations
 
 import json
@@ -45,6 +47,7 @@ class ChatDeepSeek(BaseChatModel):
 
 	@property
 	def provider(self) -> str:
+		"""Return the provider name."""
 		return 'deepseek'
 
 	def _client(self) -> AsyncOpenAI:
@@ -57,6 +60,7 @@ class ChatDeepSeek(BaseChatModel):
 
 	@property
 	def name(self) -> str:
+		"""Return the model name."""
 		return self.model
 
 	@overload
@@ -66,7 +70,9 @@ class ChatDeepSeek(BaseChatModel):
 		output_format: None = None,
 		tools: list[dict[str, Any]] | None = None,
 		stop: list[str] | None = None,
-	) -> ChatInvokeCompletion[str]: ...
+	) -> ChatInvokeCompletion[str]:
+		"""Invoke LLM with messages and return unstructured text completion."""
+		...
 
 	@overload
 	async def ainvoke(
@@ -75,7 +81,9 @@ class ChatDeepSeek(BaseChatModel):
 		output_format: type[T],
 		tools: list[dict[str, Any]] | None = None,
 		stop: list[str] | None = None,
-	) -> ChatInvokeCompletion[T]: ...
+	) -> ChatInvokeCompletion[T]:
+		"""Invoke LLM with messages and return structured output of type T."""
+		...
 
 	async def ainvoke(
 		self,

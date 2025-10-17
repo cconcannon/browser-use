@@ -1,3 +1,5 @@
+"""Data models for message manager state and history."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -13,7 +15,7 @@ if TYPE_CHECKING:
 
 
 class HistoryItem(BaseModel):
-	"""Represents a single agent history item with its data and string representation"""
+	"""Represents a single agent history item with its data and string representation."""
 
 	step_number: int | None = None
 	evaluation_previous_goal: str | None = None
@@ -26,12 +28,12 @@ class HistoryItem(BaseModel):
 	model_config = ConfigDict(arbitrary_types_allowed=True)
 
 	def model_post_init(self, __context) -> None:
-		"""Validate that error and system_message are not both provided"""
+		"""Validate that error and system_message are not both provided."""
 		if self.error is not None and self.system_message is not None:
 			raise ValueError('Cannot have both error and system_message at the same time')
 
 	def to_string(self) -> str:
-		"""Get string representation of the history item"""
+		"""Get string representation of the history item."""
 		step_str = 'step' if self.step_number is not None else 'step_unknown'
 
 		if self.error:
@@ -64,7 +66,7 @@ class HistoryItem(BaseModel):
 
 
 class MessageHistory(BaseModel):
-	"""History of messages"""
+	"""History of messages."""
 
 	system_message: BaseMessage | None = None
 	state_message: BaseMessage | None = None
@@ -72,7 +74,7 @@ class MessageHistory(BaseModel):
 	model_config = ConfigDict(arbitrary_types_allowed=True)
 
 	def get_messages(self) -> list[BaseMessage]:
-		"""Get all messages in the correct order: system -> state -> contextual"""
+		"""Get all messages in the correct order: system -> state -> contextual."""
 		messages = []
 		if self.system_message:
 			messages.append(self.system_message)
@@ -84,7 +86,7 @@ class MessageHistory(BaseModel):
 
 
 class MessageManagerState(BaseModel):
-	"""Holds the state for MessageManager"""
+	"""Holds the state for MessageManager."""
 
 	history: MessageHistory = Field(default_factory=MessageHistory)
 	tool_id: int = 1

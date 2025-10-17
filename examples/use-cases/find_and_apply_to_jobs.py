@@ -43,6 +43,8 @@ logger.info(f'Using dummy cv at {CV}')
 
 
 class Job(BaseModel):
+	"""Job listing information."""
+
 	title: str
 	link: str
 	company: str
@@ -53,6 +55,7 @@ class Job(BaseModel):
 
 @tools.action('Save jobs to file - with a score how well it fits to my profile', param_model=Job)
 def save_jobs(job: Job):
+	"""Save job listing to CSV file."""
 	with open('jobs.csv', 'a', newline='') as f:
 		writer = csv.writer(f)
 		writer.writerow([job.title, job.company, job.link, job.salary, job.location])
@@ -62,12 +65,14 @@ def save_jobs(job: Job):
 
 @tools.action('Read jobs from file')
 def read_jobs():
+	"""Read saved jobs from CSV file."""
 	with open('jobs.csv') as f:
 		return f.read()
 
 
 @tools.action('Read my cv for context to fill forms')
 def read_cv():
+	"""Extract text content from CV PDF."""
 	pdf = PdfReader(CV)
 	text = ''
 	for page in pdf.pages:
@@ -80,6 +85,7 @@ def read_cv():
 	'Upload cv to element - call this function to upload if element is not found, try with different index of the same upload element',
 )
 async def upload_cv(index: int, browser_session: BrowserSession):
+	"""Upload CV file to file input element."""
 	path = str(CV.absolute())
 
 	# Get the element by index
@@ -119,6 +125,7 @@ browser_session = BrowserSession(
 
 
 async def main():
+	"""Run job search and application example."""
 	# ground_task = (
 	# 	'You are a professional job finder. '
 	# 	'1. Read my cv with read_cv'

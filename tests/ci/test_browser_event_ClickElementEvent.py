@@ -1,3 +1,5 @@
+"""Tests for browser click element events and actions."""
+
 import asyncio
 import tempfile
 from pathlib import Path
@@ -80,6 +82,8 @@ class TestClickElementEvent:
 		from browser_use.agent.views import ActionModel
 
 		class ClickActionModel(ActionModel):
+			"""Test action model for clicking elements."""
+
 			click: ClickElementAction | None = None
 
 		# This should fail since the element doesn't exist
@@ -135,6 +139,8 @@ class TestClickElementEvent:
 		from browser_use.agent.views import ActionModel
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -175,6 +181,8 @@ class TestClickElementEvent:
 
 		# Create a model for the click action
 		class ClickElementActionModel(ActionModel):
+			"""Test action model for clicking specific elements."""
+
 			click: ClickElementAction | None = None
 
 		# Execute the action with the button index
@@ -242,6 +250,8 @@ class TestClickElementEvent:
 		from browser_use.agent.views import ActionModel
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -262,6 +272,8 @@ class TestClickElementEvent:
 
 		# Click the element - should click the visible portion
 		class ClickActionModel(ActionModel):
+			"""Test action model for clicking elements."""
+
 			click: ClickElementAction | None = None
 
 		result = await tools.act(ClickActionModel(click=ClickElementAction(index=inline_index)), browser_session)
@@ -324,6 +336,8 @@ class TestClickElementEvent:
 		from browser_use.agent.views import ActionModel
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -344,6 +358,8 @@ class TestClickElementEvent:
 
 		# Click the block element
 		class ClickActionModel(ActionModel):
+			"""Test action model for clicking elements."""
+
 			click: ClickElementAction | None = None
 
 		result = await tools.act(ClickActionModel(click=ClickElementAction(index=block_index)), browser_session)
@@ -412,6 +428,8 @@ class TestClickElementEvent:
 		from browser_use.agent.views import ActionModel
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -432,6 +450,8 @@ class TestClickElementEvent:
 
 		# Click should still work on the visible portion
 		class ClickActionModel(ActionModel):
+			"""Test action model for clicking elements."""
+
 			click: ClickElementAction | None = None
 
 		result = await tools.act(ClickActionModel(click=ClickElementAction(index=target_index)), browser_session)
@@ -472,6 +492,8 @@ class TestClickElementEvent:
 		from browser_use.agent.views import ActionModel
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -493,6 +515,8 @@ class TestClickElementEvent:
 
 		# Attempt to click should raise an exception
 		class ClickActionModel(ActionModel):
+			"""Test action model for clicking elements."""
+
 			click: ClickElementAction | None = None
 
 		result = await tools.act(ClickActionModel(click=ClickElementAction(index=file_input_index)), browser_session)
@@ -533,6 +557,8 @@ class TestClickElementEvent:
 		from browser_use.agent.views import ActionModel
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -553,6 +579,8 @@ class TestClickElementEvent:
 
 		# Attempt to click should raise an exception
 		class ClickActionModel(ActionModel):
+			"""Test action model for clicking elements."""
+
 			click: ClickElementAction | None = None
 
 		result = await tools.act(ClickActionModel(click=ClickElementAction(index=select_index)), browser_session)
@@ -930,6 +958,8 @@ class TestClickElementEvent:
 			from browser_use.agent.views import ActionModel
 
 			class NavigateActionModel(ActionModel):
+				"""Test action model for navigation."""
+
 				navigate: GoToUrlAction | None = None
 
 			await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -954,6 +984,8 @@ class TestClickElementEvent:
 
 			# Create action model for file upload
 			class UploadFileActionModel(ActionModel):
+				"""Test action model for uploading files."""
+
 				upload_file: UploadFileAction | None = None
 
 			# Create a temporary FileSystem for the test
@@ -1075,6 +1107,8 @@ class TestClickElementEvent:
 			from browser_use.agent.views import ActionModel
 
 			class NavigateActionModel(ActionModel):
+				"""Test action model for navigation."""
+
 				navigate: GoToUrlAction | None = None
 
 			await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -1088,6 +1122,8 @@ class TestClickElementEvent:
 
 			# Test 1: Try to upload a file that's not in available_file_paths - should fail
 			class UploadActionModel(ActionModel):
+				"""Test action model for file uploads."""
+
 				upload_file: UploadFileAction | None = None
 
 			upload_action = UploadActionModel(upload_file=UploadFileAction(index=1, path=test_file_path))

@@ -39,6 +39,7 @@ registry = tools.registry
 # Action will only be available to Agent on Google domains because of the domain filter
 @registry.action(description='Trigger disco mode', domains=['google.com', '*.google.com'])
 async def disco_mode(browser_session: BrowserSession):
+	"""Make all elements on the page wiggle with a disco animation effect."""
 	# Execute JavaScript using CDP
 	cdp_session = await browser_session.get_or_create_cdp_session()
 	await cdp_session.cdp_client.send.Runtime.evaluate(
@@ -75,6 +76,7 @@ async def is_login_page(browser_session: BrowserSession) -> bool:
 # and check the condition inside the function
 @registry.action(description='Use the force, luke', domains=['*'])
 async def use_the_force(browser_session: BrowserSession):
+	"""Replace page content with a Star Wars message on login pages."""
 	# Check if it's a login page
 	if not await is_login_page(browser_session):
 		return  # Skip if not a login page
@@ -92,7 +94,7 @@ async def use_the_force(browser_session: BrowserSession):
 
 
 async def main():
-	"""Main function to run the example"""
+	"""Main function to run the example."""
 	browser_session = BrowserSession()
 	await browser_session.start()
 	llm = ChatOpenAI(model='gpt-4.1-mini')

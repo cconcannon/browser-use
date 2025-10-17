@@ -1,3 +1,5 @@
+"""Example demonstrating custom system prompt configuration."""
+
 import asyncio
 import json
 import os
@@ -20,6 +22,7 @@ extend_system_message = (
 
 
 async def main():
+	"""Run custom system prompt example."""
 	task = 'do google search to find images of Elon Musk'
 	model = ChatOpenAI(model='gpt-4.1-mini')
 	agent = Agent(task=task, llm=model, extend_system_message=extend_system_message)

@@ -1,3 +1,5 @@
+"""Data models for the action registry."""
+
 from collections.abc import Callable
 from typing import TYPE_CHECKING, Any
 
@@ -12,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class RegisteredAction(BaseModel):
-	"""Model for a registered action"""
+	"""Model for a registered action."""
 
 	name: str
 	description: str
@@ -25,7 +27,7 @@ class RegisteredAction(BaseModel):
 	model_config = ConfigDict(arbitrary_types_allowed=True)
 
 	def prompt_description(self) -> str:
-		"""Get a description of the action for the prompt in unstructured format"""
+		"""Get a description of the action for the prompt in unstructured format."""
 		schema = self.param_model.model_json_schema()
 		params = []
 
@@ -53,7 +55,7 @@ class RegisteredAction(BaseModel):
 
 
 class ActionModel(BaseModel):
-	"""Base model for dynamically created action models"""
+	"""Base model for dynamically created action models."""
 
 	# this will have all the registered actions, e.g.
 	# click_element = param_model = ClickElementParams
@@ -62,7 +64,7 @@ class ActionModel(BaseModel):
 	model_config = ConfigDict(arbitrary_types_allowed=True, extra='forbid')
 
 	def get_index(self) -> int | None:
-		"""Get the index of the action"""
+		"""Get the index of the action."""
 		# {'clicked_element': {'index':5}}
 		params = self.model_dump(exclude_unset=True).values()
 		if not params:
@@ -73,7 +75,7 @@ class ActionModel(BaseModel):
 		return None
 
 	def set_index(self, index: int):
-		"""Overwrite the index of the action"""
+		"""Overwrite the index of the action."""
 		# Get the action name and params
 		action_data = self.model_dump(exclude_unset=True)
 		action_name = next(iter(action_data.keys()))
@@ -85,7 +87,7 @@ class ActionModel(BaseModel):
 
 
 class ActionRegistry(BaseModel):
-	"""Model representing the action registry"""
+	"""Model representing the action registry."""
 
 	actions: dict[str, RegisteredAction] = {}
 
@@ -143,7 +145,7 @@ class ActionRegistry(BaseModel):
 
 
 class SpecialActionParameters(BaseModel):
-	"""Model defining all special parameters that can be injected into actions"""
+	"""Model defining all special parameters that can be injected into actions."""
 
 	model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -170,5 +172,5 @@ class SpecialActionParameters(BaseModel):
 
 	@classmethod
 	def get_browser_requiring_params(cls) -> set[str]:
-		"""Get parameter names that require browser_session"""
+		"""Get parameter names that require browser_session."""
 		return {'browser_session', 'cdp_client', 'page_url'}

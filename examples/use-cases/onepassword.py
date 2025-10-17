@@ -1,3 +1,21 @@
+"""
+Use Case: Securely log into a website using credentials stored in 1Password vault.
+
+- Use fill_field action to fill in username and password fields with values retrieved from 1Password. The LLM never sees the actual credentials.
+- Use blur_page and unblur_page actions to visually obscure sensitive information on the page while filling in credentials for extra security.
+
+**SETUP**
+How to setup 1Password with Browser Use
+- Get Individual Plan for 1Password
+- Go to the Home page and click "New Vault"
+    - Add the credentials you need for any websites you want to log into
+- Go to "Developer" tab, navigate to "Directory" and create a Service Account
+- Give the service account access to the vault
+- Copy the Service Account Token and set it as environment variable OP_SERVICE_ACCOUNT_TOKEN
+- Install the onepassword package: pip install onepassword-sdk
+Note: In this example, we assume that you created a vault named "prod-secrets" and added an item named "X" with fields "username" and "password".
+"""
+
 import os
 
 from onepassword.client import Client
@@ -5,25 +23,9 @@ from onepassword.client import Client
 from browser_use import ActionResult, Agent, Browser, ChatOpenAI, Tools
 from browser_use.browser.session import BrowserSession
 
-"""
-Use Case: Securely log into a website using credentials stored in 1Password vault.
-- Use fill_field action to fill in username and password fields with values retrieved from 1Password. The LLM never sees the actual credentials.
-- Use blur_page and unblur_page actions to visually obscure sensitive information on the page while filling in credentials for extra security.
-
-**SETUP**
-How to setup 1Password with Browser Use
-- Get Individual Plan for 1Password
-- Go to the Home page and click “New Vault”
-    - Add the credentials you need for any websites you want to log into
-- Go to “Developer” tab, navigate to “Directory” and create a Service Account
-- Give the service account access to the vault
-- Copy the Service Account Token and set it as environment variable OP_SERVICE_ACCOUNT_TOKEN
-- Install the onepassword package: pip install onepassword-sdk
-Note: In this example, we assume that you created a vault named "prod-secrets" and added an item named "X" with fields "username" and "password".
-"""
-
 
 async def main():
+	"""Run 1Password secure login example."""
 	# Gets your service account token from environment variable
 	token = os.getenv('OP_SERVICE_ACCOUNT_TOKEN')
 

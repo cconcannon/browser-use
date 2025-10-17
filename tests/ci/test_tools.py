@@ -1,3 +1,5 @@
+"""Tests for browser tools and actions."""
+
 import asyncio
 import tempfile
 import time
@@ -117,10 +119,13 @@ class TestToolsIntegration:
 
 		# Define a custom action
 		class CustomParams(BaseModel):
+			"""Test parameters for custom action."""
+
 			text: str
 
 		@tools.action('Test custom action', param_model=CustomParams)
 		async def custom_action(params: CustomParams, browser_session):
+			"""Custom test action."""
 			current_url = await browser_session.get_current_page_url()
 			return ActionResult(extracted_content=f'Custom action executed with: {params.text} on {current_url}')
 
@@ -128,6 +133,8 @@ class TestToolsIntegration:
 		goto_action = {'navigate': GoToUrlAction(url=f'{base_url}/page1', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -136,6 +143,8 @@ class TestToolsIntegration:
 		custom_action_data = {'custom_action': CustomParams(text='test_value')}
 
 		class CustomActionModel(ActionModel):
+			"""Test action model for custom action."""
+
 			custom_action: CustomParams | None = None
 
 		# Execute the custom action
@@ -167,6 +176,8 @@ class TestToolsIntegration:
 		wait_action = {'wait': {'seconds': 3}}  # Corrected format
 
 		class WaitActionModel(ActionModel):
+			"""Test action model for wait action."""
+
 			wait: dict | None = None
 
 		# Record start time
@@ -212,6 +223,8 @@ class TestToolsIntegration:
 		goto_action1 = {'navigate': GoToUrlAction(url=f'{base_url}/page1', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action1), browser_session)
@@ -233,6 +246,8 @@ class TestToolsIntegration:
 		go_back_action = {'go_back': NoParamsAction()}
 
 		class GoBackActionModel(ActionModel):
+			"""Test action model for go back action."""
+
 			go_back: NoParamsAction | None = None
 
 		result = await tools.act(GoBackActionModel(**go_back_action), browser_session)
@@ -262,6 +277,7 @@ class TestToolsIntegration:
 			action_data = {'navigate': GoToUrlAction(url=url, new_tab=False)}
 
 			class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
 				navigate: GoToUrlAction | None = None
 
 			await tools.act(NavigateActionModel(**action_data), browser_session)
@@ -275,6 +291,7 @@ class TestToolsIntegration:
 			go_back_action = {'go_back': NoParamsAction()}
 
 			class GoBackActionModel(ActionModel):
+			"""Test action model for going back."""
 				go_back: NoParamsAction | None = None
 
 			await tools.act(GoBackActionModel(**go_back_action), browser_session)
@@ -305,6 +322,8 @@ class TestToolsIntegration:
 		search_action = {'search': SearchAction(query='Python web automation')}
 
 		class SearchActionModel(ActionModel):
+			"""Test action model for search action."""
+
 			search: SearchAction | None = None
 
 		result = await tools.act(SearchActionModel(**search_action), browser_session)
@@ -328,6 +347,7 @@ class TestToolsIntegration:
 			goto_action = {'navigate': GoToUrlAction(url=f'{base_url}/page1', new_tab=False)}
 
 			class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
 				navigate: GoToUrlAction | None = None
 
 			await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -338,6 +358,8 @@ class TestToolsIntegration:
 			done_action = {'done': DoneAction(text=success_done_message, success=True)}
 
 			class DoneActionModel(ActionModel):
+				"""Test action model for done action."""
+
 				done: DoneAction | None = None
 
 			# Execute done action with file_system
@@ -395,6 +417,8 @@ class TestToolsIntegration:
 		goto_action = {'navigate': GoToUrlAction(url=f'{base_url}/dropdown1', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -431,6 +455,8 @@ class TestToolsIntegration:
 
 		# Create a model for the standard dropdown_options action
 		class DropdownOptionsModel(ActionModel):
+			"""Test action model for dropdown options."""
+
 			dropdown_options: dict[str, int]
 
 		# Execute the action with the dropdown index
@@ -519,6 +545,8 @@ class TestToolsIntegration:
 		goto_action = {'navigate': GoToUrlAction(url=f'{base_url}/dropdown2', new_tab=False)}
 
 		class NavigateActionModel(ActionModel):
+			"""Test action model for navigation."""
+
 			navigate: GoToUrlAction | None = None
 
 		await tools.act(NavigateActionModel(**goto_action), browser_session)
@@ -555,6 +583,8 @@ class TestToolsIntegration:
 
 		# Create a model for the standard select_dropdown action
 		class SelectDropdownModel(ActionModel):
+			"""Test action model for selecting dropdown option."""
+
 			select_dropdown: dict
 
 		# Execute the action with the dropdown index

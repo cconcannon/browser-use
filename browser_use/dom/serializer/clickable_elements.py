@@ -1,7 +1,10 @@
+"""Detector for identifying interactive and clickable elements in the DOM."""
+
 from browser_use.dom.views import EnhancedDOMTreeNode, NodeType
 
 
 class ClickableElementDetector:
+	"""Detects whether DOM elements are interactive based on multiple heuristics."""
 	@staticmethod
 	def is_interactive(node: EnhancedDOMTreeNode) -> bool:
 		"""Check if this node is clickable/interactive using enhanced scoring."""

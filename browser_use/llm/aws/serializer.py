@@ -1,3 +1,5 @@
+"""Serializer for converting between custom message types and AWS Bedrock message format."""
+
 import base64
 import json
 import re
@@ -185,15 +187,21 @@ class AWSBedrockMessageSerializer:
 	# region - Serialize overloads
 	@overload
 	@staticmethod
-	def serialize(message: UserMessage) -> dict[str, Any]: ...
+	def serialize(message: UserMessage) -> dict[str, Any]:
+		"""Serialize a user message."""
+		...
 
 	@overload
 	@staticmethod
-	def serialize(message: SystemMessage) -> SystemMessage: ...
+	def serialize(message: SystemMessage) -> SystemMessage:
+		"""Serialize a system message."""
+		...
 
 	@overload
 	@staticmethod
-	def serialize(message: AssistantMessage) -> dict[str, Any]: ...
+	def serialize(message: AssistantMessage) -> dict[str, Any]:
+		"""Serialize an assistant message."""
+		...
 
 	@staticmethod
 	def serialize(message: BaseMessage) -> dict[str, Any] | SystemMessage:

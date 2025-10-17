@@ -1,3 +1,5 @@
+"""Example demonstrating follow-up task functionality with persistent browser."""
+
 from dotenv import load_dotenv
 
 from browser_use import Agent, Browser
@@ -8,6 +10,7 @@ import asyncio
 
 
 async def main():
+	"""Run follow-up task example with sequential tasks."""
 	browser = Browser(keep_alive=True)
 
 	await browser.start()

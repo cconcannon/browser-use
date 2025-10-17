@@ -20,6 +20,7 @@ if not api_key:
 
 
 async def run_search():
+	"""Run search task with ModelScope."""
 	agent = Agent(
 		# task=('go to amazon.com, search for laptop'),
 		task=('go to google, search for modelscope'),

@@ -1,3 +1,5 @@
+"""Command-line interface for browser-use."""
+
 # pyright: reportMissingImports=false
 
 # Check for MCP mode early to prevent logging initialization
@@ -270,10 +272,12 @@ class RichLogHandler(logging.Handler):
 	"""Custom logging handler that redirects logs to a RichLog widget."""
 
 	def __init__(self, rich_log: RichLog):
+		"""Initialize the handler with a RichLog widget."""
 		super().__init__()
 		self.rich_log = rich_log
 
 	def emit(self, record):
+		"""Emit a log record to the RichLog widget."""
 		try:
 			msg = self.format(record)
 			self.rich_log.write(msg)
@@ -467,6 +471,7 @@ class BrowserUseApp(App):
 	]
 
 	def __init__(self, config: dict[str, Any], *args, **kwargs):
+		"""Initialize the browser-use TUI application."""
 		super().__init__(*args, **kwargs)
 		self.config = config
 		self.browser_session: BrowserSession | None = None  # Will be set before app.run_async()
@@ -500,7 +505,10 @@ class BrowserUseApp(App):
 		log_type = os.getenv('BROWSER_USE_LOGGING_LEVEL', 'result').lower()
 
 		class BrowserUseFormatter(logging.Formatter):
+			"""Custom formatter for browser-use logs in the TUI."""
+
 			def format(self, record):
+				"""Format the log record."""
 				# if isinstance(record.name, str) and record.name.startswith('browser_use.'):
 				# 	record.name = record.name.split('.')[-2]
 				return super().format(record)
@@ -777,6 +785,7 @@ class BrowserUseApp(App):
 
 		# Create handler to log all events
 		def log_event(event):
+			"""Log event bus events to the events pane."""
 			event_name = event.__class__.__name__
 			# Format event data nicely
 			try:
@@ -817,11 +826,15 @@ class BrowserUseApp(App):
 
 		# Create custom handler for CDP logging
 		class CDPLogHandler(logging.Handler):
+			"""Handler for CDP logs in the TUI."""
+
 			def __init__(self, rich_log: RichLog):
+				"""Initialize the CDP log handler."""
 				super().__init__()
 				self.rich_log = rich_log
 
 			def emit(self, record):
+				"""Emit a CDP log record."""
 				try:
 					msg = self.format(record)
 					# Truncate very long messages
@@ -891,6 +904,7 @@ class BrowserUseApp(App):
 
 		# Let the agent run in the background
 		async def agent_task_worker() -> None:
+			"""Worker coroutine to run agent tasks in the background."""
 			logger.debug('\n🚀 Working on task: %s', task)
 
 			# Set flags to indicate the agent is running
@@ -1487,6 +1501,7 @@ async def textual_interface(config: dict[str, Any]):
 
 	# Set up logging for Textual UI - prevent any logging to stdout
 	def setup_textual_logging():
+		"""Set up logging configuration for Textual UI mode."""
 		# Replace all handlers with null handler
 		root_logger = logging.getLogger()
 		for handler in root_logger.handlers:
@@ -1719,6 +1734,7 @@ async def run_auth_command():
 
 			# Create a task to show periodic status updates
 			async def show_auth_progress():
+				"""Show periodic authentication progress updates."""
 				for i in range(1, 25):  # Show updates every 5 seconds for 2 minutes
 					await asyncio.sleep(5)
 					fresh_check = DeviceAuthClient()
@@ -1882,7 +1898,7 @@ def main(ctx: click.Context, debug: bool = False, **kwargs):
 
 
 def run_main_interface(ctx: click.Context, debug: bool = False, **kwargs):
-	"""Run the main browser-use interface"""
+	"""Run the main browser-use interface."""
 
 	if kwargs['version']:
 		from importlib.metadata import version
@@ -2000,7 +2016,7 @@ def run_main_interface(ctx: click.Context, debug: bool = False, **kwargs):
 
 @main.command()
 def auth():
-	"""Authenticate with Browser Use Cloud to sync your runs"""
+	"""Authenticate with Browser Use Cloud to sync your runs."""
 	asyncio.run(run_auth_command())
 
 

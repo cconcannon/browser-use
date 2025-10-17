@@ -31,6 +31,7 @@ tools = Tools()
 
 @tools.action('Upload file to interactive element with file path')
 async def upload_file(index: int, path: str, browser_session: BrowserSession, available_file_paths: list[str]):
+	"""Upload a file to a file input element at the specified index."""
 	if path not in available_file_paths:
 		return ActionResult(error=f'File path {path} is not available')
 
@@ -67,7 +68,7 @@ async def upload_file(index: int, path: str, browser_session: BrowserSession, av
 
 
 async def main():
-	"""Main function to run the example"""
+	"""Main function to run the example."""
 	browser_session = BrowserSession()
 	await browser_session.start()
 	llm = ChatOpenAI(model='gpt-4.1-mini')

@@ -23,6 +23,7 @@ if not api_key:
 
 
 async def run_search():
+	"""Run search task with Novita AI."""
 	agent = Agent(
 		task=(
 			'1. Go to https://www.reddit.com/r/LocalLLaMA '

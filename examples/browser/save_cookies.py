@@ -1,3 +1,5 @@
+"""Example demonstrating how to save browser cookies and storage state."""
+
 import asyncio
 import os
 import sys
@@ -19,6 +21,7 @@ browser = Browser(
 
 
 async def main():
+	"""Export browser storage state to a file."""
 	await browser.start()
 	await browser.export_storage_state('storage_state3.json')
 

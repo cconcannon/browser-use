@@ -1,3 +1,5 @@
+"""Data models and views for DOM tree representation."""
+
 import hashlib
 from dataclasses import asdict, dataclass, field
 from enum import Enum
@@ -123,6 +125,8 @@ STATIC_ATTRIBUTES = {
 
 @dataclass
 class CurrentPageTargets:
+	"""Contains the target information for a page and its iframes."""
+
 	page_session: TargetInfo
 	iframe_sessions: list[TargetInfo]
 	"""
@@ -132,6 +136,8 @@ class CurrentPageTargets:
 
 @dataclass
 class TargetAllTrees:
+	"""Contains all trees (DOM, accessibility, snapshot) for a target."""
+
 	snapshot: CaptureSnapshotReturns
 	dom_tree: GetDocumentReturns
 	ax_tree: GetFullAXTreeReturns
@@ -180,6 +186,7 @@ class SimplifiedNode:
 		return node_json
 
 	def __json__(self) -> dict:
+		"""Serialize the simplified node to a JSON-compatible dictionary."""
 		original_node_json = self.original_node.__json__()
 		# Remove children_nodes and shadow_roots to avoid duplication with SimplifiedNode.children
 		cleaned_original_node_json = self._clean_original_node_json(original_node_json)
@@ -212,12 +219,15 @@ class NodeType(int, Enum):
 
 @dataclass(slots=True)
 class DOMRect:
+	"""Represents a rectangular bounding box in the DOM."""
+
 	x: float
 	y: float
 	width: float
 	height: float
 
 	def to_dict(self) -> dict[str, Any]:
+		"""Convert the rectangle to a dictionary representation."""
 		return {
 			'x': self.x,
 			'y': self.y,
@@ -226,12 +236,13 @@ class DOMRect:
 		}
 
 	def __json__(self) -> dict:
+		"""Serialize the rectangle to JSON format."""
 		return self.to_dict()
 
 
 @dataclass(slots=True)
 class EnhancedAXProperty:
-	"""we don't need `sources` and `related_nodes` for now (not sure how to use them)
+	"""We don't need `sources` and `related_nodes` for now (not sure how to use them).
 
 	TODO: there is probably some way to determine whether it has a value or related nodes or not, but for now it's kinda fine idk
 	"""
@@ -243,6 +254,8 @@ class EnhancedAXProperty:
 
 @dataclass(slots=True)
 class EnhancedAXNode:
+	"""Enhanced accessibility tree node with Chrome DevTools accessibility information."""
+
 	ax_node_id: str
 	"""Not to be confused the DOM node_id. Only useful for AX node tree"""
 	ignored: bool
@@ -385,17 +398,17 @@ class EnhancedDOMTreeNode:
 
 	@property
 	def parent(self) -> 'EnhancedDOMTreeNode | None':
+		"""Get the parent node of this element."""
 		return self.parent_node
 
 	@property
 	def children(self) -> list['EnhancedDOMTreeNode']:
+		"""Get the children nodes of this element."""
 		return self.children_nodes or []
 
 	@property
 	def children_and_shadow_roots(self) -> list['EnhancedDOMTreeNode']:
-		"""
-		Returns all children nodes, including shadow roots
-		"""
+		"""Returns all children nodes, including shadow roots."""
 		# IMPORTANT: Make a copy to avoid mutating the original children_nodes list!
 		children = list(self.children_nodes) if self.children_nodes else []
 		if self.shadow_roots:
@@ -404,6 +417,7 @@ class EnhancedDOMTreeNode:
 
 	@property
 	def tag_name(self) -> str:
+		"""Get the lowercase tag name of this element."""
 		return self.node_name.lower()
 
 	@property
@@ -479,9 +493,11 @@ class EnhancedDOMTreeNode:
 		}
 
 	def get_all_children_text(self, max_depth: int = -1) -> str:
+		"""Get all text content from this node's children up to a specified depth."""
 		text_parts = []
 
 		def collect_text(node: EnhancedDOMTreeNode, current_depth: int) -> None:
+			"""Recursively collect text from child nodes."""
 			if max_depth != -1 and current_depth > max_depth:
 				return
 
@@ -501,9 +517,7 @@ class EnhancedDOMTreeNode:
 		return '\n'.join(text_parts).strip()
 
 	def __repr__(self) -> str:
-		"""
-		@DEV ! don't display this to the LLM, it's SUPER long
-		"""
+		"""@DEV ! don't display this to the LLM, it's SUPER long."""
 		attributes = ', '.join([f'{k}={v}' for k, v in self.attributes.items()])
 		is_scrollable = getattr(self, 'is_scrollable', False)
 		num_children = len(self.children_nodes or [])
@@ -513,9 +527,7 @@ class EnhancedDOMTreeNode:
 		)
 
 	def llm_representation(self, max_text_length: int = 100) -> str:
-		"""
-		Token friendly representation of the node, used in the LLM
-		"""
+		"""Token friendly representation of the node, used in the LLM."""
 
 		return f'<{self.tag_name}>{cap_text_length(self.get_all_children_text(), max_text_length) or ""}'
 
@@ -743,9 +755,11 @@ class EnhancedDOMTreeNode:
 
 	@property
 	def element_hash(self) -> int:
+		"""Get the hash value of this element."""
 		return hash(self)
 
 	def __str__(self) -> str:
+		"""Get a concise string representation of this element."""
 		return f'[<{self.tag_name}>#{self.frame_id[-4:] if self.frame_id else "?"}:{self.element_index}]'
 
 	def __hash__(self) -> int:
@@ -799,6 +813,8 @@ DOMSelectorMap = dict[int, EnhancedDOMTreeNode]
 
 @dataclass
 class SerializedDOMState:
+	"""Serialized representation of the DOM state for LLM consumption."""
+
 	_root: SimplifiedNode | None
 	"""Not meant to be used directly, use `llm_representation` instead"""
 
@@ -809,7 +825,7 @@ class SerializedDOMState:
 		self,
 		include_attributes: list[str] | None = None,
 	) -> str:
-		"""Kinda ugly, but leaving this as an internal method because include_attributes are a parameter on the agent, so we need to leave it as a 2 step process"""
+		"""Kinda ugly, but leaving this as an internal method because include_attributes are a parameter on the agent, so we need to leave it as a 2 step process."""
 		from browser_use.dom.serializer.serializer import DOMTreeSerializer
 
 		if not self._root:
@@ -845,6 +861,7 @@ class DOMInteractedElement:
 	element_hash: int
 
 	def to_dict(self) -> dict[str, Any]:
+		"""Convert the interacted element to a dictionary representation."""
 		return {
 			'node_id': self.node_id,
 			'backend_node_id': self.backend_node_id,
@@ -860,6 +877,7 @@ class DOMInteractedElement:
 
 	@classmethod
 	def load_from_enhanced_dom_tree(cls, enhanced_dom_tree: EnhancedDOMTreeNode) -> 'DOMInteractedElement':
+		"""Create a DOMInteractedElement from an enhanced DOM tree node."""
 		return cls(
 			node_id=enhanced_dom_tree.node_id,
 			backend_node_id=enhanced_dom_tree.backend_node_id,

@@ -1,3 +1,8 @@
+"""Browser module for browser-use.
+
+Provides lazy imports for BrowserProfile, BrowserSession, and ProxySettings.
+"""
+
 from typing import TYPE_CHECKING
 
 # Type stubs for lazy imports

@@ -20,6 +20,7 @@ load_dotenv()
 
 
 async def simple_search(query: str, max_websites: int = 5, depth: int = 2):
+	"""Perform a simple search across multiple websites using the Browser Use API."""
 	# Validate API key exists
 	api_key = os.getenv('BROWSER_USE_API_KEY')
 	if not api_key:

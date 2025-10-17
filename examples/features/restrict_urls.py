@@ -1,3 +1,5 @@
+"""Example demonstrating URL restriction to limit navigation to specific domains."""
+
 import asyncio
 import os
 import sys
@@ -34,6 +36,7 @@ agent = Agent(
 
 
 async def main():
+	"""Run URL restriction example."""
 	await agent.run(max_steps=25)
 
 	input('Press Enter to close the browser...')

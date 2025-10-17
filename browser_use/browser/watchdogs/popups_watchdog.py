@@ -21,6 +21,7 @@ class PopupsWatchdog(BaseWatchdog):
 	_dialog_listeners_registered: set[str] = PrivateAttr(default_factory=set)
 
 	def __init__(self, **kwargs):
+		"""Initialize the popups watchdog."""
 		super().__init__(**kwargs)
 		self.logger.debug(f'🚀 PopupsWatchdog initialized with browser_session={self.browser_session}, ID={id(self)}')
 
